@@ -1,0 +1,170 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition template="/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:define name="titulo">
+	<h:graphicImage value="/imagens/icon_inventario.png" width="32" height="32"/>
+	<p:spacer width="10"/>
+	<h:outputText value="#{msg.cadastrarInventario_titulo}" styleClass="textoDestaque"/>
+</ui:define>
+
+<ui:define name="conteudo">
+
+<table style="width: 98%; border-collapse: collapse; border-spacing: 4; margin-left:auto; margin-right:auto">
+	<tr>
+		<td align="left">
+			<h:outputLabel value="#{msg.cadastrarInventario_categoria}:" styleClass="textoNormal"/>
+			<h:selectOneMenu id="categoria" value="#{consultaBean.categoriaSelecionada}" required="true" immediate="true">
+				<f:selectItems value="#{consultaBean.listaTiposCategoriasInventario}"/>
+				<p:ajax update=":formGeral:tabelaListagem" process="@this"/>
+			</h:selectOneMenu>
+		</td>
+		<td align="right">
+			<br/>
+			<h:commandLink action="#{adminBean.cadastrarNovoProdutoInventarioAction}" rendered="#{sessionBean.colaboradorLogado.tipoUsuario lt 1 or sessionBean.colaboradorLogado.tipoUsuario eq 7}">
+				<h:graphicImage value="/imagens/btn_cadastrar.png" width="32" height="32"/>
+			</h:commandLink>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2">
+		<p:dataTable id="tabelaListagem" styleClass="textoNormal" style="width: 100%;" paginator="true" paginatorAlwaysVisible="false" rows="20"
+			value="#{consultaBean.todosProdutosInventario}" var="produtoInventario" rowStyleClass="fundoClaro">
+			<f:facet name="header">
+				<p:column>
+					<p:column width="25%">
+						<h:outputText value="#{msg.cadastrarInventario_produto}" />
+					</p:column>
+					<p:column width="15%">
+						<h:outputText value="#{msg.cadastrarInventario_nroSerie}" />
+					</p:column>
+					<p:column width="12%">
+						<h:outputText value="#{msg.cadastrarInventario_patrimonio}" />
+					</p:column>
+					<p:column width="12%">
+						<h:outputText value="#{msg.cadastrarInventario_nroNotaFiscal}" />
+					</p:column>
+					<p:column width="11%">
+						<h:outputText value="#{msg.cadastrarInventario_dataEmprestimo}" />
+					</p:column>
+					<p:column width="20%">
+						<h:outputText value="#{msg.cadastrarInventario_responsavel}" />
+					</p:column>
+					<p:column exportable="false" width="5%">
+						<h:outputText value="#{msg.cadastro_acoes}" />
+					</p:column>
+				</p:column>
+			</f:facet>
+			
+			<p:column colspan="6">
+				<h:outputText value="#{produtoInventario.nomeProduto}" styleClass="textoNegrito"/> 
+				<p:spacer width="6"/>
+				<h:graphicImage value="/imagens/icon_check.png" width="10" height="10" rendered="#{produtoInventario.flagEmprestavel and (sessionBean.colaboradorLogado.usuario == 'admin' or sessionBean.colaboradorLogado.tipoUsuario eq 7)}"/>
+			</p:column>
+			
+			<p:column align="right">
+				<h:panelGroup>
+					<h:commandLink rendered="#{sessionBean.colaboradorLogado.tipoUsuario lt 1 or sessionBean.colaboradorLogado.tipoUsuario eq 7}" 
+						actionListener="#{adminBean.selecionarProdutoInventarioAction}" action="#{adminBean.cadastrarNovoItemInventarioAction}">
+						<h:graphicImage value="/imagens/btn_cadastrar.png" width="16" height="16"/>
+					</h:commandLink>
+					
+					<p:spacer width="10"/>
+					
+					<h:commandLink id="comandoAlterar" rendered="#{sessionBean.colaboradorLogado.tipoUsuario lt 1 or sessionBean.colaboradorLogado.tipoUsuario eq 7}"  
+						actionListener="#{adminBean.selecionarProdutoInventarioAction}" action="edit">
+						<h:graphicImage value="/imagens/btn_edit.png" width="16" height="16" title="#{msg.cadastro_alterar}"/>
+					</h:commandLink>
+					
+					<p:spacer width="10"/>
+					
+					<h:commandLink id="comandoExcluir" rendered="#{sessionBean.colaboradorLogado.tipoUsuario lt 1 or sessionBean.colaboradorLogado.tipoUsuario eq 7}"  
+						actionListener="#{adminBean.excluirProdutoInventarioAction}" onclick="if (!confirm('#{msg.cadastro_confirmaExclusao}')) return false;">
+						<h:graphicImage value="/imagens/btn_excluir.png" width="16" height="16" title="#{msg.cadastro_excluir}"/>
+					</h:commandLink>
+				</h:panelGroup>
+			</p:column>
+			
+			<p:column>  
+				<p:dataTable var="item" value="#{produtoInventario.listaItens}"
+					styleClass="textoNormal" style="width: 100%;" paginator="true" paginatorAlwaysVisible="false" rows="20">
+			
+					<p:column/>
+					
+					<p:column>
+						<h:outputText value="#{item.nroSerie}"/>
+					</p:column>
+					<p:column>
+						<h:outputText value="#{item.nroPatrimonio}"/>
+					</p:column>
+					<p:column>
+						<h:outputText value="#{item.nroNotaFiscal}"/>
+					</p:column>
+					<p:column>
+						<h:outputText value="#{item.dataEmprestimo}"/>
+					</p:column>
+					<p:column>
+						<h:outputText value="#{item.responsavel.nomeCompleto}"/>
+					</p:column>
+					
+					<p:column width="5%" align="right">
+						<h:panelGroup>
+							<h:commandLink id="comandoEmprestar" rendered="#{sessionBean.colaboradorLogado.tipoUsuario ge 1 and sessionBean.colaboradorLogado.tipoUsuario ne 7 and (item.responsavel eq sessionBean.colaboradorLogado) or (item.dataEmprestimo == null and item.responsavel == null and sessionBean.colaboradorLogado.tipoUsuario ge 1 and sessionBean.colaboradorLogado.tipoUsuario ne 7)}"
+								actionListener="#{adminBean.selecionarItemInventarioAction}" action="#{colaboradorBean.emprestarItemInventarioAction}">
+								<h:graphicImage value="/imagens/btn_emprestar.png" width="16" height="16" title="#{msg.cadastrarInventario_emprestarItem}" rendered="#{item.responsavel ne sessionBean.colaboradorLogado}"/>
+								<h:graphicImage value="/imagens/btn_devolver.png" width="16" height="16" title="#{msg.cadastrarInventario_emprestarItem}" rendered="#{item.responsavel eq sessionBean.colaboradorLogado}"/>
+							</h:commandLink>
+							
+							<h:commandLink id="comandoAlterar" rendered="#{sessionBean.colaboradorLogado.tipoUsuario lt 1 or sessionBean.colaboradorLogado.tipoUsuario eq 7}"
+								actionListener="#{adminBean.selecionarItemInventarioAction}" action="edit2">
+								<h:graphicImage value="/imagens/btn_edit.png" width="16" height="16" title="#{msg.cadastro_alterar}"/>
+							</h:commandLink>
+							
+							<p:spacer width="19" rendered="#{sessionBean.colaboradorLogado.tipoUsuario ge 1 and sessionBean.colaboradorLogado.tipoUsuario ne 7}"/>
+							<p:spacer width="10" rendered="#{sessionBean.colaboradorLogado.tipoUsuario lt 1 or sessionBean.colaboradorLogado.tipoUsuario eq 7}"/>
+							
+							<h:commandLink id="comandoExcluir" rendered="#{sessionBean.colaboradorLogado.tipoUsuario lt 1 or sessionBean.colaboradorLogado.tipoUsuario eq 7}" 
+								actionListener="#{adminBean.excluirItemInventarioAction}" onclick="if (!confirm('#{msg.cadastro_confirmaExclusao}')) return false;">
+								<h:graphicImage value="/imagens/btn_excluir.png" width="16" height="16" title="#{msg.cadastro_excluir}"/>
+							</h:commandLink>
+						</h:panelGroup>
+					</p:column>
+				</p:dataTable>
+			</p:column>
+		</p:dataTable>
+		
+		<p:spacer height="50"/>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2" align="right">
+			<h:outputText value="#{msg.header_exportarRelatorio}: " styleClass="textoLabelDestaque"/>
+			
+			<h:commandLink immediate="true">
+				<p:graphicImage value="/imagens/icon_relatorio_pdf.png" />
+				<p:dataExporter type="pdf" target="tabelaListagem" fileName="ListaInventario"/>
+			</h:commandLink>
+
+			<p:spacer width="10"/>
+
+			<h:commandLink immediate="true">
+				<p:graphicImage value="/imagens/icon_relatorio_excel.png" />
+				<p:dataExporter type="xls" target="tabelaListagem" fileName="ListaInventario" />
+			</h:commandLink>
+			
+			<p:spacer width="10"/>
+		</td>
+	</tr>
+</table>
+
+</ui:define>
+</ui:composition>

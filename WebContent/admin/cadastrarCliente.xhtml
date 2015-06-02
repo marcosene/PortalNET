@@ -1,0 +1,78 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition template="/templateCadastro.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:define name="titulo">
+	<h:graphicImage value="/imagens/icon_cliente.png" width="32" height="32"/>
+	<p:spacer width="10"/>
+	<h:outputText value="#{msg.cadastrarCliente_titulo}" styleClass="textoDestaque"/>
+</ui:define>
+
+<ui:define name="conteudo">
+	<h:panelGrid style="text-align: right; width: 100%">
+		<h:column>
+			<br/>
+			<h:outputLink value="./visualizarClientes.jsf">
+				<h:graphicImage value="/imagens/btn_voltar.png" width="32" height="32"/>
+			</h:outputLink>
+	
+			<p:spacer width="20"/>
+	
+			<h:commandLink action="#{adminBean.cadastrarClienteAction}">
+				<h:graphicImage value="/imagens/btn_atualizar.png" width="32" height="32"/>
+			</h:commandLink>
+			
+			<p:spacer width="10"/>
+		</h:column>
+	</h:panelGrid>
+	
+	<h:panelGrid columns="2">
+		<h:outputLabel value="#{msg.cadastrarCliente_cliente}:" styleClass="textoNormal" />
+		<h:inputText id="nomeEmpresa" required="true"
+			value="#{sessionBean.cliente.nomeEmpresa}"
+			size="32" maxlength="64">
+		</h:inputText>
+
+		<h:outputLabel value="#{msg.cadastrarCliente_cnpj}:" styleClass="textoNormal" />
+		<h:inputText id="cnpj" required="true"
+			value="#{sessionBean.cliente.cnpj}"
+			size="20" maxlength="20">
+		</h:inputText>
+		
+		<h:outputLabel value="#{msg.cadastrarCliente_gerenteGeral}:" styleClass="textoNormal" />
+		<h:selectOneMenu id="gerenteGeral" required="true" converter="#{converterBean}"
+			value="#{sessionBean.cliente.gerenteGeral}">
+			<f:selectItem itemLabel="#{msg.cadastro_selecione}" noSelectionOption="true"/>
+			<f:selectItems value="#{gestorBean.gestorService.listaColaboradoresGGs}"
+				var="colaborador" itemLabel="#{colaborador.nomeCompleto}" itemValue="#{colaborador}"/>
+		</h:selectOneMenu>
+		
+		<h:outputLabel value="#{msg.cadastrarCliente_endereco}:" styleClass="textoNormal" />
+		<h:inputText id="endereco"
+			value="#{sessionBean.cliente.endereco}"
+			size="64" maxlength="128">
+		</h:inputText>
+
+		<h:outputLabel value="#{msg.cadastrarCliente_cidade}:" styleClass="textoNormal" />
+		<h:inputText id="cidade"
+			value="#{sessionBean.cliente.cidade}"
+			size="32" maxlength="64">
+		</h:inputText>
+
+		<h:outputLabel value="#{msg.cadastrarCliente_telefone}:" styleClass="textoNormal" />
+		<h:inputText id="telefone"
+			value="#{sessionBean.cliente.telefone}"
+			size="15" maxlength="15">
+		</h:inputText>
+	</h:panelGrid>
+
+</ui:define>
+</ui:composition>

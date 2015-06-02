@@ -1,0 +1,624 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition template="/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:define name="titulo">
+	<h:graphicImage value="/imagens/icon_acompanhamento.png" width="32" height="32"/>
+	<p:spacer width="10"/>
+	<h:outputText value="#{msg.statusProjeto_titulo}" styleClass="textoDestaque"/>
+</ui:define>
+
+<ui:define name="conteudo">
+
+	<br/>
+	<h:panelGroup>
+		<h:outputLabel value="#{msg.cadastrarArea_cliente}: " styleClass="textoNormal"/>
+		<h:selectOneMenu id="cliente" immediate="true" converter="#{converterBean}" value="#{sessionBean.cliente}">
+			<f:selectItem itemLabel="#{msg.cadastro_selecione}" noSelectionOption="true"/>
+			<f:selectItems value="#{colaboradorBean.colaboradorService.listaClientes}"
+				var="cliente" itemLabel="#{cliente.nomeEmpresa}" itemValue="#{cliente}"/>
+			<p:ajax update=":formGeral:area" process="@this" />
+		</h:selectOneMenu>
+		
+		<p:spacer width="10" />
+		
+		<h:outputLabel value="#{msg.cadastrarArea_area}: " styleClass="textoNormal"/>
+		<h:selectOneMenu id="area" immediate="true" converter="#{converterBean}" value="#{sessionBean.area}">
+			<f:selectItem itemLabel="#{msg.cadastro_selecione}" noSelectionOption="true"/>
+			<f:selectItems value="#{consultaBean.listaAreas}"
+				var="area" itemLabel="#{area.nome}" itemValue="#{area}"/>
+			<p:ajax update=":formGeral:produto" process="@this" />
+		</h:selectOneMenu>
+
+		<p:spacer width="10" />
+
+		<h:outputLabel value="#{msg.cadastrarProduto_produto}: " styleClass="textoNormal"/>
+		<h:selectOneMenu id="produto" immediate="true" converter="#{converterBean}"
+			value="#{sessionBean.produto}">
+			<f:selectItem itemLabel="#{msg.cadastro_selecione}" noSelectionOption="true"/>
+			<f:selectItems value="#{consultaBean.listaProdutos}"
+				var="produto" itemLabel="#{produto.nome}" itemValue="#{produto}"/>
+			<p:ajax update=":formGeral:projeto" process="@this" />
+		</h:selectOneMenu>
+
+		<p:spacer width="10"/>
+
+		<h:outputLabel value="#{msg.cadastrarAlocacao_projeto}: " styleClass="textoNormal"/>
+		<h:selectOneMenu id="projeto" immediate="true" converter="#{converterBean}"
+			value="#{sessionBean.projeto}">
+			<f:selectItem itemLabel="#{msg.cadastro_selecione}" noSelectionOption="true"/>
+			<f:selectItems value="#{consultaBean.listaProjetosAtivos}" width="300"
+				var="projeto" itemLabel="#{projeto.nomeCompleto}" itemValue="#{projeto}"/>
+			<p:ajax update=":formGeral:grupo" process="@this" />
+		</h:selectOneMenu>
+	</h:panelGroup>
+	<br/><br/>
+	
+	<h:panelGroup id="grupo">
+	<h:panelGroup rendered="#{!empty sessionBean.projeto}">
+		<table cellpadding="0" cellspacing="0" width="70%">
+			<tr>
+				<td width="50%" colspan="2">
+					<h:outputLabel styleClass="textoDestaqueMenor" 
+						value="#{msg.monitorarProjeto_projeto}: "/>
+					<h:outputText styleClass="textoSubDestaque"
+						value="#{sessionBean.projeto.codigoClienteCompleto}: #{sessionBean.projeto.nome} "/>
+					<p:spacer width="10"/>
+				</td>
+				<td>
+					<h:outputLabel styleClass="textoDestaqueMenor" rendered="#{(!empty sessionBean.projeto.codigoPacote)}" 
+						value="#{msg.monitorarProjeto_pacote}: "/>
+					<h:outputText styleClass="textoSubDestaque" rendered="#{(!empty sessionBean.projeto.codigoPacote)}"
+						value="#{sessionBean.projeto.codigoPacote}"/>
+					<br/>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<h:outputLabel styleClass="textoDestaqueMenor" 
+						value="#{msg.monitorarProjeto_area}: "/>
+					<h:outputText styleClass="textoSubDestaque"
+						value="#{sessionBean.projeto.produto.area.nome} "/>
+					<p:spacer width="20"/>
+				</td>
+				<td>
+					<h:outputLabel styleClass="textoDestaqueMenor" 
+						value="  #{msg.monitorarProjeto_produto}: "/>
+					<h:outputText styleClass="textoSubDestaque"
+						value="#{sessionBean.projeto.produto.nome}"/>	
+					<p:spacer width="20"/>
+				</td>
+				<td>
+					<h:outputLabel styleClass="textoDestaqueMenor" 
+						value="  #{msg.tipoFase_faseDoProjeto}: "/>
+					<h:outputText styleClass="textoSubDestaque"
+						value="#{sessionBean.projeto.descTipoFaseProjeto}"/>
+					<br/>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<h:outputLabel styleClass="textoDestaqueMenor" 
+						value="#{msg.monitorarProjeto_responsavel}: "/>
+					<h:outputLink value="mailto:#{sessionBean.projeto.produto.coordenador.email}" title="#{sessionBean.projeto.produto.coordenador.email}">
+						<h:outputText styleClass="textoSubDestaque" value="#{sessionBean.projeto.produto.coordenador.nomeCompleto}"/>
+					</h:outputLink>
+					<h:outputText styleClass="textoSubDestaque"
+						value="  (R: #{sessionBean.projeto.produto.coordenador.ramal})"/>
+					<p:spacer width="20"/>
+				</td>
+				<td>
+					<h:outputLabel styleClass="textoDestaqueMenor" 
+						value="  #{msg.monitorarProjeto_gpj}: "/>
+					<h:outputLink value="mailto:#{sessionBean.projeto.gpj.email}" title="#{sessionBean.projeto.gpj.email}">
+						<h:outputText styleClass="textoSubDestaque" value="#{sessionBean.projeto.gpj.nomeCompleto}"/>
+					</h:outputLink>
+					<h:outputText styleClass="textoSubDestaque"
+						value="  (R: #{sessionBean.projeto.gpj.ramal})"/>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="3">
+					<h:outputLabel styleClass="textoDestaqueMenor" rendered="#{!empty sessionBean.projeto.descricao}"
+						value="#{msg.monitorarProjeto_descricao}: "/>
+					<h:outputText styleClass="textoSubDestaque"
+						value="#{sessionBean.projeto.descricao}"/>	
+					<p:spacer width="20"/>
+				</td>
+			</tr>
+		</table>
+
+		<br/><br/>
+		<rich:tabPanel switchType="client">
+        <rich:tab header="#{msg.statusProjeto_informacoesGerais}">
+			<table style="width: 100%">
+				<tr>
+					<td width="34%" valign="top">
+						<h:outputLabel rendered="#{!sessionBean.projeto.generico}" styleClass="textoLabelDestaque" 
+							value="#{msg.statusProjeto_horasPrev}: "/>
+						<h:outputText rendered="#{!sessionBean.projeto.generico}" styleClass="textoSubDestaque"
+							value="#{sessionBean.projeto.qtdeHorasPrevistas} h"/>
+			
+						<br/>
+						<h:outputLabel styleClass="textoLabelDestaque" 
+							value="#{msg.statusProjeto_horasTrab}: "/>
+						<h:outputText styleClass="textoSubDestaque"
+							value="#{sessionBean.projeto.qtdeHorasTrabalho} h"/>						
+						<h:outputText styleClass="textoSubDestaque" rendered="#{!sessionBean.projeto.generico}"
+							value=" (#{sessionBean.projeto.porcentagemEsforcoUtilizado}%)"/>
+						<br/>
+						<h:outputLabel rendered="#{!sessionBean.projeto.generico}" styleClass="textoLabelDestaque" 
+							value="#{msg.statusProjeto_horasRest}: "/>
+						<h:outputText rendered="#{!sessionBean.projeto.generico}" styleClass="textoSubDestaque"
+							value="#{sessionBean.projeto.qtdeHorasRestantes} h (#{sessionBean.projeto.porcentagemEsforcoNaoUtilizado}%)"/>
+		
+						<br/>
+						<h:outputLabel rendered="#{!sessionBean.projeto.generico}" styleClass="textoLabelDestaque" 
+							value="#{msg.statusProjeto_horasExcedidas}: "/>
+						<h:outputText rendered="#{!sessionBean.projeto.generico}" styleClass="textoSubDestaque"
+							value="#{sessionBean.projeto.qtdeHorasExcedidas} h"/>
+					</td>
+					<h:panelGroup rendered="#{sessionBean.colaboradorLogado.tipoUsuario le 1}">
+						<td width="33%" valign="top">
+							<h:outputLabel rendered="#{!sessionBean.projeto.generico}" styleClass="textoLabelDestaque" 
+								value="#{msg.statusProjeto_custoAcordado}: "/>
+							<h:outputText rendered="#{!sessionBean.projeto.generico}" styleClass="textoSubDestaque"
+								value="#{sessionBean.projeto.custoAcordado}">
+								<f:convertNumber type="currency" currencySymbol="R$"
+									maxFractionDigits="2" minFractionDigits="2" groupingUsed="true"/>
+							</h:outputText>
+							
+							<br/>
+							<h:outputLabel rendered="#{!sessionBean.projeto.generico}" styleClass="textoLabelDestaque" 
+								value="#{msg.statusProjeto_custoAlocado}: "/>
+							<h:outputText rendered="#{!sessionBean.projeto.generico}" styleClass="textoSubDestaque"
+								value="#{sessionBean.projeto.custoTotalAlocado}">
+								<f:convertNumber type="currency" currencySymbol="R$"
+									maxFractionDigits="2" minFractionDigits="2" groupingUsed="true"/>
+							</h:outputText>
+														
+							<br/>
+							<h:outputLabel rendered="#{sessionBean.colaboradorLogado.tipoUsuario le 1}" styleClass="textoLabelDestaque" 
+								value="#{msg.statusProjeto_custoLancado}: "/>
+							<h:outputText rendered="#{sessionBean.colaboradorLogado.tipoUsuario le 1}" styleClass="textoSubDestaque"
+								value="#{sessionBean.projeto.custoTotalLancado}">
+								<f:convertNumber type="currency" currencySymbol="R$"
+									maxFractionDigits="2" minFractionDigits="2" groupingUsed="true"/>
+							</h:outputText>
+							
+							<br/>
+							<h:outputLabel rendered="#{sessionBean.colaboradorLogado.tipoUsuario le 1}" styleClass="textoLabelDestaque" 
+								value="#{msg.statusProjeto_custoTotalReal}: "/>
+							<h:outputText rendered="#{sessionBean.colaboradorLogado.tipoUsuario le 1}" styleClass="textoSubDestaque"
+								value="#{sessionBean.projeto.totalCustoRealProjeto}">
+								<f:convertNumber type="currency" currencySymbol="R$"
+									maxFractionDigits="2" minFractionDigits="2" groupingUsed="true"/>
+							</h:outputText>
+							
+						</td>
+					</h:panelGroup>
+					<td width="33%" valign="top">
+						<h:outputLabel rendered="#{!sessionBean.projeto.generico}" styleClass="textoLabelDestaque" 
+							value="#{msg.statusProjeto_atraso}: "/>
+						<h:outputText rendered="#{!sessionBean.projeto.generico}" styleClass="textoSubDestaque"
+							value="#{sessionBean.projeto.qtdeDiasAtraso} dias úteis">
+							<f:convertNumber maxFractionDigits="2" pattern="#0.0 h"/>
+						</h:outputText>
+						
+						<br/>
+						<h:outputLabel rendered="#{!sessionBean.projeto.generico}" styleClass="textoLabelDestaque" 
+							value="#{msg.statusProjeto_progresso}: "/>
+						<h:outputText rendered="#{!sessionBean.projeto.generico}" styleClass="textoSubDestaque"
+							value="#{sessionBean.projeto.porcentagemConclusaoReal}%"/>
+					</td>
+				</tr>
+			</table>
+		</rich:tab>
+		</rich:tabPanel>
+		
+		<br/>
+		<rich:tabPanel switchType="client">
+        <rich:tab header="#{msg.statusProjeto_listaCompromissos}">
+			<p:dataTable styleClass="textoNormal" style="width: 100%;" paginator="true" paginatorAlwaysVisible="false" rows="10"
+				var="compromisso" value="#{sessionBean.projeto.compromissos}">
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="#{msg.statusProjeto_data}"/>
+					</f:facet>
+					<h:outputText value="#{compromisso.dataEvento.time}">
+						<f:convertDateTime type="date" dateStyle="short" />
+					</h:outputText>
+				</p:column>
+
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="#{msg.statusProjeto_compromisso}"/>
+					</f:facet>
+					<h:outputText value="#{compromisso.nome}" />
+				</p:column>
+
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="#{msg.statusProjeto_responsavel}"/>
+					</f:facet>
+					<h:outputText value="#{compromisso.nomeResponsaveis}" />
+				</p:column>
+
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="#{msg.statusProjeto_dataConclusao}"/>
+					</f:facet>
+					<h:outputText value="#{compromisso.dataConclusao.time}">
+						<f:convertDateTime type="date" dateStyle="medium" />
+					</h:outputText>
+				</p:column>
+
+				<p:column align="center">
+					<f:facet name="header">
+						<h:outputText value="#{msg.statusProjeto_concl}"/>
+					</f:facet>
+					<h:graphicImage url="/imagens/status_concluido.png" rendered="#{compromisso.flagConcluido}"/>
+					<h:graphicImage url="/imagens/status_naoConcluido.png" rendered="#{!compromisso.flagConcluido}"/>
+				</p:column>
+
+				<p:column align="center">
+					<f:facet name="header">
+						<h:outputText value="#{msg.statusProjeto_compromissoFlagConcluido}"/>
+					</f:facet>
+					<h:commandLink id="comandoAlterar" action="#{colaboradorBean.alterarFlagCompromisso}"
+						rendered="#{(sessionBean.colaboradorLogado.tipoUsuario != 2 or compromisso.tipoRepeticao == 0 ) and (compromisso.responsavelLogado or compromisso.projeto.produto.coordenador.id == sessionBean.colaboradorLogado.id) and compromisso.projeto.estado == 0}">
+						<f:param name="idCompromisso" value="#{compromisso.id}"/>
+						<h:graphicImage value="/imagens/icon_alterarStatus.png" width="16" height="16" title="#{msg.cadastro_alterar}"/>
+					</h:commandLink>
+					<h:graphicImage url="/imagens/icon_naoPermitido.png" title="#{msg.statusProjeto_naoPermitido}" rendered="#{!((sessionBean.colaboradorLogado.tipoUsuario != 2 or compromisso.tipoRepeticao == 0 ) and (compromisso.responsavelLogado or compromisso.projeto.produto.coordenador.id == sessionBean.colaboradorLogado.id) and compromisso.projeto.estado == 0)}" />
+				</p:column>	
+			</p:dataTable>
+		</rich:tab>
+		</rich:tabPanel>
+
+		<br/>
+		<rich:tabPanel switchType="client">
+        <rich:tab header="#{msg.statusProjeto_listaAtividades}">
+			<rich:dataTable style="width: 100%"
+				rowClasses="fundoEscuro"
+				onrowmouseover="this.style.backgroundColor='#E0E0E0'"
+                onrowmouseout="this.style.backgroundColor='#7098D5'"
+				var="grupoAtividade" value="#{sessionBean.projeto.gruposAtividades}">
+	            
+				<f:facet name="header">
+					<rich:columnGroup>
+						<rich:column rowspan="2">
+							<h:outputText value="#{msg.statusProjeto_grupoAtividades} / #{msg.statusProjeto_tipo}" />
+						</rich:column>
+						<rich:column rowspan="2">
+							<h:outputText value="#{msg.statusProjeto_atividadeAlocacao}" />
+						</rich:column>
+						<rich:column rendered="#{!sessionBean.projeto.generico}" colspan="2">
+							<h:outputText value="Data" />
+						</rich:column>
+						<rich:column rendered="#{!sessionBean.projeto.generico}" colspan="4">
+							<h:outputText value="Horas" />
+						</rich:column>
+						<rich:column rendered="#{sessionBean.projeto.generico}">
+							<h:outputText value="Horas" />
+						</rich:column>
+						<rich:column colspan="2" rendered="#{sessionBean.colaboradorLogado.tipoUsuario le 1 and !sessionBean.projeto.generico}">
+							<h:outputText value="Custo" />
+						</rich:column>
+						<rich:column rendered="#{sessionBean.colaboradorLogado.tipoUsuario le 1 and sessionBean.projeto.generico}">
+							<h:outputText value="Custo" />
+						</rich:column>
+						<rich:column rendered="#{!sessionBean.projeto.generico}" rowspan="2">
+							<h:outputText value="#{msg.statusProjeto_progresso}" />
+						</rich:column>
+						<rich:column rendered="#{!sessionBean.projeto.generico}" colspan="2">
+							<h:outputText value="#{msg.statusProjeto_status}" />
+						</rich:column>
+						<rich:column rendered="#{!sessionBean.projeto.generico}" breakRowBefore="true">
+							<h:outputText value="#{msg.statusProjeto_inicioPrev}" />	    
+						</rich:column>
+						<rich:column rendered="#{!sessionBean.projeto.generico}" >
+							<h:outputText value="#{msg.statusProjeto_fimPrev}" />	    
+						</rich:column>
+						<rich:column rendered="#{!sessionBean.projeto.generico}">
+							<h:outputText value="#{msg.statusProjeto_prev}" />
+						</rich:column>
+						<rich:column>
+							<h:outputText value="#{msg.statusProjeto_trab}" />
+						</rich:column>
+						<rich:column rendered="#{!sessionBean.projeto.generico}">
+							<h:outputText value="#{msg.statusProjeto_rest}" />
+						</rich:column>
+						<rich:column rendered="#{!sessionBean.projeto.generico}">
+							<h:outputText value="#{msg.statusProjeto_exced}" />
+						</rich:column>
+						<rich:column rendered="#{sessionBean.colaboradorLogado.tipoUsuario le 1 and !sessionBean.projeto.generico}">
+							<h:outputText value="#{msg.statusProjeto_custoPrevisto}" />
+						</rich:column>
+						<rich:column rendered="#{sessionBean.colaboradorLogado.tipoUsuario le 1}">
+							<h:outputText value="#{msg.statusProjeto_Lancado}" />
+						</rich:column>
+						<rich:column rendered="#{!sessionBean.projeto.generico}">
+							<h:outputText value="#{msg.statusProjeto_concl}" />
+						</rich:column>
+						<rich:column rendered="#{!sessionBean.projeto.generico}">
+							<h:outputText value="#{msg.statusProjeto_atraso}" />
+						</rich:column>
+					</rich:columnGroup>
+				</f:facet>
+	
+				<rich:column colspan="2">
+					<h:outputText value="#{grupoAtividade.nome}" />
+				</rich:column>
+				
+				<rich:column rendered="#{!sessionBean.projeto.generico}" >
+					<h:outputText value="#{grupoAtividade.dataInicioPrevista.time}">
+						<f:convertDateTime type="date" dateStyle="short" />
+					</h:outputText>
+				</rich:column>
+	
+				<rich:column rendered="#{!sessionBean.projeto.generico}" >
+					<h:outputText value="#{grupoAtividade.dataFimPrevista.time}">
+						<f:convertDateTime type="date" dateStyle="short" />
+					</h:outputText>
+				</rich:column>
+	
+				<rich:column rendered="#{!sessionBean.projeto.generico}">
+					<h:outputText value="#{grupoAtividade.qtdeHorasPrevistas}" />
+				</rich:column>
+	
+				<rich:column>
+					<h:outputText value="#{grupoAtividade.qtdeHorasTrabalho}" />
+				</rich:column>
+	
+				<rich:column rendered="#{!sessionBean.projeto.generico}">
+					<h:outputText value="#{grupoAtividade.qtdeHorasRestantes}" />
+				</rich:column>
+	
+				<rich:column rendered="#{!sessionBean.projeto.generico}">
+					<h:outputText value="#{grupoAtividade.qtdeHorasExcedidas}" />
+				</rich:column>
+				
+				<rich:column rendered="#{sessionBean.colaboradorLogado.tipoUsuario le 1 and !sessionBean.projeto.generico}" align="right">
+					<h:outputText value="#{grupoAtividade.custoTotalAlocado}">
+						<f:convertNumber type="currency" currencySymbol="R$"
+							maxFractionDigits="2" minFractionDigits="2" groupingUsed="true"/>
+					</h:outputText>
+				</rich:column>
+	
+				<rich:column rendered="#{sessionBean.colaboradorLogado.tipoUsuario le 1}" align="right">
+					<h:outputText value="#{grupoAtividade.custoTotalLancado}">
+						<f:convertNumber type="currency" currencySymbol="R$"
+							maxFractionDigits="2" minFractionDigits="2" groupingUsed="true"/>
+					</h:outputText>
+				</rich:column>
+	
+				<rich:column rendered="#{!sessionBean.projeto.generico}" align="center">
+					<h:outputText value="#{grupoAtividade.porcentagemConclusaoReal}%" />
+				</rich:column>
+
+				<rich:column rendered="#{!sessionBean.projeto.generico}" align="center">
+					<h:graphicImage url="/imagens/status_azul.png" rendered="#{grupoAtividade.porcentagemConclusaoReal lt 100 and grupoAtividade.qtdeHorasExcedidas le 0}" title="#{msg.statusProjeto_emAndamentoSemDesvio}"/>
+					<h:graphicImage url="/imagens/status_amarelo.png" rendered="#{grupoAtividade.porcentagemConclusaoReal lt 100 and grupoAtividade.qtdeHorasExcedidas gt 0}" title="#{msg.statusProjeto_emAndamentoComDesvio}"/>
+					<h:graphicImage url="/imagens/status_verde.png" rendered="#{grupoAtividade.porcentagemConclusaoReal == 100 and grupoAtividade.qtdeHorasExcedidas le 0}" title="#{msg.statusProjeto_concluidoSemDesvio}"/>
+					<h:graphicImage url="/imagens/status_vermelho.png" rendered="#{grupoAtividade.porcentagemConclusaoReal == 100 and grupoAtividade.qtdeHorasExcedidas gt 0}" title="#{msg.statusProjeto_concluidoComDesvio}"/>
+				</rich:column>
+				
+				<rich:column rendered="#{!sessionBean.projeto.generico}" align="center">
+				</rich:column>
+				
+				<rich:collapsibleSubTable var="atividade" value="#{grupoAtividade.atividades}"
+					rowClasses="fundoClaro"
+					onrowmouseover="this.style.backgroundColor='#E0E0E0'"
+	                onrowmouseout="this.style.backgroundColor='#ebfcf2'">
+					
+					<rich:column>
+						<h:outputText value="#{atividade.tipoAtividade.nome}" />
+					</rich:column>
+		
+					<rich:column>
+						<h:outputText value="#{atividade.nome}" />
+					</rich:column>
+		
+					<rich:column rendered="#{!sessionBean.projeto.generico}" >
+						<h:outputText value="#{atividade.dataInicioPrevista.time}">
+							<f:convertDateTime type="date" dateStyle="short" />
+						</h:outputText>
+					</rich:column>
+		
+					<rich:column rendered="#{!sessionBean.projeto.generico}" >
+						<h:outputText value="#{atividade.dataFimPrevista.time}">
+							<f:convertDateTime type="date" dateStyle="short" />
+						</h:outputText>
+					</rich:column>
+		
+					<rich:column rendered="#{!sessionBean.projeto.generico}">
+						<h:outputText value="#{atividade.qtdeHorasPrevistas}" />
+					</rich:column>
+		
+					<rich:column>
+						<h:outputText value="#{atividade.qtdeHorasTrabalho}" />
+					</rich:column>
+		
+					<rich:column rendered="#{!sessionBean.projeto.generico}">
+						<h:outputText value="#{atividade.qtdeHorasRestantes}" />
+					</rich:column>
+		
+					<rich:column rendered="#{!sessionBean.projeto.generico}">
+						<h:outputText value="#{atividade.qtdeHorasExcedidas}" />
+					</rich:column>
+					
+					<rich:column rendered="#{sessionBean.colaboradorLogado.tipoUsuario le 1 and !sessionBean.projeto.generico}" align="right">
+						<h:outputText value="#{atividade.custoAlocacoes}">
+							<f:convertNumber type="currency" currencySymbol="R$"
+								maxFractionDigits="2" minFractionDigits="2" groupingUsed="true"/>
+						</h:outputText>
+					</rich:column>
+		
+					<rich:column rendered="#{sessionBean.colaboradorLogado.tipoUsuario le 1}" align="right">
+						<h:outputText value="#{atividade.custoLancamentos}">
+							<f:convertNumber type="currency" currencySymbol="R$"
+								maxFractionDigits="2" minFractionDigits="2" groupingUsed="true"/>
+						</h:outputText>
+					</rich:column>
+		
+					<rich:column rendered="#{!sessionBean.projeto.generico}" align="center">
+						<h:outputText value="#{atividade.porcentagemConclusaoReal}%" rendered="#{atividade.flagContabilizarProgresso}"/>
+					</rich:column>
+	
+					<rich:column rendered="#{!sessionBean.projeto.generico}" align="center">
+						<h:graphicImage url="/imagens/status_azul.png" rendered="#{atividade.porcentagemConclusaoReal lt 100 and atividade.qtdeHorasExcedidas le 0}" title="#{msg.statusProjeto_emAndamentoSemDesvio}"/>
+						<h:graphicImage url="/imagens/status_amarelo.png" rendered="#{atividade.porcentagemConclusaoReal lt 100 and atividade.qtdeHorasExcedidas gt 0}" title="#{msg.statusProjeto_emAndamentoComDesvio}"/>
+						<h:graphicImage url="/imagens/status_verde.png" rendered="#{atividade.porcentagemConclusaoReal == 100 and atividade.qtdeHorasExcedidas le 0}" title="#{msg.statusProjeto_concluidoSemDesvio}"/>
+						<h:graphicImage url="/imagens/status_vermelho.png" rendered="#{atividade.porcentagemConclusaoReal == 100 and atividade.qtdeHorasExcedidas gt 0}" title="#{msg.statusProjeto_concluidoComDesvio}"/>
+					</rich:column>
+					
+					<rich:column rendered="#{!sessionBean.projeto.generico}" align="center">
+					</rich:column>
+	
+					<rich:collapsibleSubTable var="alocacao" value="#{atividade.alocacoes}"
+						onrowmouseover="this.style.backgroundColor='#E0E0E0'"
+		                onrowmouseout="this.style.backgroundColor='#FFFFFF'">
+						<rich:column>
+						</rich:column>
+						<rich:column>
+							<h:outputText value=" - #{alocacao.colaborador.nomeCompleto}"/>
+						</rich:column>
+						<rich:column rendered="#{!sessionBean.projeto.generico}" >
+							<h:outputText value="#{alocacao.dataInicioPrevista.time}">
+								<f:convertDateTime type="date" dateStyle="short" />
+							</h:outputText>
+						</rich:column>
+						<rich:column rendered="#{!sessionBean.projeto.generico}" >
+							<h:outputText value="#{alocacao.dataFimPrevista.time}">
+								<f:convertDateTime type="date" dateStyle="short" />
+							</h:outputText>
+						</rich:column>
+						<rich:column rendered="#{!sessionBean.projeto.generico}">
+							<h:outputText value="#{alocacao.qtdeHorasAlocadas}"/>
+						</rich:column>
+						<rich:column>
+							<h:outputText value="#{alocacao.qtdeHorasTrabalho}" />
+						</rich:column>
+						<rich:column rendered="#{!sessionBean.projeto.generico}">
+							<h:outputText value="#{alocacao.qtdeHorasRestantes}" />
+						</rich:column>
+						<rich:column rendered="#{!sessionBean.projeto.generico}">
+							<h:outputText value="#{alocacao.qtdeHorasExcedidas}" style="color:red;" rendered="#{alocacao.qtdeHorasExcedidas gt 0}" />
+							<h:outputText value="#{alocacao.qtdeHorasExcedidas}" rendered="#{alocacao.qtdeHorasExcedidas le 0}" />
+						</rich:column>
+						<rich:column rendered="#{sessionBean.colaboradorLogado.tipoUsuario le 1 and !sessionBean.projeto.generico}" align="right">
+							<h:outputText value="#{alocacao.valorCustoAlocacao}">
+								<f:convertNumber type="currency" currencySymbol="R$"
+									maxFractionDigits="2" minFractionDigits="2" groupingUsed="true"/>
+							</h:outputText>
+						</rich:column>
+						<rich:column rendered="#{sessionBean.colaboradorLogado.tipoUsuario le 1}" align="right">
+							<h:outputText value="#{alocacao.valorCustoLancamento}">
+								<f:convertNumber type="currency" currencySymbol="R$"
+									maxFractionDigits="2" minFractionDigits="2" groupingUsed="true"/>
+							</h:outputText>
+						</rich:column>
+						<rich:column rendered="#{!sessionBean.projeto.generico}" align="center">
+							<h:outputText value="#{alocacao.porcentagemConclusaoReal}%" rendered="#{atividade.flagContabilizarProgresso}"/>
+						</rich:column>
+						<rich:column rendered="#{!sessionBean.projeto.generico}" align="center">
+							<h:graphicImage url="/imagens/status_azul.png" rendered="#{alocacao.porcentagemConclusaoReal lt 100 and alocacao.qtdeHorasExcedidas le 0}" title="#{msg.statusProjeto_emAndamentoSemDesvio}"/>
+							<h:graphicImage url="/imagens/status_amarelo.png" rendered="#{alocacao.porcentagemConclusaoReal lt 100 and alocacao.qtdeHorasExcedidas gt 0}" title="#{msg.statusProjeto_emAndamentoComDesvio}"/>
+							<h:graphicImage url="/imagens/status_verde.png" rendered="#{alocacao.porcentagemConclusaoReal == 100 and alocacao.qtdeHorasExcedidas le 0}" title="#{msg.statusProjeto_concluidoSemDesvio}"/>
+							<h:graphicImage url="/imagens/status_vermelho.png" rendered="#{alocacao.porcentagemConclusaoReal == 100 and alocacao.qtdeHorasExcedidas gt 0}" title="#{msg.statusProjeto_concluidoComDesvio}"/>
+						</rich:column>
+						<rich:column rendered="#{!sessionBean.projeto.generico}" align="center">
+							<h:graphicImage url="/imagens/status_ok.png" rendered="#{alocacao.qtdeDiasAtraso le 0}" title="#{alocacao.qtdeDiasAtraso} dia(s) atrasado(s)"/>
+			  				<h:graphicImage url="/imagens/status_atencao.png" rendered="#{alocacao.qtdeDiasAtraso gt 0 and alocacao.qtdeDiasAtraso le 2}" title="#{alocacao.qtdeDiasAtraso} dia(s) atrasado(s)"/>
+							<h:graphicImage url="/imagens/status_nok.png" rendered="#{alocacao.qtdeDiasAtraso gt 2}" title="#{alocacao.qtdeDiasAtraso} dia(s) atrasado(s)"/>
+						</rich:column>
+					</rich:collapsibleSubTable>
+				</rich:collapsibleSubTable>
+			</rich:dataTable>
+			<br/>
+
+			<table style="border-collapse: collapse; border-spacing: 2;">
+				<tr>
+					<td valign="middle">
+						<h:graphicImage rendered="#{!sessionBean.projeto.generico}" url="/imagens/status_azul.png"/>
+						<h:outputText rendered="#{!sessionBean.projeto.generico}" value="#{msg.statusProjeto_emAndamentoSemDesvio}" styleClass="textoSubDestaque"/>
+					</td>
+					<td valign="middle">
+						<h:graphicImage rendered="#{!sessionBean.projeto.generico}" url="/imagens/status_amarelo.png"/>
+						<h:outputText rendered="#{!sessionBean.projeto.generico}" value="#{msg.statusProjeto_emAndamentoComDesvio}" styleClass="textoSubDestaque"/>
+					</td>
+					<td valign="middle">
+						<h:graphicImage rendered="#{!sessionBean.projeto.generico}" url="/imagens/status_verde.png"/>
+						<h:outputText rendered="#{!sessionBean.projeto.generico}" value="#{msg.statusProjeto_concluidoSemDesvio} " styleClass="textoSubDestaque"/>
+					</td>
+					<td valign="middle">
+						<h:graphicImage rendered="#{!sessionBean.projeto.generico}" url="/imagens/status_vermelho.png"/>
+						<h:outputText rendered="#{!sessionBean.projeto.generico}" value="#{msg.statusProjeto_concluidoComDesvio}" styleClass="textoSubDestaque"/>
+					</td>
+				</tr>
+				<tr>
+					<td></td>
+					<td valign="middle">
+						<h:graphicImage rendered="#{!sessionBean.projeto.generico}" url="/imagens/status_ok.png" />
+						<h:outputText rendered="#{!sessionBean.projeto.generico}" value="#{msg.statusProjeto_registroOK}" styleClass="textoSubDestaque"/>
+					</td>
+					<td valign="middle">
+						<h:graphicImage rendered="#{!sessionBean.projeto.generico}" url="/imagens/status_atencao.png" />
+						<h:outputText rendered="#{!sessionBean.projeto.generico}" value="#{msg.statusProjeto_registroPoucoAtrasado}" styleClass="textoSubDestaque"/>
+					</td>
+					<td valign="middle">
+						<h:graphicImage rendered="#{!sessionBean.projeto.generico}" url="/imagens/status_nok.png" />
+						<h:outputText rendered="#{!sessionBean.projeto.generico}" value="#{msg.statusProjeto_registroMuitoAtrasado}" styleClass="textoSubDestaque"/>
+					</td>
+				</tr>
+			</table>
+		</rich:tab>
+		</rich:tabPanel>
+		
+		<br/>
+		<rich:tabPanel switchType="client" rendered="#{sessionBean.colaboradorLogado.tipoAcesso == 0}">
+        <rich:tab header="#{msg.statusProjeto_listaObservacoes}" paginator="true" paginatorAlwaysVisible="false" rows="10">
+			<p:dataTable styleClass="textoNormal" style="width: 100%;"
+				var="observacao" value="#{sessionBean.listaObservacoes}">
+				<p:columnGroup type="header">
+					<p:column width="20%">
+						<h:outputText value="#{msg.statusProjeto_data}" />
+					</p:column>
+					<p:column>
+						<h:outputText value="#{msg.statusProjeto_observacao}" />
+					</p:column>
+				</p:columnGroup>
+				
+				<p:column>
+					<h:outputText value="#{observacao.dataInclusao.time}" >
+						<f:convertDateTime type="both" dateStyle="short" />
+					</h:outputText>
+				</p:column>
+				<p:column>
+					<h:graphicImage url="/imagens/user_bloq.png" width="16" height="16" 
+									title="#{msg.cadastrarObservacoes_visibilidadeRestrita}" rendered="#{observacao.flagVisibilidadeRestrita}"/>
+					<h:graphicImage url="/imagens/user_desbloq.png" width="16" height="16" 
+									title="#{msg.cadastrarObservacoes_visibilidadeNaoRestrita}" rendered="#{!observacao.flagVisibilidadeRestrita}"/>
+					<h:outputText value=" #{observacao.observacoes}" />
+				</p:column>
+				
+			</p:dataTable>
+		</rich:tab>
+		</rich:tabPanel>
+		
+	</h:panelGroup>
+	</h:panelGroup>
+<br/>
+
+</ui:define>
+</ui:composition>

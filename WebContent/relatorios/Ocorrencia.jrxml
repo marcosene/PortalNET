@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Ocorrencia" language="groovy" pageWidth="595" pageHeight="842" columnWidth="565" leftMargin="15" rightMargin="15" topMargin="15" bottomMargin="15">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<subDataset name="dataset1"/>
+	<parameter name="idOcorrencia" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[SELECT
+     Ocorrencia."id" AS Ocorrencia_id,
+     Ocorrencia."numOcorrencia" AS Ocorrencia_numOcorrencia,
+     Ocorrencia."numBugCliente" AS Ocorrencia_numBugCliente,
+     Ocorrencia."dataAbertura" AS Ocorrencia_dataAbertura,
+     Ocorrencia."titulo" AS Ocorrencia_titulo,
+     Ocorrencia."descricaoResumida" AS Ocorrencia_descricaoResumida,
+     Ocorrencia."comportamentoEsperado" AS Ocorrencia_comportamentoEsperado,
+     Ocorrencia."textoAnalise" AS Ocorrencia_textoAnalise,
+     Ocorrencia."textoPropostaSolucao" AS Ocorrencia_textoPropostaSolucao,
+     Ocorrencia."baseline" AS Ocorrencia_baseline,
+     Ocorrencia."versaoModulo" AS Ocorrencia_versaoModulo,
+     Ocorrencia."tipoSeveridade" AS Ocorrencia_tipoSeveridade,
+     Ocorrencia."statusOcorrencia" AS Ocorrencia_statusOcorrencia,
+     Colaborador."nome" AS Ocorrencia_responsavelNome,
+     Colaborador."sobrenome" AS Ocorrencia_responsavelSobrenome,
+     Modulo."nome" AS Ocorrencia_modulo,
+     Ocorrencia."Projeto_id" AS Ocorrencia_projetoId
+
+FROM
+     "dbo"."Ocorrencia" Ocorrencia
+
+INNER JOIN Colaborador colaborador ON ( Colaborador.id = Ocorrencia.ColaboradorResp_id )
+INNER JOIN Modulo modulo ON ( modulo.id = Ocorrencia.Modulo_id )
+
+WHERE Ocorrencia.id = $P{idOcorrencia}]]>
+	</queryString>
+	<field name="Ocorrencia_id" class="java.lang.Long">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Ocorrencia_numOcorrencia" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Ocorrencia_numBugCliente" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Ocorrencia_dataAbertura" class="java.sql.Timestamp">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Ocorrencia_titulo" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Ocorrencia_descricaoResumida" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Ocorrencia_comportamentoEsperado" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Ocorrencia_textoAnalise" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Ocorrencia_textoPropostaSolucao" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Ocorrencia_baseline" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Ocorrencia_versaoModulo" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Ocorrencia_tipoSeveridade" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Ocorrencia_statusOcorrencia" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Ocorrencia_responsavelNome" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Ocorrencia_responsavelSobrenome" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Ocorrencia_modulo" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Ocorrencia_projetoId" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<group name="analise" minHeightToStartNewPage="1">
+		<groupExpression><![CDATA[$F{Ocorrencia_id}]]></groupExpression>
+	</group>
+	<title>
+		<band height="105" splitType="Stretch">
+			<staticText>
+				<reportElement positionType="Float" x="12" y="0" width="530" height="24" forecolor="#0066CC" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="12" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Análise de Ocorrência]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="0" y="56" width="62" height="15" forecolor="#0066CC"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Núm. Bug:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement positionType="Float" x="62" y="56" width="100" height="15"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{Ocorrencia_numBugCliente}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="0" y="71" width="78" height="15" forecolor="#0066CC"/>
+				<textElement>
+					<font isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[Data Abertura:]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="78" y="71" width="100" height="15"/>
+				<textElement/>
+				<textFieldExpression class="java.sql.Timestamp"><![CDATA[$F{Ocorrencia_dataAbertura}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement positionType="Float" x="62" y="41" width="100" height="15"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{Ocorrencia_numOcorrencia}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="231" y="41" width="68" height="15" forecolor="#0066CC"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Responsável:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement positionType="Float" x="299" y="41" width="232" height="16"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{Ocorrencia_responsavelNome} + " " + $F{Ocorrencia_responsavelSobrenome}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="231" y="57" width="43" height="16" forecolor="#0066CC"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Módulo:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement positionType="Float" x="274" y="57" width="257" height="14"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{Ocorrencia_modulo} + " " + ($F{Ocorrencia_versaoModulo} != null ? $F{Ocorrencia_versaoModulo} : "")]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="0" y="41" width="62" height="15" forecolor="#0066CC"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ocorrência:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="0" y="25" width="33" height="16" forecolor="#0066CC"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Título:]]></text>
+			</staticText>
+			<textField>
+				<reportElement stretchType="RelativeToBandHeight" x="33" y="25" width="498" height="16"/>
+				<textElement markup="styled">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{Ocorrencia_titulo}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<detail>
+		<band height="57">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" isPrintRepeatedValues="false" mode="Opaque" x="0" y="16" width="542" height="25">
+					<property name="net.sf.jasperreports.print.keep.full.text" value="true"/>
+				</reportElement>
+				<textElement markup="html">
+					<font fontName="SansSerif" isStrikeThrough="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{Ocorrencia_descricaoResumida}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="0" width="62" height="16" forecolor="#0066CC"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Descrição:]]></text>
+			</staticText>
+		</band>
+		<band height="48">
+			<staticText>
+				<reportElement positionType="Float" x="0" y="12" width="168" height="20" forecolor="#0066CC"/>
+				<textElement>
+					<font isBold="true" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[Comportamento Esperado:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="32" width="542" height="15" isPrintWhenDetailOverflows="true" printWhenGroupChanges="analise">
+					<property name="net.sf.jasperreports.print.keep.full.text" value="true"/>
+				</reportElement>
+				<textElement markup="html">
+					<font fontName="SansSerif"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{Ocorrencia_comportamentoEsperado}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="56">
+			<staticText>
+				<reportElement positionType="Float" x="0" y="16" width="168" height="20" forecolor="#0066CC"/>
+				<textElement>
+					<font isBold="true" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[Texto de Análise da Ocorrência:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" isPrintRepeatedValues="false" mode="Opaque" x="0" y="36" width="542" height="10">
+					<property name="net.sf.jasperreports.print.keep.full.text" value="true"/>
+				</reportElement>
+				<textElement markup="html">
+					<font fontName="SansSerif"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{Ocorrencia_textoAnalise}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="50">
+			<staticText>
+				<reportElement positionType="Float" x="0" y="9" width="319" height="20" forecolor="#0066CC">
+					<printWhenExpression><![CDATA[($F{Ocorrencia_textoPropostaSolucao} != null)]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font isBold="true" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[Proposta de Solução da Ocorrência:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="30" width="542" height="15" isPrintWhenDetailOverflows="true" printWhenGroupChanges="analise">
+					<property name="net.sf.jasperreports.print.keep.full.text" value="true"/>
+				</reportElement>
+				<textElement markup="html">
+					<font fontName="SansSerif"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{Ocorrencia_textoPropostaSolucao}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

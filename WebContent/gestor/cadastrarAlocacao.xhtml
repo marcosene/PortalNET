@@ -1,0 +1,154 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition template="/templateCadastro.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:define name="titulo">
+	<h:graphicImage value="/imagens/icon_alocacao.png" width="32" height="32"/>
+	<p:spacer width="10"/>
+	<h:outputText value="#{msg.cadastrarAlocacao_titulo}" styleClass="textoDestaque"/>
+</ui:define>
+
+<ui:define name="conteudo">
+
+<script type="text/javascript">   
+function limpaHorasRestantes() {
+    document.getElementById("formGeral:horasRestantes").value = '0';
+}
+
+function calculaHorasRestantes() {
+	var qtdeHorasRestantes = parseFloat(document.getElementById("formGeral:horasPrevistas").value) - #{sessionBean.alocacao.qtdeHorasTrabalho};
+	
+	document.getElementById("formGeral:horasRestantes").value = qtdeHorasRestantes;
+}
+
+</script>
+
+	<h:panelGrid style="text-align: right; width: 100%">
+		<h:column>
+		 	<br/>
+		 	<h:outputLink rendered="#{sessionBean.alocacao.colaborador eq null}" value="./visualizarAlocacoes.jsf">
+				<h:graphicImage value="/imagens/btn_voltar.png" width="32" height="32"/>
+			</h:outputLink>		
+			
+			<h:commandLink rendered="#{sessionBean.alocacao.colaborador != null}" action="#{gestorBean.acessarAlocacaoProjetoAction}">
+				<f:param name="idProjeto" value="#{sessionBean.alocacao.atividade.grupoAtividade.projeto.id}"/>
+				<h:graphicImage value="/imagens/btn_voltar.png" width="32" height="32"/>
+			</h:commandLink>
+			
+			<p:spacer width="20"/>
+	
+			<h:commandLink action="#{gestorBean.cadastrarAlocacaoAction}">
+				<h:graphicImage value="/imagens/btn_atualizar.png" width="32" height="32"/>
+			</h:commandLink>
+	
+			<p:spacer width="10"/>
+		</h:column>
+	</h:panelGrid>
+		
+	<h:panelGrid columns="2">
+		<h:outputLabel value="#{msg.cadastrarAlocacao_projeto}:" styleClass="textoNormal" />
+		<h:inputText id="projeto" disabled="true" size="15"
+			value="#{sessionBean.alocacao.atividade.grupoAtividade.projeto.codigoClienteCompleto}">
+		</h:inputText>
+		
+		<h:outputLabel value="#{msg.cadastrarAlocacao_atividade}:" styleClass="textoNormal" />
+		<h:inputText id="atividade" disabled="true" size="64"
+			value="#{sessionBean.alocacao.atividade.nome}">
+		</h:inputText>
+		
+		<h:outputLabel value="#{msg.cadastrarAlocacao_colaborador}:" styleClass="textoNormal" 
+			rendered="#{!sessionBean.alocacao.atividade.grupoAtividade.projeto.generico and empty sessionBean.alocacao.registros}"/>
+		<h:selectOneMenu id="colaborador" required="true" converter="#{converterBean}"
+			rendered="#{!sessionBean.alocacao.atividade.grupoAtividade.projeto.generico and empty sessionBean.alocacao.registros}"
+			value="#{sessionBean.alocacao.colaborador}">
+			<f:selectItem itemLabel="#{msg.cadastro_selecione}" noSelectionOption="true"/>
+			<f:selectItems value="#{gestorBean.gestorService.listaColaboradoresParticipativos}"
+				var="colaborador" itemLabel="#{colaborador.nomeCompleto}" itemValue="#{colaborador}"/>
+		</h:selectOneMenu>
+		
+		<h:outputLabel value="#{msg.cadastrarAlocacao_colaborador}:" styleClass="textoNormal"
+			rendered="#{!empty sessionBean.alocacao.registros}"/>
+		<h:inputText disabled="true" value="#{sessionBean.alocacao.colaborador.nomeCompleto}" rendered="#{!empty sessionBean.alocacao.registros}" />		
+
+		<p:spacer width="1" />
+		<h:panelGroup rendered="#{!sessionBean.alocacao.atividade.grupoAtividade.projeto.generico}">
+			<h:outputText rendered="#{sessionBean.alocacao.flagBloqueadoRegistro == 1}" styleClass="textoLabelDestaque" value="(#{msg.cadastrarAlocacao_registro_bloqueado})"/>
+			<h:outputText rendered="#{sessionBean.alocacao.flagBloqueadoRegistro == 2}" styleClass="textoLabelDestaque" value="(#{msg.cadastrarAlocacao_registro_finalizado})"/>
+			<h:outputText rendered="#{sessionBean.alocacao.flagBloqueadoRegistro == 0}" styleClass="textoLabelDestaque" value="(#{msg.cadastrarAlocacao_registro_liberado})"/>
+		</h:panelGroup>
+		
+		<rich:pickList value="#{gestorBean.listaAlocacoes}" converter="#{converterBean}"
+			rendered="#{sessionBean.alocacao.atividade.grupoAtividade.projeto.generico}"
+			sourceCaption="#{msg.cadastrarEquipe_membrosDisponiveis}:"
+			targetCaption="#{msg.cadastrarEquipe_membrosSelecionados}:">
+  			<f:selectItems value="#{gestorBean.selectAlocacoes}" var="alocacao" itemLabel="#{alocacao.colaborador.nomeCompleto}" itemValue="#{alocacao}"/>
+		</rich:pickList>
+		
+		<h:outputLabel value="#{msg.cadastrarAlocacao_horasDiariasAlocadas}:" styleClass="textoNormal"
+			rendered="#{!sessionBean.alocacao.atividade.grupoAtividade.projeto.generico}"/>
+		<h:inputText id="horasDiariasAlocadas" rendered="#{!sessionBean.alocacao.atividade.grupoAtividade.projeto.generico}"
+			size="3" maxlength="3" required="true"
+			value="#{sessionBean.alocacao.qtdeHorasDiariasAlocadas}">
+			<f:validateDoubleRange minimum="0.5" maximum="24"/>
+		</h:inputText>
+
+		<h:outputLabel value="#{msg.cadastrarAlocacao_horasPrevistas}:" styleClass="textoNormal"
+			rendered="#{!sessionBean.alocacao.atividade.grupoAtividade.projeto.generico}"/>
+		<h:inputText id="horasPrevistas" rendered="#{!sessionBean.alocacao.atividade.grupoAtividade.projeto.generico}"
+			size="3" maxlength="4" required="true"
+			value="#{sessionBean.alocacao.qtdeHorasAlocadas}"
+			onchange="calculaHorasRestantes()">
+			<f:validateLongRange minimum="0" maximum="9999"/>
+		</h:inputText>
+		
+		<h:outputLabel value="#{msg.cadastrarAlocacao_horasRestantes}:" styleClass="textoNormal"
+			rendered="#{!sessionBean.alocacao.atividade.grupoAtividade.projeto.generico}" />
+		<h:panelGroup rendered="#{!sessionBean.alocacao.atividade.grupoAtividade.projeto.generico}">
+			<h:inputText id="horasRestantes" 
+				size="5" maxlength="6" required="true" 
+				value="#{sessionBean.alocacao.qtdeHorasRestantes}" >
+				<f:validateDoubleRange minimum="0" maximum="9999"/>
+			</h:inputText>
+
+			<p:spacer width="10"/>
+
+			<h:commandLink immediate="true">
+				<h:graphicImage onclick="limpaHorasRestantes()" title="#{msg.cadastrarAlocacao_concluida}"
+				value="/imagens/icon_check.png" width="32" height="32"  />
+			</h:commandLink>
+		</h:panelGroup>
+					
+		<h:outputLabel value="#{msg.cadastrarAlocacao_horasTrabalhadas}:" styleClass="textoNormal"
+			rendered="#{!sessionBean.alocacao.atividade.grupoAtividade.projeto.generico and (!empty sessionBean.alocacao.id)}"/>
+		<h:inputText id="horasTrabalhadas" disabled="true" rendered="#{!sessionBean.alocacao.atividade.grupoAtividade.projeto.generico and (!empty sessionBean.alocacao.id)}"
+			size="3" maxlength="4" value="#{sessionBean.alocacao.qtdeHorasTrabalho}">
+			<f:validateLongRange minimum="1" maximum="9999"/>
+		</h:inputText>
+		
+		<h:outputLabel value="#{msg.cadastrarAlocacao_horasExcedidas}:" styleClass="textoNormal"
+			rendered="#{!sessionBean.alocacao.atividade.grupoAtividade.projeto.generico and (!empty sessionBean.alocacao.id)}"/>
+		<h:inputText id="horasExcedidas" disabled="true" rendered="#{!sessionBean.alocacao.atividade.grupoAtividade.projeto.generico and (!empty sessionBean.alocacao.id)}"
+			size="3" maxlength="4" value="#{sessionBean.alocacao.qtdeHorasExcedidas}">
+			<f:validateLongRange minimum="1" maximum="9999"/>
+		</h:inputText>
+		
+		<h:outputLabel value="#{msg.cadastrarAlocacao_dataInicioPrevista}:" styleClass="textoNormal"
+			rendered="#{!sessionBean.alocacao.atividade.grupoAtividade.projeto.generico}"/>
+		<p:calendar id="dataInicioPrevista" mode="inline" styleClass="textoNormal" locale="pt_BR" converter="calendarConverter"
+			rendered="#{!sessionBean.alocacao.atividade.grupoAtividade.projeto.generico}"
+			value="#{sessionBean.alocacao.dataInicioPrevista}" required="true" immediate="true">
+		</p:calendar>
+		
+	</h:panelGrid>
+
+</ui:define>
+</ui:composition>

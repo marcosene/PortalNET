@@ -1,0 +1,123 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition template="/templateCadastro.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:rich="http://richfaces.org/rich">
+
+<ui:define name="titulo">
+	<h:graphicImage value="/imagens/icon_produto.png" width="32" height="32"/>
+	<p:spacer width="10"/>
+	<h:outputText value="#{msg.cadastrarProduto_titulo}" styleClass="textoDestaque"/>
+</ui:define>
+
+<ui:define name="conteudo">
+	<h:panelGrid style="text-align: right; width: 100%">
+		<h:column>
+			<br/>
+			<h:outputLink value="./visualizarProdutos.jsf">
+				<h:graphicImage value="/imagens/btn_voltar.png" width="32" height="32"/>
+			</h:outputLink>
+	
+			<p:spacer width="20"/>
+	
+			<h:commandLink action="#{adminBean.cadastrarProdutoAction}">
+				<h:graphicImage value="/imagens/btn_atualizar.png" width="32" height="32"/>
+			</h:commandLink>
+			
+			<p:spacer width="10"/>
+		</h:column>
+	</h:panelGrid>
+		
+	<h:panelGrid columns="2">
+		<h:outputLabel value="#{msg.cadastrarArea_cliente}:" styleClass="textoNormal" />
+		<h:inputText id="cliente" disabled="true" size="32"
+			value="#{sessionBean.produto.area.cliente.nomeEmpresa}">
+		</h:inputText>
+		
+		<h:outputLabel value="#{msg.cadastrarArea_area}:" styleClass="textoNormal" />
+		<h:inputText id="area" disabled="true" size="32"
+			value="#{sessionBean.produto.area.nome}">
+		</h:inputText>
+		
+		<h:outputLabel value="#{msg.cadastrarProduto_produto}:" styleClass="textoNormal" />
+		<h:inputText id="nome" required="true"
+			value="#{sessionBean.produto.nome}"
+			size="20" maxlength="20">
+		</h:inputText>
+		
+		<h:outputLabel value="#{msg.cadastrarProduto_gerenteProduto}:" styleClass="textoNormal" />
+		<h:selectOneMenu id="gerenteProduto" required="true" converter="#{converterBean}"
+			value="#{sessionBean.produto.gerenteProduto}">
+			<f:selectItem itemLabel="#{msg.cadastro_selecione}" noSelectionOption="true"/>
+			<f:selectItems value="#{gestorBean.gestorService.listaColaboradoresGPDs}"
+				var="colaborador" itemLabel="#{colaborador.nomeCompleto}" itemValue="#{colaborador}"/>
+		</h:selectOneMenu>
+		
+		<h:outputLabel value="#{msg.cadastrarProduto_coordenador}:" styleClass="textoNormal" />
+		<h:selectOneMenu id="coordenador" converter="#{converterBean}"
+			value="#{sessionBean.produto.coordenador}">
+			<f:selectItem itemLabel="#{msg.cadastro_selecione}" noSelectionOption="true"/>
+			<f:selectItems value="#{gestorBean.gestorService.listaColaboradoresCoordenadores}"
+				var="colaborador" itemLabel="#{colaborador.nomeCompleto}" itemValue="#{colaborador}"/>
+		</h:selectOneMenu>
+	</h:panelGrid>
+	
+	<br/><br/>
+	
+	<rich:tabPanel switchType="client">
+        <rich:tab header="Lista de M&#243;dulos">
+			<h:commandLink action="#{adminBean.cadastrarNovoModuloAction}">
+				<h:graphicImage value="/imagens/btn_cadastrar.png" width="32" height="32"/>
+			</h:commandLink>
+
+			<p:dataTable styleClass="textoNormal" style="width: 100%;" paginator="true" paginatorAlwaysVisible="false" rows="20"
+				value="#{sessionBean.produto.modulos}" var="modulo">
+				<p:column width="10%">
+					<f:facet name="header">
+						<h:outputText value="#{msg.cadastrarModulo_linguagem}"/>
+					</f:facet>
+					<h:outputText value="#{modulo.descTipoLinguagem}"/>
+				</p:column>
+				
+				<p:column width="30%">
+					<f:facet name="header">
+						<h:outputText value="#{msg.cadastrarModulo_modulo}"/>
+					</f:facet>
+					<h:outputText value="#{modulo.nome}"/>
+				</p:column>
+				
+				<p:column width="50%">
+					<f:facet name="header">
+						<h:outputText value="#{msg.cadastrarModulo_descricao}"/>
+					</f:facet>
+					<h:outputText value="#{modulo.descricao}"/>
+				</p:column>
+				
+				<p:column width="10%" exportable="false">
+					<f:facet name="header">
+						<h:outputText value="#{msg.cadastro_acoes}"/>
+					</f:facet>
+					<h:panelGroup>
+						<h:commandLink id="comandoAlterar" actionListener="#{adminBean.selecionarModuloAction}" action="edit">
+							<h:graphicImage value="/imagens/btn_edit.png" width="16" height="16" title="#{msg.cadastro_alterar}"/>
+						</h:commandLink>
+						
+						<p:spacer width="10"/>
+						
+						<h:commandLink id="comandoExcluir" actionListener="#{adminBean.excluirModuloAction}" onclick="if (!confirm('#{msg.cadastro_confirmaExclusao}')) return false;">
+							<h:graphicImage value="/imagens/btn_excluir.png" width="16" height="16" title="#{msg.cadastro_excluir}"/>
+						</h:commandLink>
+					</h:panelGroup>
+				</p:column>
+			</p:dataTable>
+        </rich:tab>
+	</rich:tabPanel>
+
+</ui:define>
+</ui:composition>

@@ -1,0 +1,79 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<h:head>
+	<h:outputStylesheet library="css" name="style.css"  />
+	<title>#{msg.login_centralColaborador}</title>
+</h:head>
+
+<h:body onload="document.getElementById('loginForm:usuario').focus()"
+	style="background-image: url('#{request.contextPath}/imagens/background.jpg'); background-size: 100%; opacity:0.9; filter:alpha(opacity=90);">
+	
+<h:form id="loginForm" onkeypress="if (event.keyCode == 13) { document.getElementById('loginForm:submitButton').click(); return false; }">
+
+<table align="center" width="270">
+	<tr style="height:200px">
+		<td></td>
+	</tr>
+	<tr>
+		<td>
+			<rich:panel style="text-align: center;">
+				<f:facet name="header">
+					<h:outputText value="#{msg.login_centralColaborador}" styleClass="textoNormalNegritoMaior" /> 
+				</f:facet>
+				
+				<h:panelGrid columns="2" style="text-align: left;">
+					<h:panelGroup>
+						<h:outputLabel value="#{msg.login_usuario}:" class="textoNormalNegrito" />
+						<br/>
+						<h:inputText id="usuario" required="true" 
+							value="#{sessionBean.colaborador.usuario}" size="20" maxlength="16">
+						</h:inputText>
+				
+						<h:outputLabel value="#{msg.login_senha}:" class="textoNormalNegrito" />
+						<br/>
+						<h:inputSecret id="senha" required="true"
+							value="#{sessionBean.colaborador.senha}" size="20" maxlength="20">
+							<f:validateLength minimum="6" maximum="20" />
+						</h:inputSecret>
+						
+						<h:commandLink id="submitButton" action="#{colaboradorBean.loginAction}">
+							<h:graphicImage value="/imagens/btn_login.png"/>
+						</h:commandLink>
+					</h:panelGroup>
+
+					<a4j:mediaOutput element="img" mimeType="image/jpeg" id="logotipo"
+						createContent="#{sessionBean.parametros.paintLogotipo}"
+						cacheable="false">
+					</a4j:mediaOutput>
+				</h:panelGrid>
+			</rich:panel>
+
+			<rich:notifyMessages stayTime="2800" nonblocking="true" />
+			<br/>
+		</td>
+	</tr>
+</table>
+
+<p:ajaxStatus style="position: absolute; top:50%; left:50%;">  
+    <f:facet name="start">  
+        <p:graphicImage value="/imagens/loading.gif" />  
+    </f:facet>  
+  
+    <f:facet name="complete">  
+        <h:outputText value="" />  
+    </f:facet>  
+</p:ajaxStatus>  
+
+</h:form>
+
+</h:body>
+</html>

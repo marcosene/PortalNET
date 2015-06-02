@@ -1,0 +1,102 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition template="/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:rich="http://richfaces.org/rich">
+
+<ui:define name="titulo">
+	<h:graphicImage value="/imagens/icon_pendente.png" width="32" height="32"/>
+	<p:spacer width="10"/>
+	<h:outputText value="#{msg.visualizarCompromissos_compromissos}" styleClass="textoDestaque"/>
+</ui:define>
+
+<ui:define name="conteudo">
+
+<table style="width: 98%; border-collapse: collapse; border-spacing: 4; margin-left:auto; margin-right:auto">
+	<tr>
+		<td colspan="2">
+			<br/>
+			<p:dataTable id="tabelaListagem" styleClass="textoNormal" style="width: 100%;" paginator="true" paginatorAlwaysVisible="false" rows="20"
+		        value="#{consultaBean.todosCompromissosColaborador}" var="compromisso">
+				
+				<p:column width="10%">
+					<f:facet name="header">
+						<h:outputText value="#{msg.visualizarCompromissos_dataEvento}"/>
+					</f:facet>
+					<h:outputText value="#{compromisso.dataEvento.time}">
+						<f:convertDateTime type="date" dateStyle="medium" />
+					</h:outputText>
+				</p:column>
+				
+				<p:column width="30%">
+					<f:facet name="header">
+						<h:outputText value="#{msg.visualizarCompromissos_compromisso}"/>
+					</f:facet>
+					<h:outputText value="#{compromisso.nome}" />
+				</p:column>
+
+				<p:column width="20%">
+					<f:facet name="header">
+						<h:outputText value="#{msg.visualizarCompromissos_responsaveis}"/>
+					</f:facet>
+					<h:outputText value="#{compromisso.nomeResponsaveis}"/>
+				</p:column>
+				
+				<p:column width="30%">
+					<f:facet name="header">
+						<h:outputText value="#{msg.visualizarCompromissos_projeto}"/>
+					</f:facet>
+					<h:outputText value="[#{compromisso.projeto.codigo}] #{compromisso.projeto.nome}"/>
+				</p:column>
+				
+				<p:column exportable="false" width="5%">
+					<f:facet name="header">
+						<h:outputText value="#{msg.visualizarCompromissos_concluido}"/>
+					</f:facet>
+					<h:graphicImage url="/imagens/status_concluido.png" rendered="#{compromisso.flagConcluido}"/>
+					<h:graphicImage url="/imagens/status_naoConcluido.png" rendered="#{!compromisso.flagConcluido}"/>
+				</p:column>
+				
+				<p:column exportable="false" width="5%">
+					<f:facet name="header">
+						<h:outputText value="#{msg.cadastro_acoes}"/>
+					</f:facet>
+					<h:commandLink id="comandoAlterar" action="#{colaboradorBean.alterarFlagCompromisso}"
+						rendered="#{compromisso.tipoRepeticao == 0}">
+						<f:param name="idCompromisso" value="#{compromisso.id}"/>
+						<f:param name="idProjeto" value="#{compromisso.projeto.id}"/>
+						<h:graphicImage value="/imagens/icon_alterarStatus.png" width="16" height="16" title="#{msg.cadastro_alterar}"/>
+					</h:commandLink>
+				</p:column>
+			</p:dataTable>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2" align="right">
+			<h:outputText value="#{msg.header_exportarRelatorio}: " styleClass="textoLabelDestaque"/>
+			
+			<h:commandLink immediate="true">
+				<p:graphicImage value="/imagens/icon_relatorio_pdf.png" />
+				<p:dataExporter type="pdf" target="tabelaListagem" fileName="ListaCompromissos"/>
+			</h:commandLink>
+
+			<p:spacer width="10"/>
+
+			<h:commandLink immediate="true">
+				<p:graphicImage value="/imagens/icon_relatorio_excel.png" />
+				<p:dataExporter type="xls" target="tabelaListagem" fileName="ListaCompromissos" />
+			</h:commandLink>
+			
+			<p:spacer width="10"/>
+		</td>
+	</tr>
+</table>
+
+</ui:define>
+</ui:composition>

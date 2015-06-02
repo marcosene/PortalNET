@@ -1,0 +1,109 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition template="/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:define name="titulo">
+	<h:graphicImage value="/imagens/icon_feriados.png" width="24" height="24"/>
+	<p:spacer width="10"/>
+	<h:outputText value="#{msg.cadastrarFeriados_titulo}" styleClass="textoDestaque"/>
+</ui:define>
+
+<ui:define name="conteudo">
+	<table style="width: 98%; border-collapse: collapse; border-spacing: 4; margin-left:auto; margin-right:auto">
+		<tr>
+			<td align="left">
+				<br/>
+				<h:outputLabel value="#{msg.cadastrarFeriados_selecionarAno}" styleClass="textoNormal"/>
+				<h:selectOneMenu value="#{utilBean.anoSelecionado}" required="true" immediate="true">
+					<f:selectItems value="#{utilBean.listaAnosCombo}" id="anoSelecao"/>
+					<p:ajax update=":formGeral:tabelaListagem" process="@this" />
+				</h:selectOneMenu>
+			</td>
+			<td align="right">
+				<h:commandLink action="#{adminBean.cadastrarNovoFeriadoAction}">
+					<h:graphicImage value="/imagens/btn_cadastrar.png" width="32" height="32"/>
+				</h:commandLink>
+				
+				<p:spacer width="10" />
+				
+				<h:commandLink action="#{adminBean.exportarFeriadosAction}" onclick="if (!confirm('#{msg.cadastrarFeriados_confirmaExportacao}')) return false;">
+					<h:graphicImage value="/imagens/btn_exportar.png" width="24" height="24" title="#{msg.cadastrarFeriados_exportar}"/>
+				</h:commandLink>
+			</td>
+		</tr>
+
+		<tr>
+			<td colspan="2">
+				<p:dataTable id="tabelaListagem" styleClass="textoNormal" style="width: 100%;" paginator="true" paginatorAlwaysVisible="false" rows="20"
+					emptyMessage="#{msg.cadastrarFeriados_nenhumFeriado}"
+					value="#{adminBean.listaFeriadosNoAno}" var="feriado">
+					
+					<p:column width="20%">
+						<f:facet name="header">
+							<h:outputText value="#{msg.cadastrarFeriados_data}"/>
+						</f:facet>
+						<h:outputText value="#{feriado.dataFeriado.time}">
+							<f:convertDateTime type="date" dateStyle="medium" />
+						</h:outputText>
+					</p:column>
+					
+					<p:column width="60%">
+						<f:facet name="header">
+							<h:outputText value="#{msg.cadastrarFeriados_feriado}"/>
+						</f:facet>
+						<h:outputText value="#{feriado.nome}"/>
+					</p:column>
+		
+					<p:column exportable="false" width="20%">
+						<f:facet name="header">
+							<h:outputText value="#{msg.cadastro_acoes}"/>
+						</f:facet>
+						<h:panelGroup>
+							<h:commandLink id="comandoAlterar" action="#{adminBean.selecionarFeriadoAction}">
+								<f:param name="idFeriado" value="#{feriado.id}"/>
+								<h:graphicImage value="/imagens/btn_edit.png" width="16" height="16" title="#{msg.cadastro_alterar}"/>
+							</h:commandLink>
+							
+							<p:spacer width="10"/>
+							
+							<h:commandLink id="comandoExcluir" actionListener="#{adminBean.excluirFeriadoAction}" onclick="if (!confirm('#{msg.cadastro_confirmaExclusao}')) return false;">
+								<f:param name="idFeriado" value="#{feriado.id}"/>
+								<h:graphicImage value="/imagens/btn_excluir.png" width="16" height="16" title="#{msg.cadastro_excluir}"/>
+							</h:commandLink>
+						</h:panelGroup>
+					</p:column>
+				</p:dataTable>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" align="right">
+				<h:outputText value="#{msg.header_exportarRelatorio}: " styleClass="textoLabelDestaque"/>
+				
+				<h:commandLink immediate="true">
+					<p:graphicImage value="/imagens/icon_relatorio_pdf.png" />
+					<p:dataExporter type="pdf" target="tabelaListagem" fileName="ListaFeriados"/>
+				</h:commandLink>
+
+				<p:spacer width="10"/>
+
+				<h:commandLink immediate="true">
+					<p:graphicImage value="/imagens/icon_relatorio_excel.png" />
+					<p:dataExporter type="xls" target="tabelaListagem" fileName="ListaFeriados" />
+				</h:commandLink>
+				
+				<p:spacer width="10"/>
+			</td>
+		</tr>
+	</table>
+
+</ui:define>
+</ui:composition>

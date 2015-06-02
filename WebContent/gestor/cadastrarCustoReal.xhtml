@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition template="/templateCadastro.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:define name="titulo">
+	<h:graphicImage value="/imagens/icon_custoReal.png" width="32" height="32"/>
+	<p:spacer width="10"/>
+	<h:outputText value="#{msg.cadastrarCustoReal_titulo}" styleClass="textoDestaque"/>
+</ui:define>
+
+<ui:define name="conteudo">
+
+	<table style="width: 98%; border-collapse: collapse; border-spacing: 4; margin-left:auto; margin-right:auto">
+		<tr>
+			<td width="10%">
+				<h:outputLabel value="#{msg.cadastrarCustoReal_ano}" styleClass="textoNormal"/>
+				<h:selectOneMenu id="anoSelecionado" value="#{utilBean.anoSelecionado}" required="true">
+					<f:selectItems value="#{utilBean.listaAnosCombo}" id="anoSelecao"/>
+					<p:ajax update=":formGeral:tabelaListagem" process="@this"/>
+				</h:selectOneMenu>
+			</td>
+			<td>		
+				<h:outputLabel value="#{msg.cadastrarCustoReal_mes}" styleClass="textoNormal"/>
+				<h:selectOneMenu id="mesSelecionado" value="#{utilBean.mesSelecionado}" required="true">
+					<f:selectItems value="#{utilBean.listaMes}" id="mesSelecao"/>
+					<p:ajax update=":formGeral:tabelaListagem" process="@this"/>
+				</h:selectOneMenu>
+			</td>
+			
+			<td align="right">
+				<h:panelGrid style="text-align: right; width: 100%">
+					<h:column>					
+						<h:commandLink action="#{gestorBean.cancelAction}" immediate="true">
+							<h:graphicImage value="/imagens/btn_voltar.png" width="32" height="32"/>
+						</h:commandLink>
+						
+						<p:spacer width="20"/>
+				
+						<h:commandLink action="#{gestorBean.cadastrarNovoCustoRealProjetoAction}">
+							<h:graphicImage value="/imagens/btn_atualizar.png" width="32" height="32"/>
+						</h:commandLink>
+					</h:column>
+				</h:panelGrid>
+			</td>
+					
+		</tr>
+		<tr>
+			<td colspan="3">
+				<p:dataTable id="tabelaListagem" styleClass="textoNormal" style="width: 100%;" paginator="true" paginatorAlwaysVisible="false" rows="20"
+					value="#{gestorBean.listaCustosReaisTodosProjetos}" var="custoReal">
+					
+					<h:inputHidden id="idCustoRealProjeto" value="#{custoReal.id}" />
+					
+					<p:column sortBy="projeto.codigo" width="20%">
+						<f:facet name="header">
+							<h:outputText value="#{msg.cadastrarCustoReal_codigoProjeto}"/>
+						</f:facet>
+						<h:outputText value="#{custoReal.projeto.codigo}"/>
+					</p:column>
+					
+					<p:column sortBy="projeto.nome" width="50%">
+						<f:facet name="header">
+							<h:outputText value="#{msg.cadastrarCustoReal_nomeProjeto}"/>
+						</f:facet>
+						<h:outputText value="#{custoReal.projeto.nome}"/>
+					</p:column>
+					
+					<p:column sortBy="valor" width="30%">
+						<f:facet name="header">
+							<h:outputText value="#{msg.cadastrarCustoReal_custo}"/>
+						</f:facet>
+						<h:inputText value="#{custoReal.valor}"/>
+					</p:column>				
+				</p:dataTable>
+			</td>
+		</tr>
+	</table>
+
+</ui:define>
+</ui:composition>

@@ -1,0 +1,695 @@
+<faces-config
+    xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_1.xsd"
+    version="2.1">
+
+	<navigation-rule>
+		<display-name>Login</display-name>
+		<from-view-id>/login.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/principal.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>failure</from-outcome>
+			<to-view-id>/login.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<display-name>Menu</display-name>
+		<from-view-id>*</from-view-id>
+		<navigation-case>
+			<from-outcome>principal</from-outcome>
+			<to-view-id>/principal.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>cadastroColaborador</from-outcome>
+			<to-view-id>/admin/visualizarColaboradores.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>cadastroCliente</from-outcome>
+			<to-view-id>/admin/visualizarClientes.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>cadastroArea</from-outcome>
+			<to-view-id>/admin/visualizarAreas.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>cadastroProduto</from-outcome>
+			<to-view-id>/gestor/visualizarProdutos.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>cadastroEquipe</from-outcome>
+			<to-view-id>/admin/visualizarEquipes.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>cadastroTipoAtividade</from-outcome>
+			<to-view-id>/admin/visualizarTiposAtividade.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>cadastroProjeto</from-outcome>
+			<to-view-id>/gestor/visualizarProjetos.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>cadastroAlocacao</from-outcome>
+			<to-view-id>/gestor/visualizarAlocacoes.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>cadastroOcorrencia</from-outcome>
+			<to-view-id>/visualizarOcorrencias.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>cadastroEquipamento</from-outcome>
+			<to-view-id>/visualizarEquipamentos.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>cadastroCustoReal</from-outcome>
+			<to-view-id>/gestor/cadastrarCustoReal.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>compromissos</from-outcome>
+			<to-view-id>/visualizarCompromissos.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>cadastroInventario</from-outcome>
+			<to-view-id>/visualizarInventario.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>visualizarFerias</from-outcome>
+			<to-view-id>/gestor/visualizarFerias.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>cadastrarParametros</from-outcome>
+			<to-view-id>/admin/cadastrarParametros.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>cadastroFeriados</from-outcome>
+			<to-view-id>/admin/visualizarFeriados.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>consultaColaboradores</from-outcome>
+			<to-view-id>/consultaColaboradores.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>statusProjeto</from-outcome>
+			<to-view-id>/statusProjeto.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>agenda</from-outcome>
+			<to-view-id>/visualizarAgenda.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>registroAtividade</from-outcome>
+			<to-view-id>/registrarAtividade.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>meuPerfil</from-outcome>
+			<to-view-id>/alterarRegistroColaborador.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>relatorioRegistro</from-outcome>
+			<to-view-id>/visualizarRelatorioRegistroAtividades.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>relatorioProjetos</from-outcome>
+			<to-view-id>/visualizarRelatorioProjetos.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>relatorioOcorrenciasProjeto</from-outcome>
+			<to-view-id>/visualizarRelatorioOcorrenciasProjeto.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>relatorioControleGeral</from-outcome>
+			<to-view-id>/visualizarRelatorioControleGeral.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>relatoriosPorPeriodo</from-outcome>
+			<to-view-id>/visualizarRelatorioPeriodo.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<display-name>Pagina Principal</display-name>
+		<from-view-id>/principal.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/principal.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>success_status_projeto</from-outcome>
+			<to-view-id>/statusProjeto.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>success_cadastro_projeto</from-outcome>
+			<to-view-id>/gestor/cadastrarProjeto.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>success_alocacao_projeto</from-outcome>
+			<to-view-id>/gestor/visualizarAlocacoes.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>success_ocorrencia</from-outcome>
+			<to-view-id>/visualizarOcorrencias.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>success_status_ocorrencia</from-outcome>
+			<to-view-id>/cadastrarOcorrencia.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>edit_ocorrencia</from-outcome>
+			<to-view-id>/cadastrarOcorrencia.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<display-name>Cadastro de cliente</display-name>
+		<from-view-id>/admin/visualizarClientes.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>edit</from-outcome>
+			<to-view-id>/admin/cadastrarCliente.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>new</from-outcome>
+			<to-view-id>/admin/cadastrarCliente.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<display-name>Sucesso no cadastro de cliente</display-name>
+		<from-view-id>/admin/cadastrarCliente.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/admin/visualizarClientes.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<display-name>Cadastro de férias</display-name>
+		<from-view-id>/gestor/cadastrarFerias.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/gestor/visualizarFerias.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+
+	<navigation-rule>
+		<from-view-id>/gestor/visualizarFerias.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>new</from-outcome>
+			<to-view-id>/gestor/cadastrarFerias.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>edit</from-outcome>
+			<to-view-id>/gestor/cadastrarFerias.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>/visualizarInventario.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>new</from-outcome>
+			<to-view-id>/admin/cadastrarProdutoInventario.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>edit</from-outcome>
+			<to-view-id>/admin/cadastrarProdutoInventario.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>new2</from-outcome>
+			<to-view-id>/admin/cadastrarItemInventario.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>edit2</from-outcome>
+			<to-view-id>/admin/cadastrarItemInventario.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<display-name>Atualizar Parâmetros</display-name>
+		<from-view-id>/admin/cadastrarParametros.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/principal.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<display-name>Cadastro de area</display-name>
+		<from-view-id>/admin/visualizarAreas.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>edit</from-outcome>
+			<to-view-id>/admin/cadastrarArea.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>new</from-outcome>
+			<to-view-id>/admin/cadastrarArea.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<display-name>Sucesso no cadastro de area</display-name>
+		<from-view-id>/admin/cadastrarArea.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/admin/visualizarAreas.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<display-name>Cadastro de produto</display-name>
+		<from-view-id>/gestor/visualizarProdutos.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>edit</from-outcome>
+			<to-view-id>/gestor/cadastrarProduto.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>new</from-outcome>
+			<to-view-id>/gestor/cadastrarProduto.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<display-name>Sucesso no cadastro de produto</display-name>
+		<from-view-id>/gestor/cadastrarProduto.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/gestor/visualizarProdutos.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>new</from-outcome>
+			<to-view-id>/gestor/cadastrarModulo.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>edit</from-outcome>
+			<to-view-id>/gestor/cadastrarModulo.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<display-name>Sucesso no cadastro de modulo</display-name>
+		<from-view-id>/gestor/cadastrarModulo.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/gestor/cadastrarProduto.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<display-name>Cadastro de equipe</display-name>
+		<from-view-id>/admin/visualizarEquipes.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>edit</from-outcome>
+			<to-view-id>/admin/cadastrarEquipe.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>new</from-outcome>
+			<to-view-id>/admin/cadastrarEquipe.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<display-name>Sucesso no cadastro de equipe</display-name>
+		<from-view-id>/admin/cadastrarEquipe.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/admin/visualizarEquipes.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<display-name>Cadastro de colaborador</display-name>
+		<from-view-id>/admin/visualizarColaboradores.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>new</from-outcome>
+			<to-view-id>/admin/cadastrarColaborador.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>edit</from-outcome>
+			<to-view-id>/admin/cadastrarColaborador.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<display-name>Sucesso no cadastro de colaborador</display-name>
+		<from-view-id>/admin/cadastrarColaborador.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/admin/visualizarColaboradores.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<display-name>Sucesso no cadastro de produto de inventario</display-name>
+		<from-view-id>/admin/cadastrarProdutoInventario.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/visualizarInventario.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<display-name>Sucesso no cadastro de item de produto de inventario</display-name>
+		<from-view-id>/admin/cadastrarItemInventario.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/visualizarInventario.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<display-name>Cadastro de tipo de atividade</display-name>
+		<from-view-id>/admin/visualizarTiposAtividade.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>edit</from-outcome>
+			<to-view-id>/admin/cadastrarTipoAtividade.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>new</from-outcome>
+			<to-view-id>/admin/cadastrarTipoAtividade.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<display-name>Sucesso no cadastro de tipo de atividade</display-name>
+		<from-view-id>/admin/cadastrarTipoAtividade.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/admin/visualizarTiposAtividade.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<display-name>Cadastro de feriado</display-name>
+		<from-view-id>/admin/visualizarFeriados.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>edit</from-outcome>
+			<to-view-id>/admin/cadastrarFeriados.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>new</from-outcome>
+			<to-view-id>/admin/cadastrarFeriados.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<display-name>Sucesso no cadastro de feriado</display-name>
+		<from-view-id>/admin/cadastrarFeriados.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/admin/visualizarFeriados.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<display-name>Sucesso no cadastro de Custo Real</display-name>
+		<from-view-id>/gestor/cadastrarCustoReal.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/principal.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>failure</from-outcome>
+			<to-view-id>/gestor/cadastrarCustoReal.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<display-name>Cadastro de projeto</display-name>
+		<from-view-id>/gestor/visualizarProjetos.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>new</from-outcome>
+			<to-view-id>/gestor/cadastrarProjeto.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>edit</from-outcome>
+			<to-view-id>/gestor/cadastrarProjeto.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<display-name>Sucesso no cadastro de projeto</display-name>
+		<from-view-id>/gestor/cadastrarProjeto.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/gestor/visualizarProjetos.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>success_alterar_flag</from-outcome>
+			<to-view-id>/gestor/cadastrarProjeto.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>new</from-outcome>
+			<to-view-id>/gestor/cadastrarAtividade.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>edit</from-outcome>
+			<to-view-id>/gestor/cadastrarAtividade.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>new2</from-outcome>
+			<to-view-id>/gestor/cadastrarCompromisso.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>edit2</from-outcome>
+			<to-view-id>/gestor/cadastrarCompromisso.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>new3</from-outcome>
+			<to-view-id>/gestor/cadastrarGrupoAtividade.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>edit3</from-outcome>
+			<to-view-id>/gestor/cadastrarGrupoAtividade.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<display-name>Sucesso no cadastro de grupo de atividade</display-name>
+		<from-view-id>/gestor/cadastrarGrupoAtividade.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/gestor/cadastrarProjeto.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<display-name>Sucesso no cadastro de atividade</display-name>
+		<from-view-id>/gestor/cadastrarAtividade.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/gestor/cadastrarProjeto.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<display-name>Sucesso no cadastro de compromisso</display-name>
+		<from-view-id>/gestor/cadastrarCompromisso.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/gestor/cadastrarProjeto.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>failure</from-outcome>
+			<to-view-id>/gestor/cadastrarCompromisso.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<display-name>Cadastro de alocacao</display-name>
+		<from-view-id>/gestor/visualizarAlocacoes.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>new</from-outcome>
+			<to-view-id>/gestor/cadastrarAlocacao.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>edit</from-outcome>
+			<to-view-id>/gestor/cadastrarAlocacao.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<display-name>Sucesso no cadastro de alocacao</display-name>
+		<from-view-id>/gestor/cadastrarAlocacao.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/gestor/visualizarAlocacoes.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>success_alocacao_projeto</from-outcome>
+			<to-view-id>/gestor/visualizarAlocacoes.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<display-name>Cadastro de ocorrencias</display-name>
+		<from-view-id>/visualizarOcorrencias.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>new</from-outcome>
+			<to-view-id>/cadastrarOcorrencia.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>edit</from-outcome>
+			<to-view-id>/cadastrarOcorrencia.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<display-name>Cadastro de equipamentos</display-name>
+		<from-view-id>/visualizarEquipamentos.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>new</from-outcome>
+			<to-view-id>/cadastrarEquipamento.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>edit</from-outcome>
+			<to-view-id>/cadastrarEquipamento.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<display-name>Sucesso no cadastro de ocorrencia</display-name>
+		<from-view-id>/cadastrarOcorrencia.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/visualizarOcorrencias.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>failure</from-outcome>
+			<to-view-id>/cadastrarOcorrencia.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<display-name>Salvar Ocorrencia</display-name>
+		<from-view-id>/cadastrarOcorrencia.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>salvar_voltar</from-outcome>
+			<to-view-id>/visualizarOcorrencias.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<display-name>Sucesso na impressao do relatorio de ocorrencia</display-name>
+		<from-view-id>/visualizarOcorrencias.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/visualizarOcorrencias.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<display-name>Sucesso na impressao do relatorio de Projetos</display-name>
+		<from-view-id>/visualizarRelatorioProjetos.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/visualizarRelatorioProjetos.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<display-name>Sucesso na impressao do relatorio de Registro de
+			Atividades</display-name>
+		<from-view-id>/visualizarRelatorioRegistroAtividades.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/visualizarRelatorioRegistroAtividades.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<display-name>Sucesso na impressao do relatorio por Periodo</display-name>
+		<from-view-id>/visualizarRelatorioPeriodo.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/visualizarRelatorioPeriodo.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<display-name>Sucesso na impressao do relatorio de controle geral</display-name>
+		<from-view-id>/visualizarRelatorioControleGeral.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/visualizarRelatorioControleGeral.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<display-name>Alteração da flag de compromisso na tela de Status</display-name>
+		<from-view-id>/statusProjeto.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/statusProjeto.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<display-name>Agenda de Alocacoes</display-name>
+		<from-view-id>/visualizarAgenda.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/visualizarAgenda.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<display-name>Registro de Atividades</display-name>
+		<from-view-id>/registrarAtividade.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/registrarAtividade.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>edit</from-outcome>
+			<to-view-id>/alterarRegistroAtividade.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<display-name>Atualizar Registro de Atividades</display-name>
+		<from-view-id>/alterarRegistroAtividade.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/registrarAtividade.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<display-name>Meu Perfil</display-name>
+		<from-view-id>/alterarRegistroColaborador.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/principal.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<display-name>Cadastro de Frases do Dia</display-name>
+		<from-view-id>/visualizarFrasesDia.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/visualizarFrasesDia.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<display-name>Logout</display-name>
+		<from-view-id>*</from-view-id>
+		<navigation-case>
+			<from-outcome>logout</from-outcome>
+			<to-view-id>/login.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<navigation-case>
+			<from-outcome>toErrorPage</from-outcome>
+			<to-view-id>/login.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+	</navigation-rule>
+
+</faces-config>

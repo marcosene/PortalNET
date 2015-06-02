@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition template="/templateCadastro.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:define name="titulo">
+	<h:graphicImage value="/imagens/icon_inventario.png" width="32" height="32"/>
+	<p:spacer width="10"/>
+	<h:outputText value="#{msg.cadastrarInventario_tituloItens}" styleClass="textoDestaque"/>
+</ui:define>
+
+<ui:define name="conteudo">
+
+<table style="width: 98%; border-collapse: collapse; border-spacing: 4; margin-left:auto; margin-right:auto">
+
+	<h:panelGrid style="text-align: right; width: 100%">
+		<h:column>
+			<br/>
+			<h:outputLink value="../visualizarInventario.jsf">
+				<h:graphicImage value="/imagens/btn_voltar.png" width="32" height="32"/>
+			</h:outputLink>
+	
+			<p:spacer width="20"/>
+	
+			<h:commandLink action="#{adminBean.cadastrarItemProdutoInventarioAction}">
+				<h:graphicImage value="/imagens/btn_atualizar.png" width="32" height="32"/>
+			</h:commandLink>
+			
+			<p:spacer width="10"/>
+		</h:column>
+	</h:panelGrid>
+		
+	<h:panelGroup labelWidth="22%" fieldWidth="78%">
+		<h:outputLabel value="#{msg.cadastrarInventario_nroSerie}:" styleClass="textoNormal" />
+		<h:inputText id="nroSerie" size="50" maxlength="64" 
+			 styleClass="textoNormal" required="true" value="#{sessionBean.itemInventario.nroSerie}"/>
+		
+		<h:outputLabel value="#{msg.cadastrarInventario_patrimonio}:" styleClass="textoNormal" />
+		<h:inputText id="nroPatrimonio" size="32" maxlength="32" 
+			 styleClass="textoNormal" value="#{sessionBean.itemInventario.nroPatrimonio}"/>
+		
+		<h:outputLabel value="#{msg.cadastrarInventario_nroNotaFiscal}:" styleClass="textoNormal" />
+		<h:inputText id="nroNotaFiscal" size="32" maxlength="32" 
+			 styleClass="textoNormal" value="#{sessionBean.itemInventario.nroNotaFiscal}"/>
+		
+		<h:outputLabel value="#{msg.cadastrarInventario_dataEmissaoNota}:" />
+ 		<p:calendar id="dataEmissaoNota" mode="inline" styleClass="textoNormal" locale="pt_BR" converter="calendarConverter"
+			value="#{sessionBean.itemInventario.dataEmissaoNota}">
+		</p:calendar>
+ 		
+ 		<h:outputLabel value="#{msg.cadastrarInventario_responsavel}:" styleClass="textoNormal" />
+		<h:selectOneMenu id="responsavel" converter="#{converterBean}"
+			value="#{sessionBean.itemInventario.responsavel}">
+			<f:selectItem itemLabel="#{msg.cadastro_selecione}" noSelectionOption="true"/>
+			<f:selectItems value="#{gestorBean.gestorService.listaColaboradoresInternos}"
+				var="colaborador" itemLabel="#{colaborador.nomeCompleto}" itemValue="#{colaborador}"/>
+			<f:selectItem itemLabel="Nenhum"/>
+		</h:selectOneMenu>
+	</h:panelGroup>
+</table>
+
+</ui:define>
+</ui:composition>

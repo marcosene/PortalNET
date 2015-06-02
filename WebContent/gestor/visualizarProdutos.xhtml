@@ -1,0 +1,122 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition template="/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:define name="titulo">
+	<h:graphicImage value="/imagens/icon_produto.png" width="32" height="32"/>
+	<p:spacer width="10"/>
+	<h:outputText value="#{msg.cadastrarProduto_titulo}" styleClass="textoDestaque"/>
+</ui:define>
+
+<ui:define name="conteudo">
+	<table style="width: 98%; border-collapse: collapse; border-spacing: 4; margin-left:auto; margin-right:auto">
+		<tr>
+			<td>
+				<br/>
+				<h:panelGroup>
+					<h:outputLabel value="#{msg.cadastrarArea_cliente}:" styleClass="textoNormal"/>
+					<h:selectOneMenu id="cliente" required="true" immediate="true" 
+						value="#{sessionBean.cliente}" converter="#{converterBean}">
+						<f:selectItem itemLabel="#{msg.cadastro_selecione}" noSelectionOption="true"/>
+						<f:selectItems value="#{adminBean.adminService.listaClientes}"
+							var="cliente" itemLabel="#{cliente.nomeEmpresa}" itemValue="#{cliente}"/>
+						<p:ajax update=":formGeral:area" process="@this" />
+					</h:selectOneMenu>
+					
+					<p:spacer width="10" />
+					
+					<h:outputLabel value="#{msg.cadastrarArea_area}:" styleClass="textoNormal"/>
+					<h:selectOneMenu id="area" required="true" immediate="true" 
+						value="#{sessionBean.area}" converter="#{converterBean}">
+						<f:selectItem itemLabel="#{msg.cadastro_selecione}" noSelectionOption="true"/>
+						<f:selectItems value="#{consultaBean.listaAreas}"
+							var="area" itemLabel="#{area.nome}" itemValue="#{area}"/>
+						<p:ajax update=":formGeral:tabelaListagem" process="@this" />
+					</h:selectOneMenu>
+				</h:panelGroup>
+			</td>
+			<td align="right">
+				<br/>
+				<h:commandLink action="#{adminBean.cadastrarNovoProdutoAction}">
+					<h:graphicImage value="/imagens/btn_cadastrar.png" width="32" height="32"/>
+				</h:commandLink>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<p:dataTable id="tabelaListagem" emptyMessage="#{msg.cadastrarProduto_nenhumProduto}"
+				 	paginator="true" paginatorAlwaysVisible="false" rows="20"
+					value="#{consultaBean.listaProdutos}" var="produto" styleClass="textoNormal" style="width: 100%">
+					<p:column width="20%">
+						<f:facet name="header">
+							<h:outputText value="#{msg.cadastrarProduto_produto}"/>
+						</f:facet>
+						<h:outputText value="#{produto.nome}"/>
+					</p:column>
+
+					<p:column width="35%">
+						<f:facet name="header">
+							<h:outputText value="#{msg.cadastrarArea_gerenteFuncional}"/>
+						</f:facet>
+						<h:outputText value="#{produto.area.gerenteFuncional.nomeCompleto}"/>
+					</p:column>
+
+					<p:column width="35%">
+						<f:facet name="header">
+							<h:outputText value="#{msg.cadastrarProduto_gerenteProduto}"/>
+						</f:facet>
+						<h:outputText value="#{produto.gerenteProduto.nomeCompleto}"/>
+					</p:column>
+
+					<p:column exportable="false" width="10%">
+						<f:facet name="header">
+							<h:outputText value="#{msg.cadastro_acoes}"/>
+						</f:facet>
+						<h:panelGroup>
+							<h:commandLink id="comandoAlterar" action="#{adminBean.selecionarProdutoAction}">
+								<f:param name="idProduto" value="#{produto.id}"/>
+								<h:graphicImage value="/imagens/btn_edit.png" width="16" height="16" title="#{msg.cadastro_alterar}"/>
+							</h:commandLink>
+							
+							<p:spacer width="10"/>
+							
+							<h:commandLink id="comandoExcluir" actionListener="#{adminBean.excluirProdutoAction}" onclick="if (!confirm('#{msg.cadastro_confirmaExclusao}')) return false;">
+								<f:param name="idProduto" value="#{produto.id}"/>
+								<h:graphicImage value="/imagens/btn_excluir.png" width="16" height="16" title="#{msg.cadastro_excluir}"/>
+							</h:commandLink>
+						</h:panelGroup>
+					</p:column>
+				</p:dataTable>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" align="right">
+				<h:outputText value="#{msg.header_exportarRelatorio}: " styleClass="textoLabelDestaque"/>
+				
+				<h:commandLink immediate="true">
+					<p:graphicImage value="/imagens/icon_relatorio_pdf.png" />
+					<p:dataExporter type="pdf" target="tabelaListagem" fileName="ListaProdutos"/>
+				</h:commandLink>
+
+				<p:spacer width="10"/>
+
+				<h:commandLink immediate="true">
+					<p:graphicImage value="/imagens/icon_relatorio_excel.png" />
+					<p:dataExporter type="xls" target="tabelaListagem" fileName="ListaProdutos" />
+				</h:commandLink>
+				
+				<p:spacer width="10"/>
+			</td>
+		</tr>
+	</table>
+
+</ui:define>
+</ui:composition>

@@ -1,0 +1,58 @@
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+	<session-factory>
+		<!-- Opcoes para Debug -->
+		<property name="hibernate.show_sql">false</property>
+		<property name="hibernate.format_sql">false</property>
+		<property name="hibernate.use_sql_comments">false</property>
+
+		<!-- Opcoes para Configuracao -->
+		<property name="hibernate.dialect">org.hibernate.dialect.SQLServerDialect</property>
+		<property name="hibernate.hbm2ddl.auto">false</property>
+		<property name="hibernate.max_fetch_depth">0</property>
+		<property name="transaction.factory_class">org.hibernate.transaction.JDBCTransactionFactory</property>
+		<property name="current_session_context_class">thread</property>
+
+		<!-- Opcoes para Caching -->
+		<property name="hibernate.cache.use_query_cache">true</property>
+		<property name="hibernate.cache.use_second_level_cache">false</property>
+		<property name="hibernate.cache.region.factory_class">net.sf.ehcache.hibernate.SingletonEhCacheRegionFactory</property>
+
+		<!-- Opcoes para C3P0 -->
+		<property name="hibernate.c3p0.acquire_increment">1</property>
+		<property name="hibernate.c3p0.minPoolSize">10</property>
+		<property name="hibernate.c3p0.maxPoolSize">50</property>
+		<property name="hibernate.c3p0.timeout">1800</property>
+		<property name="hibernate.c3p0.max_statement">0</property>
+		<property name="hibernate.c3p0.idle_test_period">30</property>
+		
+		<!-- Mapeamentos das Classes -->
+		<mapping resource="br/com/portalnet/resources/jasyptHibernateTypes.hbm.xml"/>
+		<mapping class="br.com.portalnet.model.AlocacaoAtividade"/>
+		<mapping class="br.com.portalnet.model.Area"/>
+		<mapping class="br.com.portalnet.model.Atividade"/>
+		<mapping class="br.com.portalnet.model.Cliente"/>
+		<mapping class="br.com.portalnet.model.Colaborador"/>
+		<mapping class="br.com.portalnet.model.Compromisso"/>
+		<mapping class="br.com.portalnet.model.Equipe"/>
+		<mapping class="br.com.portalnet.model.Ferias"/>
+		<mapping class="br.com.portalnet.model.Feriados"/>
+		<mapping class="br.com.portalnet.model.FraseDia"/>
+		<mapping class="br.com.portalnet.model.GrupoAtividade"/>
+		<mapping class="br.com.portalnet.model.Modulo"/>
+		<mapping class="br.com.portalnet.model.MuralRecados"/>
+		<mapping class="br.com.portalnet.model.ObservacoesProjeto"/>
+		<mapping class="br.com.portalnet.model.Ocorrencia"/>
+		<mapping class="br.com.portalnet.model.Parametros"/>
+		<mapping class="br.com.portalnet.model.Produto"/>
+		<mapping class="br.com.portalnet.model.Projeto"/>
+		<mapping class="br.com.portalnet.model.RegistroAtividade"/>
+		<mapping class="br.com.portalnet.model.TipoAtividade"/>
+		<mapping class="br.com.portalnet.model.CustoRealProjeto"/>
+		<mapping class="br.com.portalnet.model.ProdutoInventario"/>
+		<mapping class="br.com.portalnet.model.ItemInventario"/>
+	</session-factory>
+</hibernate-configuration>

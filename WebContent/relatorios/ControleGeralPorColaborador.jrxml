@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<subDataset name="dataset1"/>
+	<subDataset name="dataset2"/>
+	<parameter name="dataInicio" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="dataFim" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="idCliente" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[SELECT colaborador.nome AS nome,
+	colaborador.sobrenome AS sobrenome,
+	projeto.codigo AS codProjeto,
+        projeto.codigoCliente AS codCliente,
+        projeto.codigoPacote AS codPacote,
+	projeto.dataCadastro AS dataCadastro,
+	projeto.nome AS nomeProjeto,
+	SUM(registro.qtdeHorasTrabalho) AS totalHoras,
+	somaMes.totalColaborador
+
+FROM RegistroAtividade registro
+
+INNER JOIN AlocacaoAtividade alocacao ON (alocacao.id = registro.AlocacaoAtividade_id)
+INNER JOIN Colaborador colaborador ON (colaborador.id = alocacao.Colaborador_id)
+INNER JOIN Atividade atividade ON (atividade.id = alocacao.Atividade_id)
+INNER JOIN GrupoAtividade grupoAtividade ON (grupoAtividade.id = atividade.GrupoAtividade_id)
+INNER JOIN Projeto projeto ON (projeto.id = grupoAtividade.Projeto_id)
+INNER JOIN Produto produto ON (produto.id = projeto.Produto_id)
+INNER JOIN Area area ON (area.id = produto.Area_id)
+INNER JOIN Cliente cliente ON (cliente.id = area.Cliente_id)
+INNER JOIN (SELECT colaborador.id AS usuarioId,
+		SUM(registro.qtdeHorasTrabalho) AS totalColaborador
+
+		FROM RegistroAtividade registro
+		INNER JOIN AlocacaoAtividade alocacao ON (alocacao.id = registro.AlocacaoAtividade_id)
+		INNER JOIN Colaborador colaborador ON (colaborador.id = alocacao.Colaborador_id)
+		WHERE registro.dataTrabalho >= $P{dataInicio} AND registro.dataTrabalho <= $P{dataFim}
+
+		GROUP BY colaborador.id
+	   ) as somaMes ON (somaMes.usuarioId = colaborador.id)
+
+WHERE registro.dataTrabalho >= $P{dataInicio} AND
+	registro.dataTrabalho <= $P{dataFim} AND
+	cliente.id = $P{idCliente}
+
+
+GROUP BY colaborador.nome, colaborador.sobrenome, projeto.codigo, projeto.codigoCliente, projeto.codigoPacote, projeto.nome, projeto.dataCadastro, somaMes.totalColaborador
+ORDER BY colaborador.nome, colaborador.sobrenome, projeto.codigo]]>
+	</queryString>
+	<field name="nome" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="sobrenome" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="codProjeto" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="codCliente" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="codPacote" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="dataCadastro" class="java.sql.Timestamp">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="nomeProjeto" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="totalHoras" class="java.lang.Float">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="totalColaborador" class="java.lang.Double">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<variable name="totalHorasProjeto" class="java.lang.Float" resetType="Group" resetGroup="Colaborador" calculation="Sum">
+		<variableExpression><![CDATA[$F{totalHoras}]]></variableExpression>
+	</variable>
+	<variable name="totalPorcentagem" class="java.lang.Double" resetType="Group" resetGroup="Colaborador" calculation="Sum">
+		<variableExpression><![CDATA[Double.valueOf(Math.round($F{totalHoras}.floatValue() / $F{totalColaborador}.floatValue() * 10000) / 100.0)]]></variableExpression>
+	</variable>
+	<group name="Colaborador" isReprintHeaderOnEachPage="true">
+		<groupExpression><![CDATA[$F{nome} + " " + $F{sobrenome}]]></groupExpression>
+		<groupHeader>
+			<band height="30">
+				<textField pattern="">
+					<reportElement mode="Opaque" x="2" y="0" width="544" height="15" forecolor="#333333" backcolor="#FFE9D4"/>
+					<textElement>
+						<font isBold="true" isItalic="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{nome} + " " + $F{sobrenome}]]></textFieldExpression>
+				</textField>
+				<textField pattern="(#,##00.00%)">
+					<reportElement x="494" y="15" width="53" height="15" forecolor="#994B00"/>
+					<textElement textAlignment="Right">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA["Porcent."]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="413" y="15" width="81" height="15" forecolor="#994B00"/>
+					<textElement textAlignment="Right">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA["Horas"]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="12" y="15" width="401" height="15" forecolor="#994B00"/>
+					<textElement>
+						<font size="10" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA["Projeto"]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="30">
+				<line>
+					<reportElement x="9" y="4" width="537" height="1" forecolor="#CCCCCC"/>
+					<graphicElement>
+						<pen lineStyle="Dotted"/>
+					</graphicElement>
+				</line>
+				<textField pattern="">
+					<reportElement x="514" y="5" width="33" height="15" forecolor="#666666"/>
+					<textElement textAlignment="Right">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$V{totalHorasProjeto}.toString() + "h"]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="413" y="5" width="101" height="15" forecolor="#666666"/>
+					<textElement textAlignment="Right">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Total: ]]></text>
+				</staticText>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band/>
+	</background>
+	<title>
+		<band height="67">
+			<staticText>
+				<reportElement x="2" y="31" width="67" height="15" forecolor="#666666"/>
+				<textElement>
+					<font size="10" isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[Data Inicial:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="85" y="0" width="386" height="20" forecolor="#333333"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Relatório de Controle Geral por Colaborador]]></text>
+			</staticText>
+			<textField pattern="">
+				<reportElement x="69" y="31" width="105" height="15" forecolor="#666666"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[new SimpleDateFormat("dd/MM/yyyy").format($P{dataInicio})]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="2" y="46" width="67" height="15" forecolor="#666666"/>
+				<textElement>
+					<font size="10" isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[Data Final:]]></text>
+			</staticText>
+			<textField pattern="">
+				<reportElement x="69" y="46" width="105" height="15" forecolor="#666666"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[new SimpleDateFormat("dd/MM/yyyy").format($P{dataFim})]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<detail>
+		<band height="16">
+			<textField>
+				<reportElement x="11" y="1" width="402" height="15" forecolor="#666666"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[(($F{dataCadastro}.after($P{dataInicio})) ? "*** " : "") +
+$F{codCliente} + ($F{codPacote} == null ? "" : ("-" + $F{codPacote})) + ": " + $F{nomeProjeto} + ($F{codPacote} == null ? "" : (", Pacote: "+$F{codPacote}))]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="413" y="1" width="80" height="15" forecolor="#666666"/>
+				<textElement textAlignment="Right">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{totalHoras} + "h"]]></textFieldExpression>
+			</textField>
+			<textField pattern="(#,##00.00%)">
+				<reportElement x="493" y="1" width="53" height="15" forecolor="#666666"/>
+				<textElement textAlignment="Right">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Double"><![CDATA[Double.valueOf($F{totalHoras}.floatValue() / $F{totalColaborador}.floatValue()
++
+(($F{totalColaborador}.floatValue() == $V{totalHorasProjeto}.floatValue()) ? (100.0 - $V{totalPorcentagem}.floatValue())/100 : 0.0))]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="29">
+			<textField>
+				<reportElement x="426" y="12" width="120" height="17"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression class="java.lang.String"><![CDATA["Pag. " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="10"/>
+	</summary>
+</jasperReport>

@@ -1,0 +1,178 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition template="/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:define name="titulo">
+	<h:graphicImage value="/imagens/icon_projeto.png" width="32" height="32"/>
+	<p:spacer width="10"/>
+	<h:outputText value="#{msg.cadastrarProjeto_titulo}" styleClass="textoDestaque"/>
+</ui:define>
+
+<ui:define name="conteudo">
+	<table style="width: 98%; border-collapse: collapse; border-spacing: 4; margin-left:auto; margin-right:auto">
+		<tr>
+			<td>
+				<br/>
+				<h:panelGroup>
+					<h:outputLabel value="#{msg.cadastrarArea_cliente}:" styleClass="textoNormal"/>
+					<h:selectOneMenu id="cliente" required="true" immediate="true" converter="#{converterBean}"
+						value="#{sessionBean.cliente}">
+						<f:selectItem itemLabel="#{msg.cadastro_selecione}" noSelectionOption="true"/>
+						<f:selectItems value="#{gestorBean.gestorService.listaClientes}"
+							var="cliente" itemLabel="#{cliente.nomeEmpresa}" itemValue="#{cliente}"/>
+						<p:ajax update=":formGeral:area" process="@this" />
+					</h:selectOneMenu>
+					
+					<p:spacer width="10" />
+					
+					<h:outputLabel value="#{msg.cadastrarArea_area}:" styleClass="textoNormal"/>
+					<h:selectOneMenu id="area" required="true" immediate="true" converter="#{converterBean}"
+						value="#{sessionBean.area}">
+						<f:selectItem itemLabel="#{msg.cadastro_selecione}" noSelectionOption="true"/>
+						<f:selectItems value="#{consultaBean.listaAreas}"
+							var="area" itemLabel="#{area.nome}" itemValue="#{area}"/>
+						<p:ajax update=":formGeral:produto" process="@this" />
+					</h:selectOneMenu>
+
+					<p:spacer width="10" />
+			
+					<h:outputLabel value="#{msg.cadastrarProduto_produto}:" styleClass="textoNormal"/>
+					<h:selectOneMenu id="produto" required="true" immediate="true" converter="#{converterBean}"
+						value="#{sessionBean.produto}">
+						<f:selectItem itemLabel="#{msg.cadastro_selecione}" noSelectionOption="true"/>
+						<f:selectItems value="#{consultaBean.listaProdutos}"
+							var="produto" itemLabel="#{produto.nome}" itemValue="#{produto}"/>
+						<p:ajax update=":formGeral:tabelaListagem" process="@this" />
+					</h:selectOneMenu>
+				</h:panelGroup>					
+			</td>		
+			<td align="right">
+				<br/>
+				<h:commandLink action="#{gestorBean.cadastrarNovoProjetoAction}">
+					<h:graphicImage value="/imagens/btn_cadastrar.png" width="32" height="32"/>
+				</h:commandLink>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<p:dataTable id="tabelaListagem" styleClass="textoNormal" style="width: 100%"
+					emptyMessage="#{msg.cadastrarProjeto_nenhumProjeto}" paginator="true" paginatorAlwaysVisible="false" rows="20"
+					value="#{gestorBean.listaProjetos}" var="projeto">
+					<p:column exportable="false" width="2%">
+						<h:graphicImage url="/imagens/generico.png" rendered="#{projeto.generico}" title="#{msg.cadastrarProjeto_projetoGenerico}"/>
+					</p:column>
+
+					<p:column sortBy="codigo" width="8%">
+						<f:facet name="header">
+							<h:outputText value="#{msg.cadastrarProjeto_codigo}"/>
+						</f:facet>
+						<h:outputText value="#{projeto.codigoClienteCompleto}"/>
+					</p:column>
+					
+					<p:column sortBy="produto.area.nome" width="8%" style="text-align: center">
+						<f:facet name="header">
+							<h:outputText value="#{msg.cadastrarProjeto_area}"/>
+						</f:facet>
+						<h:outputText value="#{projeto.produto.area.nome}" />
+					</p:column>
+					
+					<p:column sortBy="nome" width="24%">
+						<f:facet name="header">
+							<h:outputText value="#{msg.cadastrarProjeto_nomeProjeto}"/>
+						</f:facet>
+						<h:outputText value="#{projeto.nome}"/>
+					</p:column>
+					
+					<p:column sortBy="descricao" width="23%">
+						<f:facet name="header">
+							<h:outputText value="#{msg.cadastrarProjeto_descricaoProjeto}"/>
+						</f:facet>
+						<h:outputText value="#{projeto.descricao}"/>
+					</p:column>
+					
+					<p:column sortBy="descTipoFaseProjeto" width="10%">
+						<f:facet name="header">
+							<h:outputText value="#{msg.tipoFase_faseDoProjeto}"/>
+						</f:facet>
+						<h:outputText value="#{projeto.descTipoFaseProjeto}"/>
+					</p:column>
+					
+					<p:column sortBy="gpj.nomeCompleto" width="10%" style="text-align: center">
+						<f:facet name="header">
+							<h:outputText value="#{msg.cadastrarProjeto_gerente}"/>
+						</f:facet>
+						<h:outputText value="#{projeto.gpj.apelido}"/>
+					</p:column>
+					
+					<p:column sortBy="estado" width="5%" style="text-align: center">
+						<f:facet name="header">
+							<h:outputText value="#{msg.cadastrarProjeto_status}"/>
+						</f:facet>
+						<h:outputText value="#{msg.cadastrarProjeto_ativo}" rendered="#{projeto.estado == 0}"/>
+						<h:outputText value="#{msg.cadastrarProjeto_inativo}" rendered="#{projeto.estado == 1}"/>
+					</p:column>
+					
+					<p:column exportable="false" width="10%" style="text-align: center">
+						<f:facet name="header">
+							<h:outputText value="#{msg.cadastro_acoes}"/>
+						</f:facet>
+						<h:panelGroup>
+							<h:commandLink id="comandoStatus" actionListener="#{gestorBean.alterarEstadoProjetoAction}"
+								immediate="true">
+								<f:param name="idProjeto" value="#{projeto.id}"/>
+								<h:graphicImage url="/imagens/user_desbloq.png" 
+									title="#{msg.cadastrarProjeto_desabilitar}" rendered="#{projeto.estado == 0}"/>
+								<h:graphicImage url="/imagens/user_bloq.png"
+									title="#{msg.cadastrarProjeto_habilitar}" rendered="#{projeto.estado == 1}"/>
+							</h:commandLink>
+							
+							<p:spacer width="10"/>
+							
+							<h:commandLink id="comandoAlterar" action="#{gestorBean.selecionarProjetoAction}" immediate="true">
+								<f:param name="idProjeto" value="#{projeto.id}"/>
+								<h:graphicImage value="/imagens/btn_edit.png" width="16" height="16" title="#{msg.cadastro_alterar}"/>
+							</h:commandLink>
+							
+							<p:spacer width="10"/>
+							
+							<h:commandLink id="comandoExcluir" actionListener="#{gestorBean.excluirProjetoAction}"
+								immediate="true" onclick="if (!confirm('#{msg.cadastro_confirmaExclusao}')) return false;">
+								<f:param name="idProjeto" value="#{projeto.id}"/>
+								<h:graphicImage value="/imagens/btn_excluir.png" width="16" height="16" title="#{msg.cadastro_excluir}"/>
+							</h:commandLink>
+						</h:panelGroup>
+					</p:column>
+				</p:dataTable>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" align="right">
+				<h:outputText value="#{msg.header_exportarRelatorio}: " styleClass="textoLabelDestaque"/>
+				
+				<h:commandLink immediate="true">
+					<p:graphicImage value="/imagens/icon_relatorio_pdf.png" />
+					<p:dataExporter type="pdf" target="tabelaListagem" fileName="ListaProjetos"/>
+				</h:commandLink>
+
+				<p:spacer width="10"/>
+
+				<h:commandLink immediate="true">
+					<p:graphicImage value="/imagens/icon_relatorio_excel.png" />
+					<p:dataExporter type="xls" target="tabelaListagem" fileName="ListaProjetos" />
+				</h:commandLink>
+				
+				<p:spacer width="10"/>
+			</td>
+		</tr>
+	</table>
+
+</ui:define>
+</ui:composition>

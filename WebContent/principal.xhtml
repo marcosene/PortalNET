@@ -1,0 +1,536 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition template="/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:define name="conteudo">
+
+	<table width="100%" cellpadding="10" align="center">
+		<tr>
+			<td width="32%" valign="top">
+				<rich:tabPanel switchType="client" width="90%" 
+					headerAlignment="left" rendered="#{sessionBean.colaboradorLogado.tipoUsuario != 0}">
+	        		<rich:tab header="Meu Perfil" style="text-align:left;">
+						<h:panelGrid columns="2" cellpadding="2">
+							<p:graphicImage value="#{sessionBean.colaboradorLogado.graphicFoto}" />
+							
+							<h:panelGroup>
+								<h:outputText value="#{msg.cadastrarColaborador_nome}: " styleClass="textoLabelDestaqueMenor"/>
+								<h:outputText value="#{sessionBean.colaboradorLogado.nomeCompleto}" styleClass="textoNormal"/>
+								<br/>
+								<h:outputText value="#{msg.cadastrarColaborador_email}: " styleClass="textoLabelDestaqueMenor"/>
+								<h:outputLink value="mailto:#{sessionBean.colaboradorLogado.email}">
+									<h:outputText value="#{sessionBean.colaboradorLogado.email}" />
+								</h:outputLink>
+								<br/>
+								<h:outputText value="#{msg.cadastrarColaborador_diaAniversario}: " styleClass="textoLabelDestaqueMenor"/>
+								<h:outputText value="#{sessionBean.colaboradorLogado.diaAniversario}/#{sessionBean.colaboradorLogado.mesAniversario}" styleClass="textoNormal"/>
+								<br/>
+								<h:outputText value="#{msg.cadastrarColaborador_dataContratacao}: " styleClass="textoLabelDestaqueMenor"/>
+								<h:outputText value="#{sessionBean.colaboradorLogado.dataContratacao.time}" styleClass="textoNormal">
+									<f:convertDateTime type="date" dateStyle="medium" />
+								</h:outputText>
+								<br/>
+								<h:outputText value="#{msg.cadastrarColaborador_telResid}: " styleClass="textoLabelDestaqueMenor"/>
+								<h:outputText value="#{sessionBean.colaboradorLogado.telResid}" styleClass="textoNormal"/>
+								<br/>
+								<h:outputText value="#{msg.cadastrarColaborador_telCelular}: " styleClass="textoLabelDestaqueMenor"/>
+								<h:outputText value="#{sessionBean.colaboradorLogado.telCelular}" styleClass="textoNormal"/>
+								<br/>
+							</h:panelGroup>
+						</h:panelGrid>
+					</rich:tab>
+				</rich:tabPanel>
+				
+				<br/>
+				<a4j:region id="meusProjetosOcorrencias" rendered="#{sessionBean.colaboradorLogado.tipoUsuario != 0 and sessionBean.colaboradorLogado.tipoUsuario != 7}">
+					<rich:tabPanel switchType="client" width="90%" headerAlignment="left">
+	        			<rich:tab header="#{msg.principal_meusProjetos}" style="text-align:left" styleClass="textoDestaqueMenor">
+							<table cellspacing="5" width="100%" >
+								<a4j:repeat value="#{colaboradorBean.listaMeusProjetos}" var="projeto" rows="0">
+									<tr onmouseover="this.style.backgroundColor='#E0E0E0'" 
+										onmouseout="this.style.backgroundColor='#FFFFFF'">
+										<td>
+										<table cellspacing="0" width="100%">
+											<tr>
+												<td width="60%" valign="top">
+													<h:graphicImage url="/imagens/generico.png" rendered="#{projeto.generico}" title="#{msg.cadastrarProjeto_projetoGenerico}"/>
+													<h:outputText value=" #{projeto.produto.nome}: " styleClass="textoNormalNegrito" title="#{projeto.descricao}"/>
+													<h:outputText value="#{projeto.codigoClienteCompleto} " styleClass="textoLabelDestaqueMenor" title="#{projeto.descricao}"/>
+												</td>
+												<td width="40%" align="right" valign="top">
+													<a4j:commandButton action="#{colaboradorBean.acessarStatusProjetoAction}"
+														image="/imagens/icon_status.png" title="#{msg.header_menuStatusProjeto}">
+														<f:param name="idProjeto" value="#{projeto.id}" />
+													</a4j:commandButton>
+													<p:spacer width="6"/>
+													<a4j:commandButton action="#{colaboradorBean.acessarOcorrenciaProjetoAction}"
+														image="/imagens/icon_ocorrencia.png" title="#{msg.cadastrarOcorrencia_titulo}">
+														<f:param name="idProjeto" value="#{projeto.id}"/>
+													</a4j:commandButton>
+													<p:spacer width="6"/>
+													<a4j:commandButton action="#{gestorBean.acessarCadastroProjetoAction}" rendered="#{sessionBean.colaboradorLogado.tipoAcesso == 0 and sessionBean.colaboradorLogado.tipoUsuario != 2}"
+														image="/imagens/icon_projeto.png" title="#{msg.cadastrarProjeto_titulo}">
+														<f:param name="idProjeto" value="#{projeto.id}"/>
+													</a4j:commandButton>
+													<p:spacer width="6"/>
+													<a4j:commandButton action="#{gestorBean.acessarAlocacaoProjetoAction}" rendered="#{(sessionBean.colaboradorLogado.tipoAcesso == 0 and sessionBean.colaboradorLogado.tipoUsuario != 2) or sessionBean.colaboradorLogado.id == projeto.responsavel.id}"
+														image="/imagens/icon_alocacao.png" title="#{msg.cadastrarAlocacao_titulo}">
+														<f:param name="idProjeto" value="#{projeto.id}"/>
+													</a4j:commandButton>
+												</td>
+											</tr>
+											<tr valign="top">
+												<td colspan="2" valign="top">
+													<h:outputText value="#{projeto.nome}  (#{projeto.gpj.apelido})" styleClass="textoNormal" title="#{projeto.descricao}"/>
+													<p:spacer height="6"/>
+												</td>
+											</tr>
+										</table>
+										</td>
+									</tr>
+								</a4j:repeat >
+							</table>
+						</rich:tab>
+						
+						<rich:tab header="#{msg.principal_projetosGerais}" style="text-align:left" styleClass="textoDestaqueMenor" rendered="#{sessionBean.colaboradorLogado.tipoUsuario == 1}">
+							<table cellspacing="5" width="100%" >
+								<a4j:repeat value="#{gestorBean.listaMeusProjetosGenericos}" var="projeto" rows="0">
+									<tr onmouseover="this.style.backgroundColor='#E0E0E0'" 
+										onmouseout="this.style.backgroundColor='#FFFFFF'">
+										<td>
+										<table cellspacing="0" width="100%">
+											<tr>
+												<td width="60%" valign="top">
+													<h:graphicImage url="/imagens/generico.png" rendered="#{projeto.generico}" title="#{msg.cadastrarProjeto_projetoGenerico}"/>
+													<h:outputText value=" #{projeto.produto.nome}: " styleClass="textoNormalNegrito" title="#{projeto.descricao}"/>
+													<h:outputText value="#{projeto.codigoClienteCompleto} " styleClass="textoLabelDestaqueMenor" title="#{projeto.descricao}"/>
+												</td>
+											<td width="40%" align="right" valign="top">
+												<a4j:commandButton action="#{colaboradorBean.acessarStatusProjetoAction}"
+													image="/imagens/icon_status.png" title="#{msg.header_menuStatusProjeto}">
+													<f:param name="idProjeto" value="#{projeto.id}" />
+												</a4j:commandButton>
+												<p:spacer width="6"/>
+												<a4j:commandButton action="#{colaboradorBean.acessarOcorrenciaProjetoAction}"
+													image="/imagens/icon_ocorrencia.png" title="#{msg.cadastrarOcorrencia_titulo}">
+													<f:param name="idProjeto" value="#{projeto.id}"/>
+												</a4j:commandButton>
+												<p:spacer width="6"/>
+												<a4j:commandButton action="#{gestorBean.acessarCadastroProjetoAction}" rendered="#{sessionBean.colaboradorLogado.tipoAcesso == 0 and sessionBean.colaboradorLogado.tipoUsuario != 2}"
+													image="/imagens/icon_projeto.png" title="#{msg.cadastrarProjeto_titulo}">
+													<f:param name="idProjeto" value="#{projeto.id}"/>
+												</a4j:commandButton>
+												<p:spacer width="6"/>
+												<a4j:commandButton action="#{gestorBean.acessarAlocacaoProjetoAction}" rendered="#{(sessionBean.colaboradorLogado.tipoAcesso == 0 and sessionBean.colaboradorLogado.tipoUsuario != 2) or sessionBean.colaboradorLogado.id == projeto.responsavel.id}"
+													image="/imagens/icon_alocacao.png" title="#{msg.cadastrarAlocacao_titulo}">
+													<f:param name="idProjeto" value="#{projeto.id}"/>
+												</a4j:commandButton>
+											</td>
+											</tr>
+											<tr valign="top">
+												<td colspan="2" valign="top">
+													<h:outputText value="#{projeto.nome}  (#{projeto.gpj.apelido})" styleClass="textoNormal" title="#{projeto.descricao}"/>
+													<p:spacer height="6"/>
+												</td>
+											</tr>
+										</table>
+										</td>
+									</tr>
+								</a4j:repeat >
+							</table>
+						</rich:tab>
+						
+						<rich:tab header="#{msg.principal_minhasOcorrencias}" style="text-align:left" styleClass="textoDestaqueMenor">
+							<a4j:region>
+								<h:panelGroup rendered="#{sessionBean.colaboradorLogado.tipoAcesso == 0 and sessionBean.colaboradorLogado.tipoUsuario != 7}">
+									<h:outputLabel value="Buscar:&nbsp;&nbsp;" class="textoNormalNegrito" />
+									<h:inputText id="PesquisaOcorrencia" size="25" maxlength="150" 
+										 styleClass="textoNormal" required="false" value="#{sessionBean.chavePesquisaOcorrencia}"
+										 onkeyup="if((event.keyCode==13)||(window.event.keyCode==13)){document.getElementById('meusProjetosOcorrencias:btnPesquisar').click(); return false;}" />
+	
+									<p:spacer width="15"/>
+																							
+									<a4j:commandButton id="btnPesquisar" action="success_ocorrencia"
+										image="/imagens/icon_pesquisa.png">
+									</a4j:commandButton>
+								</h:panelGroup>
+							</a4j:region>
+							
+							<br/><br/>
+							<table cellspacing="0" width="100%">
+								<a4j:repeat value="#{colaboradorBean.listaMinhasOcorrencias}" var="ocorrencia" rows="0">
+									<tr onmouseover="this.style.backgroundColor='#E0E0E0'" 
+										onmouseout="this.style.backgroundColor='#FFFFFF'">
+										<td>
+										<table cellspacing="0" width="100%">
+											<tr>
+												<td>
+													<h:graphicImage url="/imagens/generico.png" rendered="#{ocorrencia.projeto.generico}" title="#{msg.cadastrarProjeto_projetoGenerico}"/>
+													<h:outputText value=" #{ocorrencia.projeto.codigoClienteCompleto}: " styleClass="textoLabelDestaqueMenor" title="#{ocorrencia.numBugCliente}"/>
+													<h:outputText value="#{ocorrencia.numOcorrencia}" styleClass="textoNegrito" title="#{ocorrencia.numBugCliente}"/>
+												</td>
+												<td align="right">
+													<a4j:commandButton id="comandoGerarRelatorio" action="#{relatorioBean.relatorioAction}"
+														rendered="#{sessionBean.colaboradorLogado.tipoAcesso == 0 or ocorrencia.statusOcorrencia == 3 or ocorrencia.statusOcorrencia == 5}"
+														image="/imagens/icon_relatorio_pdf.png" title="#{msg.cadastro_gerarRelatorio}">
+														<f:param name="relatorioSelecionado" value="6"/>
+														<f:param name="idOcorrencia" value="#{ocorrencia.id}"/>
+													</a4j:commandButton>
+													
+													<p:spacer width="10"/>
+													
+													<a4j:commandButton action="#{colaboradorBean.acessarStatusOcorrenciaAction}"
+														image="/imagens/icon_acompanhamento.png" title="#{msg.header_menuStatusOcorrencia}">
+														<f:param name="idOcorrencia" value="#{ocorrencia.id}" />
+													</a4j:commandButton>
+												</td>
+											</tr>
+											<tr>
+												<td colspan="2">
+													<h:outputText value="#{ocorrencia.titulo}" styleClass="textoNormal"/>
+													<h:outputText value=" (#{ocorrencia.descTipoStatus}:" styleClass="textoNormal"/>
+													<h:outputText value="#{ocorrencia.responsavel.apelido})" styleClass="textoNormal"/>
+													<p:spacer height="6"/>
+												</td>									
+											</tr>
+										</table>
+										</td>
+									</tr>
+								</a4j:repeat >
+							</table>
+							<br/>
+						</rich:tab>	
+					</rich:tabPanel>
+					<br/>
+					<br/>
+				</a4j:region>
+				
+				<rich:tabPanel id="recados" switchType="client" width="90%" headerAlignment="left" rendered="#{sessionBean.colaboradorLogado.tipoAcesso == 0}">
+        			<rich:tab rendered="#{!empty colaboradorBean.colaboradorService.listaRecadosTrabalho}" header="Importantes (#{colaboradorBean.colaboradorService.qtdeRecadosTrabalho})" style="text-align:left">
+						<a4j:region id="recadoImpForm">
+							<a4j:repeat value="#{colaboradorBean.colaboradorService.listaRecadosTrabalho}" var="recado" varStatus="status" rows="0">
+								<h:outputText value="De: " styleClass="textoLabelDestaqueMenor"/>		
+								<h:outputText value="#{recado.colaboradorAutor.apelido}" styleClass="textoNormal"/>
+								(<h:outputText value="#{recado.dataRegistro.time}" styleClass="textoNormal">
+									<f:convertDateTime type="both" dateStyle="short" timeStyle="short" />
+								 </h:outputText>
+								)
+	
+								<p:spacer width="10"/>
+								<a4j:commandButton action="#{colaboradorBean.muralRecadosDeleteAction}" rendered="#{sessionBean.colaboradorLogado.id == recado.colaboradorAutor.id or sessionBean.colaboradorLogado.id == recado.colaboradorDest.id or sessionBean.colaboradorLogado.tipoUsuario == 0}"
+									image="/imagens/btn_removeRecado.png" render=":formGeral:recados">
+									<f:param name="recadoSelecionado" value="#{recado.id}"/>
+								</a4j:commandButton>
+	
+								<br/>
+								<h:outputText value="Assunto: " styleClass="textoLabelDestaqueMenor"/>		
+								<h:outputText value="#{recado.assunto}" styleClass="textoNormal"/>
+								<br/>
+								<h:outputText value="Recado: " styleClass="textoLabelDestaqueMenor"/>		
+								<h:outputFormat value="#{recado.descricao}" styleClass="textoNormal"/>
+								<br/><br/>
+							</a4j:repeat >
+						</a4j:region>
+					</rich:tab>
+
+        			<rich:tab rendered="#{!empty colaboradorBean.colaboradorService.listaRecadosCasuais}" header="Diversos (#{colaboradorBean.colaboradorService.qtdeRecadosCasuais})" style="text-align:left">
+						<a4j:region id="recadoDivForm">
+							<a4j:repeat value="#{colaboradorBean.colaboradorService.listaRecadosCasuais}" var="recado" rows="0">
+								<h:outputText value="De: " styleClass="textoLabelDestaqueMenor"/>		
+								<h:outputText value="#{recado.colaboradorAutor.apelido}" styleClass="textoNormal"/>
+								(<h:outputText value="#{recado.dataRegistro.time}" styleClass="textoNormal">
+									<f:convertDateTime type="both" dateStyle="short" timeStyle="short" />
+								 </h:outputText>
+								)
+								
+								<p:spacer width="10"/>
+								<a4j:commandButton action="#{colaboradorBean.muralRecadosDeleteAction}" rendered="#{sessionBean.colaboradorLogado.id == recado.colaboradorAutor.id or sessionBean.colaboradorLogado.id == recado.colaboradorDest.id or sessionBean.colaboradorLogado.tipoUsuario == 0}"
+									image="/imagens/btn_removeRecado.png" render=":formGeral:recados">
+									<f:param name="recadoSelecionado" value="#{recado.id}"/>
+								</a4j:commandButton>
+								
+								<br/>
+								<h:outputText value="Assunto: " styleClass="textoLabelDestaqueMenor"/>		
+								<h:outputText value="#{recado.assunto}" styleClass="textoNormal"/>
+								<br/>
+								<h:outputText value="Recado: " styleClass="textoLabelDestaqueMenor"/>		
+								<h:outputFormat value="#{recado.descricao}" styleClass="textoNormal"/>
+								<br/><br/>
+							</a4j:repeat >
+						</a4j:region>
+					</rich:tab>
+
+        			<rich:tab rendered="#{!empty colaboradorBean.listaRecadosParticulares}" header="Individuais (#{colaboradorBean.qtdeRecadosParticulares})" style="text-align:left">
+						<a4j:region id="recadoIndivForm">
+							<a4j:repeat value="#{colaboradorBean.listaRecadosParticulares}" var="recado" rows="0">
+								<h:outputText value="De: " styleClass="textoLabelDestaqueMenor"/>
+								<h:outputText value="#{recado.colaboradorAutor.apelido}" styleClass="textoNormal"/>
+								(<h:outputText value="#{recado.dataRegistro.time}" styleClass="textoNormal">
+									<f:convertDateTime type="both" dateStyle="short" timeStyle="short" />
+								 </h:outputText>
+								)
+								
+								<p:spacer width="10"/>
+								<a4j:commandButton action="#{colaboradorBean.muralRecadosDeleteAction}" rendered="#{sessionBean.colaboradorLogado.id == recado.colaboradorAutor.id or sessionBean.colaboradorLogado.id == recado.colaboradorDest.id or sessionBean.colaboradorLogado.tipoUsuario == 0}"
+									image="/imagens/btn_removeRecado.png" render=":formGeral:recados">
+									<f:param name="recadoSelecionado" value="#{recado.id}"/>
+								</a4j:commandButton>
+		
+								<br/>
+								<h:outputText value="Assunto: " styleClass="textoLabelDestaqueMenor"/>		
+								<h:outputText value="#{recado.assunto}" styleClass="textoNormal"/>
+								<br/>
+								<h:outputText value="Recado: " styleClass="textoLabelDestaqueMenor"/>		
+								<h:outputFormat value="#{recado.descricao}" styleClass="textoNormal"/>
+								<br/><br/>
+							</a4j:repeat >
+						</a4j:region>
+					</rich:tab>
+
+        			<rich:tab header="Novo Recado" style="text-align:left">
+						<a4j:region id="novoRecadoForm">
+							<label class="textoNormalNegrito">Para: </label>
+							<br/>
+							<h:selectOneMenu id="colaboradorDest" value="#{colaboradorBean.colaborador}" styleClass="textoNormal" converter="#{converterBean}">
+								<f:selectItems value="#{colaboradorBean.colaboradorService.listaColaboradoresParticipativos}"
+									var="colaborador" itemLabel="#{colaborador.nomeCompleto}" itemValue="#{colaborador}"/>
+								<f:selectItem itemLabel="Todos"/>
+							</h:selectOneMenu>
+							<br/>
+							
+							<label class="textoNormalNegrito">Assunto: </label>
+							<br/>
+							<h:inputText id="assunto" size="38" maxlength="64"
+								 styleClass="textoNormal" required="true" />
+							<br/>
+							
+							<label  class="textoNormalNegrito">Recado: </label>
+							<br/>
+							<h:inputTextarea id="recado" rows="5" cols="37"
+								 styleClass="textoNormal" required="true" />
+							<br/>
+							
+							<h:panelGrid columns="3">
+								<h:selectOneRadio id="flagAssuntoTrabalho" required="true" styleClass="textoNormal">
+									<f:selectItem itemLabel="Importantes" itemValue="0"/>
+									<f:selectItem itemLabel="Diversos" itemValue="1"/>
+								</h:selectOneRadio>
+								
+								<p:spacer width="10"/>
+								<a4j:commandButton image="/imagens/btn_incluiRecado.png" title="Enviar recado..."
+									action="#{colaboradorBean.muralRecadosAction}" render=":formGeral:recados">
+								</a4j:commandButton>
+							</h:panelGrid>
+						</a4j:region>
+					</rich:tab>
+				</rich:tabPanel>
+			</td>
+			
+			<td width="38%" valign="top">
+				<a4j:region id="compromissos" rendered="#{(sessionBean.colaboradorLogado.tipoAcesso == 0 or sessionBean.colaboradorLogado.tipoUsuario == 3) and (sessionBean.colaboradorLogado.tipoUsuario != 0)}">
+					<rich:tabPanel switchType="client" width="100%" headerAlignment="left">
+	        			<rich:tab header="#{msg.principal_compromissos}" style="text-align:left" styleClass="textoDestaqueMenor">
+								<a4j:repeat value="#{colaboradorBean.listaCompromissosRecentes}" var="compromisso" rows="0">
+									<h:panelGrid columns="2">
+										<h:panelGroup style="vertical-align: top;">
+											<h:graphicImage url="/imagens/icon_exclamation.png" rendered="#{compromisso.today}"/>
+											<h:graphicImage url="/imagens/icon_exclamation_old.png" rendered="#{(compromisso.old) and (compromisso.tipoRepeticao==0)}"/>
+										</h:panelGroup>
+											
+										<h:panelGroup style="vertical-align: top;">
+											<a4j:commandLink action="#{colaboradorBean.acessarStatusProjetoAction}">
+												<f:param name="idProjeto" value="#{compromisso.projeto.id}"/>
+												<h:panelGroup>
+													<h:outputText value="Projeto: " styleClass="textoLabelDestaqueMenor"/>
+													<h:graphicImage url="/imagens/generico.png" rendered="#{compromisso.projeto.generico}" title="#{msg.cadastrarProjeto_projetoGenerico}"/>
+													<p:spacer width="4" rendered="#{compromisso.projeto.generico}"/>
+													<h:outputText value="#{compromisso.projeto.codigoClienteCompleto} (+)   " title="#{compromisso.projeto.nome}" styleClass="textoNegrito"/>
+												</h:panelGroup>
+											</a4j:commandLink>
+											
+											<p:spacer width="30"/>
+											<h:outputText value="Prazo: " styleClass="textoLabelDestaqueMenor"/>
+											<h:outputText value="#{compromisso.prazo}" styleClass="textoNormalNegrito"/>
+											<br/>
+											<h:outputFormat value="Respons&#225;vel: " styleClass="textoNormalNegrito" escape="false"/>
+											<h:outputText value="#{compromisso.nomeResponsaveis}" styleClass="textoNormal"/>
+											<br/>
+											<h:outputText value="Evento: " styleClass="textoNormalNegrito"/>
+											<h:outputText value="#{compromisso.nome}" styleClass="textoNormal"/>
+											<br/><br/>
+										</h:panelGroup>
+									</h:panelGrid>
+								</a4j:repeat >
+						</rich:tab>	
+					</rich:tabPanel>
+				</a4j:region>
+				<br/>
+				
+				<rich:tabPanel switchType="client" width="100%" headerAlignment="left">
+        			<rich:tab header="#{msg.principal_equipes}" style="text-align:left" styleClass="textoDestaqueMenor" rendered="#{sessionBean.colaboradorLogado.tipoUsuario == 1}">
+						<a4j:repeat value="#{gestorBean.listaProgressoEquipes}" var="equipe" rows="0">
+							<table width="100%">
+								<tr>
+									<td>
+										<h:outputText value="#{equipe.label}" styleClass="textoLabelDestaqueMenor"/>
+									</td>
+									<td align="right">
+										<h:outputText value="#{msg.principal_media}" styleClass="textoLabelDestaqueMenor"/>
+									</td>
+								</tr>
+								
+								<a4j:repeat value="#{equipe.value}" var="progresso" rows="0">
+									<tr onmouseover="this.style.backgroundColor='#E0E0E0'" 
+										onmouseout="this.style.backgroundColor='#FFFFFF'">
+										<td width="55%" align="left" valign="top">
+											<h:outputText value="#{progresso.label}" styleClass="textoNormal"/>
+										</td>
+										<td width="45%" align="right">					
+											<h:outputText value="#{progresso.value}" styleClass="textoNormal"/><br/>
+										</td>
+									</tr>
+								</a4j:repeat >
+							</table>
+							<br/>
+						</a4j:repeat >
+					</rich:tab>
+						
+        			<rich:tab header="#{msg.principal_pessoal}" style="text-align:left" styleClass="textoDestaqueMenor" rendered="#{sessionBean.colaboradorLogado.tipoUsuario le 2}">
+						<a4j:repeat value="#{gestorBean.progressoColaborador}" var="progresso" rows="0">
+							<table width="100%">
+								<tr>
+									<td>
+										<h:outputText value="#{msg.principal_progresso}" styleClass="textoLabelDestaqueMenor"/>
+									</td>
+									<td align="right">
+										<h:outputText value="#{msg.principal_media}" styleClass="textoLabelDestaqueMenor"/>
+									</td>
+								</tr>
+								<tr onmouseover="this.style.backgroundColor='#E0E0E0'" 
+									onmouseout="this.style.backgroundColor='#FFFFFF'">
+									<td width="55%" align="left" valign="top">
+										<h:outputText value="#{progresso.label}" styleClass="textoNormal"/>
+									</td>
+									<td width="45%" align="right">					
+										<h:outputText value="#{progresso.value}" styleClass="textoNormal"/><br/>
+									</td>
+								</tr>
+							</table>
+							<br/>
+						</a4j:repeat >
+					</rich:tab>	
+				</rich:tabPanel>
+			</td>
+			
+			<td width="30%" valign="top" align="right">
+				<h:panelGroup rendered="#{!empty colaboradorBean.fraseDia}">
+					<table width="100%" cellspacing="4">
+						<tr>
+							<td valign="middle">
+								<h:graphicImage url="/imagens/abreAspas.png" />
+							</td>
+							<td align="left">
+								<h:outputText value="#{colaboradorBean.fraseDia.frase}" style="color: #EEEEEE"/>
+							</td>
+							<td valign="top">
+								<h:graphicImage url="/imagens/fechaAspas.png" />
+								<br/><br/>
+								<h:outputLink value="#{request.contextPath}/visualizarFrasesDia.jsf">
+									<h:graphicImage value="/imagens/icon_frase.png" width="32" height="32" title="Enviar uma mensagem..."/>
+								</h:outputLink>
+							</td>
+						</tr>
+						<tr>
+							<td align="right" colspan="3">
+								<h:outputText value="'#{colaboradorBean.fraseDia.autor}' by #{colaboradorBean.fraseDia.colaboradorEnvio.apelido}" style="color: #EEEEEE"/>
+								<br/>
+								<h:outputText value="#{colaboradorBean.fraseDia.dataRegistro.time}" style="color: #EEEEEE">
+									<f:convertDateTime type="date" dateStyle="medium" />
+								</h:outputText>
+							</td>
+						</tr>
+					</table>
+				</h:panelGroup>
+			
+				<br/>
+				<rich:tabPanel switchType="client" width="90%" headerAlignment="right">
+        			<rich:tab header="#{msg.principal_internos}" style="text-align:left" styleClass="textoDestaqueMenor">
+        				<table cellspacing="3" width="100%">
+							<a4j:repeat value="#{colaboradorBean.colaboradorService.listaColaboradoresParticipativos}" var="colaborador" rows="0">
+							<tr onmouseover="this.style.backgroundColor='#E0E0E0'" onmouseout="this.style.backgroundColor='#FFFFFF'">
+								<td align="left">
+									<h:outputLink styleClass="textoNormal" title="Cel: #{colaborador.telCelular} / Tel: #{colaborador.telResid}" value="mailto:#{colaborador.email}">
+										<h:outputText value="#{colaborador.nomeCompleto}" />
+									</h:outputLink>
+									<h:graphicImage url="/imagens/icon_ferias2.png" rendered="#{colaborador.emFerias}"/>
+								</td>
+								<td align="right" width="25%">
+									<h:outputText value="#{colaborador.ramal}" styleClass="textoLabelDestaqueMenor"/>
+								</td>
+							</tr>
+							</a4j:repeat >
+						</table>
+					</rich:tab>
+        			<rich:tab header="#{msg.principal_gpjs}" style="text-align:left" styleClass="textoDestaqueMenor">
+        				<table cellspacing="3" width="100%">
+							<a4j:repeat value="#{gestorBean.gestorService.listaColaboradoresGPJs}" var="colaborador" rows="0">
+							<tr onmouseover="this.style.backgroundColor='#E0E0E0'" onmouseout="this.style.backgroundColor='#FFFFFF'">
+								<td align="left">
+									<h:outputLink styleClass="textoNormal" title="Email: #{colaborador.email}" value="mailto:#{colaborador.email}">
+										<h:outputText value="#{colaborador.nomeCompleto}" />
+									</h:outputLink>
+								</td>
+								<td align="right" width="25%">
+									<h:outputText value="#{colaborador.ramal}" styleClass="textoLabelDestaqueMenor"/>
+								</td>
+							</tr>
+							</a4j:repeat >
+						</table>
+					</rich:tab>
+				</rich:tabPanel>
+				<br/>
+				
+				<rich:tabPanel switchType="client" width="90%" headerAlignment="right"
+					rendered="#{sessionBean.colaboradorLogado.tipoAcesso == 0}">
+        			<rich:tab header="#{msg.principal_aniversariantes}" style="text-align:left" styleClass="textoDestaqueMenor">
+						<table cellspacing="5" width="100%">
+							<a4j:repeat value="#{colaboradorBean.colaboradorService.listaAniversariantes}" var="colaborador" rows="0">
+							<tr onmouseover="this.style.backgroundColor='#E0E0E0'" onmouseout="this.style.backgroundColor='#FFFFFF'">
+								<td align="left"><h:outputText value="#{colaborador.nomeCompleto}" styleClass="textoNormal" title="Cel: #{colaborador.telCelular} / Tel: #{colaborador.telResid}"/></td>
+								<td align="right"><h:outputText value="#{colaborador.diaAniversario}/#{colaborador.mesAniversario}" styleClass="textoLabelDestaqueMenor"/></td>
+							</tr>
+							</a4j:repeat >
+						</table>
+					</rich:tab>	
+					<rich:tab header="#{msg.principal_feriados}" style="text-align:left" styleClass="textoDestaqueMenor">
+						<table cellspacing="5" width="100%">
+							<a4j:repeat value="#{colaboradorBean.colaboradorService.listaFeriados}" var="feriado" rows="0">
+							<tr onmouseover="this.style.backgroundColor='#E0E0E0'" onmouseout="this.style.backgroundColor='#FFFFFF'">
+								<td align="left">
+									<h:outputText value="#{feriado.nome} (#{feriado.diaSemana})" styleClass="textoNormal"/>
+								</td>
+								<td align="right">
+									<h:outputText value="#{feriado.dataFeriado.time}" styleClass="textoLabelDestaqueMenor">
+										<f:convertDateTime type="date" dateStyle="medium" />
+									</h:outputText>
+								</td>
+							</tr>
+							</a4j:repeat >
+						</table>
+					</rich:tab>	
+				</rich:tabPanel>
+			</td>
+		</tr>
+ 	</table>
+ 	
+</ui:define>
+</ui:composition>

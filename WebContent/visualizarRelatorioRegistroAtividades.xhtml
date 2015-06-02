@@ -1,0 +1,74 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition template="/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:define name="titulo">
+	<h:graphicImage value="/imagens/icon_relatorio.png" width="32" height="32"/>
+	<p:spacer width="10"/>
+	<h:outputText value="#{msg.visualizarRelatorio_tituloColaborador}" styleClass="textoDestaque"/>
+</ui:define>
+
+<ui:define name="conteudo">
+	<br/>
+	<h:panelGrid columns="2">
+		<h:outputLabel value="#{msg.cadastrarAlocacao_colaborador}:" styleClass="textoNormal"
+			rendered="#{sessionBean.colaboradorLogado.tipoUsuario ne 2}"/>
+		<h:panelGroup rendered="#{sessionBean.colaboradorLogado.tipoUsuario ne 2}">
+			<h:selectOneRadio value="#{relatorioBean.tipoSelecaoColaborador}" styleClass="textoNormal">
+				<f:selectItem itemLabel="Todos" itemValue="1"/>
+				<f:selectItem itemLabel="Somente um colaborador" itemValue="0"/>
+			</h:selectOneRadio>
+
+			<h:selectOneMenu id="colaborador" immediate="true" value="#{relatorioBean.colaborador}" converter="#{converterBean}">
+				<f:selectItem itemLabel="#{msg.cadastro_selecione}" noSelectionOption="true"/>
+				<f:selectItems value="#{colaboradorBean.colaboradorService.listaColaboradoresParticipativos}"
+					var="colaborador" itemLabel="#{colaborador.nomeCompleto}" itemValue="#{colaborador}"/>
+			</h:selectOneMenu>
+		</h:panelGroup>
+							
+		<h:outputLabel value="#{msg.visualizarRelatorio_formato}:" styleClass="textoNormal"/>
+		<h:selectOneMenu id="formatoRelatorio" required="true"
+			value="#{relatorioBean.tipoRelatorioSelecionado}">
+			<f:selectItems value="#{relatorioBean.listaTipoRelatorios}"/>
+		</h:selectOneMenu>
+
+		<h:outputLabel value="Tipo:" styleClass="textoNormal"/>
+		<h:selectOneRadio id="relatorioSelecionado" required="true" styleClass="textoNormal"
+			value="#{relatorioBean.relatorioSelecionado}">
+			<f:selectItem itemLabel="#{msg.relatorios_regAtivMesPorDia}" itemValue="1"/>
+			<f:selectItem itemLabel="#{msg.relatorios_regAtivMesPorProjeto}" itemValue="2"/>
+		</h:selectOneRadio>
+	</h:panelGrid>
+	<br/>
+
+	<h:panelGrid columns="2">
+		<h:column>
+			<h:outputLabel value="#{msg.visualizarRelatorio_dataInicio}:" styleClass="textoNormal"/>
+			<p:calendar id="dataInicial" mode="inline" styleClass="textoNormal" locale="pt_BR" converter="calendarConverter"
+				value="#{utilBean.dataInicio}" required="true">
+			</p:calendar>
+		</h:column>
+		
+		<h:column>
+			<h:outputLabel value="#{msg.visualizarRelatorio_dataFim}:" styleClass="textoNormal"/>
+			<p:calendar id="dataFinal" mode="inline" styleClass="textoNormal" locale="pt_BR" converter="calendarConverter"
+				validator="#{validatorBean.validateDataInicioFim}" value="#{utilBean.dataFim}" required="true">
+			</p:calendar>
+		</h:column>
+	</h:panelGrid>
+	<br/><br/>
+
+	<h:commandLink action="#{relatorioBean.relatorioAction}">
+		<h:graphicImage url="/imagens/btn_desabilitado.png" />
+		<h:outputText value=" Gerar" styleClass="textoDestaque"/>
+	</h:commandLink>
+
+</ui:define>
+</ui:composition>

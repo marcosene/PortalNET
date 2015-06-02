@@ -1,0 +1,116 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition template="/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:define name="titulo">
+	<h:graphicImage value="/imagens/icon_frase.png" width="32" height="32"/>
+	<p:spacer width="10"/>
+	<h:outputText value="#{msg.visualizarFrasesDia_titulo}" styleClass="textoDestaque"/>
+</ui:define>
+
+<ui:define name="conteudo">
+	<table style="width: 98%; border-collapse: collapse; border-spacing: 4; margin-left:auto; margin-right:auto">
+		<tr>
+			<td align="left">
+				<br/>
+				<h:panelGrid columns="2">
+					<h:outputLabel value="#{msg.visualizarFrasesDia_frase}:" styleClass="textoNormal"/>
+					<h:inputTextarea id="frase" required="true"
+						cols="80" rows="2">
+					</h:inputTextarea>
+		
+					<h:outputLabel value="#{msg.visualizarFrasesDia_autor}:" styleClass="textoNormal"/>
+					<h:inputText id="autor" required="true"
+						size="30" maxlength="64">
+					</h:inputText>
+					
+					<p:spacer width="10" />
+					
+					<h:commandLink action="#{colaboradorBean.cadastrarFraseDiaAction}">
+						<h:graphicImage value="/imagens/btn_cadastrar.png" width="32" height="32"/>
+					</h:commandLink>
+				</h:panelGrid>
+
+				<br/>
+			</td>
+		</tr>
+		<tr>
+			<td> 
+				<p:dataTable id="tabelaListagem" styleClass="textoNormal" style="width: 100%;" paginator="true" paginatorAlwaysVisible="false" rows="20"
+					emptyMessage="#{msg.visualizarFrasesDia_nenhumaFrase}"
+					value="#{colaboradorBean.listaFrasesDia}" var="frase">
+					<p:column sortBy="dataRegistro" width="10%">
+						<f:facet name="header">
+							<h:outputText value="#{msg.visualizarFrasesDia_data}"/>
+						</f:facet>
+						<h:outputText value="#{frase.dataRegistro.time}">
+							<f:convertDateTime type="date" dateStyle="medium" />
+						</h:outputText>
+					</p:column>
+					
+					<p:column sortBy="frase" width="60%">
+						<f:facet name="header">
+							<h:outputText value="#{msg.visualizarFrasesDia_frase}"/>
+						</f:facet>
+						<h:outputText value="#{frase.frase}"/>
+					</p:column>
+					
+					<p:column sortBy="autor" width="15%">
+						<f:facet name="header">
+							<h:outputText value="#{msg.visualizarFrasesDia_autor}"/>
+						</f:facet>
+						<h:outputText value="#{frase.autor}"/>
+					</p:column>
+					
+					<p:column sortBy="colaboradorEnvio.apelido"
+						width="15%" rendered="#{sessionBean.colaboradorLogado.usuario == 'admin'}">
+						<f:facet name="header">
+							<h:outputText value="#{msg.visualizarFrasesDia_enviadoPor}"/>
+						</f:facet>
+						<h:outputText value="#{frase.colaboradorEnvio.apelido}"/>
+					</p:column>
+					
+					<p:column exportable="false" width="5%">
+						<f:facet name="header">
+							<h:outputText value="#{msg.cadastro_acoes}"/>
+						</f:facet>
+						<h:commandLink id="comandoExcluir" actionListener="#{colaboradorBean.excluirFraseDiaAction}" immediate="true"
+							onclick="if (!confirm('#{msg.cadastro_confirmaExclusao}')) return false;">
+							<f:param name="idFraseDia" value="#{frase.id}"/>
+							<h:graphicImage value="/imagens/btn_excluir.png" width="16" height="16" title="#{msg.cadastro_excluir}"/>
+						</h:commandLink>
+					</p:column>
+				</p:dataTable>
+			</td>
+		</tr>
+		<tr>
+			<td align="right">
+				<h:outputText value="#{msg.header_exportarRelatorio}: " styleClass="textoLabelDestaque"/>
+				
+				<h:commandLink immediate="true">
+					<p:graphicImage value="/imagens/icon_relatorio_pdf.png" />
+					<p:dataExporter type="pdf" target="tabelaListagem" fileName="ListaFrases"/>
+				</h:commandLink>
+
+				<p:spacer width="10"/>
+
+				<h:commandLink immediate="true">
+					<p:graphicImage value="/imagens/icon_relatorio_excel.png" />
+					<p:dataExporter type="xls" target="tabelaListagem" fileName="ListaFrases" />
+				</h:commandLink>
+				
+				<p:spacer width="10"/>
+			</td>
+		</tr>
+	</table>
+
+</ui:define>
+</ui:composition>

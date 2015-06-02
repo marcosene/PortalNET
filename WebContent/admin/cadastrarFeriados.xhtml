@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition template="/templateCadastro.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:rich="http://richfaces.org/rich">
+
+<ui:define name="titulo">
+	<h:graphicImage value="/imagens/icon_feriados.png" width="24" height="24"/>
+	<p:spacer width="10"/>
+	<h:outputText value="#{msg.cadastrarFeriados_titulo}" styleClass="textoDestaque"/>
+</ui:define>
+
+<ui:define name="conteudo">
+	<h:panelGrid style="text-align: right; width: 100%">
+		<h:column>
+			<br/>
+			<h:outputLink value="./visualizarFeriados.jsf">
+				<h:graphicImage value="/imagens/btn_voltar.png" width="32" height="32"/>
+			</h:outputLink>
+	
+			<p:spacer width="20"/>
+	
+			<h:commandLink action="#{adminBean.cadastrarFeriadoAction}">
+				<h:graphicImage value="/imagens/btn_atualizar.png" width="32" height="32"/>
+			</h:commandLink>
+			
+			<p:spacer width="10"/>
+		</h:column>
+	</h:panelGrid>
+	
+	<h:panelGrid styleClass="textoNormal">
+		<h:outputLabel value="#{msg.cadastrarFeriados_feriado}:" styleClass="textoNormal" />
+		<h:inputText id="nome" required="true"
+			value="#{sessionBean.feriado.nome}" size="32" maxlength="64">
+		</h:inputText>
+		
+		<h:outputLabel value="#{msg.cadastrarFeriados_data}:" styleClass="textoNormal" />
+		<p:calendar id="dataFeriado" mode="inline" styleClass="textoNormal" locale="pt_BR" converter="calendarConverter"
+			value="#{sessionBean.feriado.dataFeriado}" required="true" immediate="true">
+		</p:calendar>
+		
+	</h:panelGrid>
+
+</ui:define>
+</ui:composition>

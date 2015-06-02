@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition template="/templateCadastro.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:define name="titulo">
+	<h:graphicImage value="/imagens/icon_inventario.png" width="32" height="32"/>
+	<p:spacer width="10"/>
+	<h:outputText value="#{msg.cadastrarInventario_tituloProdutos}" styleClass="textoDestaque"/>
+</ui:define>
+
+<ui:define name="conteudo">
+<table style="width: 98%; border-collapse: collapse; border-spacing: 4; margin-left:auto; margin-right:auto">
+
+	<h:panelGrid style="text-align: right; width: 100%">
+		<h:column>
+			<br/>
+			<h:outputLink value="../visualizarInventario.jsf">
+				<h:graphicImage value="/imagens/btn_voltar.png" width="32" height="32"/>
+			</h:outputLink>
+	
+			<p:spacer width="20"/>
+	
+			<h:commandLink action="#{adminBean.cadastrarProdutoInventarioAction}">
+				<h:graphicImage value="/imagens/btn_atualizar.png" width="32" height="32"/>
+			</h:commandLink>
+			
+			<p:spacer width="10"/>
+		</h:column>
+	</h:panelGrid>
+		
+	<h:panelGroup labelWidth="22%" fieldWidth="78%">
+		<h:outputLabel value="#{msg.cadastrarInventario_produto}:" styleClass="textoNormal" />
+		<h:inputText id="nomeProduto" size="50" maxlength="200" 
+			 styleClass="textoNormal" required="true" value="#{sessionBean.produtoInventario.nomeProduto}"/>
+		
+		<h:outputLabel value="#{msg.cadastrarInventario_categoria}:" styleClass="textoNormal" />
+		<h:selectOneMenu id="categoria" required="true" 
+			value="#{sessionBean.produtoInventario.categoria}"> 
+			<f:selectItems value="#{consultaBean.listaTiposCategoriasInventario}"/>
+		</h:selectOneMenu>
+		
+		<h:selectBooleanCheckbox id="flagEmprestavel" styleClass="textoNormal"
+			value="#{sessionBean.produtoInventario.flagEmprestavel}" text="#{msg.cadastrarInventario_emprestavel}">
+		</h:selectBooleanCheckbox>		
+	</h:panelGroup>
+
+	<h:panelGroup>
+		<h:outputLabel style="font-size:10pt; padding-left: 170px;" value="#{msg.cadastrarInventario_especificacao}: "/> 
+		<rich:editor id="especificacao" style="padding-left: 10px" width="700" height="200" value="#{sessionBean.produtoInventario.especificacao}">
+			<f:param name="force_p_newlines" value="false"/>
+   			<f:param name="force_br_newlines" value="true"/>
+   			<f:param name="forced_root_block " value=""/>
+		</rich:editor>
+	</h:panelGroup>
+</table>
+
+</ui:define>
+</ui:composition>

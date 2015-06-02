@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition template="/templateCadastro.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:define name="titulo">
+	<h:graphicImage value="/imagens/icon_projeto.png" width="32" height="32"/>
+	<p:spacer width="10"/>
+	<h:outputText value="#{msg.cadastrarProjeto_titulo}: #{msg.cadastrarGrupoAtividade_titulo}" styleClass="textoDestaque"/>
+</ui:define>
+
+<ui:define name="conteudo">
+	<h:panelGrid style="text-align: right; width: 100%">
+		<h:column>
+			<h:outputLink value="./cadastrarProjeto.jsf">
+				<h:graphicImage value="/imagens/btn_voltar.png" width="32" height="32"/>
+			</h:outputLink>
+	
+			<p:spacer width="20"/>
+	
+			<h:commandLink action="#{gestorBean.cadastrarGrupoAtividadeAction}">
+				<h:graphicImage value="/imagens/btn_atualizar.png" width="32" height="32"/>
+			</h:commandLink>
+	
+			<p:spacer width="10"/>
+		</h:column>
+	</h:panelGrid>
+			
+	<h:panelGrid columns="2">
+		<h:outputLabel value="#{msg.cadastrarProjeto_codigo}:" styleClass="textoNormal" />
+		<h:inputText id="codigoProjeto" disabled="true" size="15"
+			value="#{sessionBean.grupoAtividade.projeto.codigoClienteCompleto}">
+		</h:inputText>
+		
+		<h:outputLabel value="#{msg.cadastrarGrupoAtividade_grupoAtividade}:" styleClass="textoNormal" />
+		<h:inputText id="nome" required="true"
+			value="#{sessionBean.grupoAtividade.nome}"
+			size="64" maxlength="64">
+		</h:inputText>
+	</h:panelGrid>
+		
+</ui:define>
+</ui:composition>

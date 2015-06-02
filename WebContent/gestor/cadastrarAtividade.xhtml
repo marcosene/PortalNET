@@ -1,0 +1,93 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition template="/templateCadastro.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:define name="titulo">
+	<h:graphicImage value="/imagens/icon_projeto.png" width="32" height="32"/>
+	<p:spacer width="10"/>
+	<h:outputText value="#{msg.cadastrarProjeto_titulo}: #{msg.cadastrarAtividade_titulo}" styleClass="textoDestaque"/>
+</ui:define>
+
+<ui:define name="conteudo">
+	<h:panelGrid style="text-align: right; width: 100%">
+		<h:column>
+			<h:outputLink value="./cadastrarProjeto.jsf">
+				<h:graphicImage value="/imagens/btn_voltar.png" width="32" height="32"/>
+			</h:outputLink>
+	
+			<p:spacer width="20"/>
+	
+			<h:commandLink action="#{gestorBean.cadastrarAtividadeAction}">
+				<h:graphicImage value="/imagens/btn_atualizar.png" width="32" height="32"/>
+			</h:commandLink>
+	
+			<p:spacer width="10"/>
+		</h:column>
+	</h:panelGrid>
+			
+	<h:panelGrid columns="2">
+		<h:outputLabel value="#{msg.cadastrarProjeto_codigo}:" styleClass="textoNormal" />
+		<h:inputText id="codigoProjeto" disabled="true" size="15"
+			value="#{sessionBean.atividade.grupoAtividade.projeto.codigoClienteCompleto}">
+		</h:inputText>
+		
+		<h:outputLabel value="#{msg.cadastrarGrupoAtividade_grupoAtividade}:" styleClass="textoNormal" />
+		<h:selectOneMenu id="grupoAtividade" required="true" converter="#{converterBean}"
+			value="#{sessionBean.grupoAtividade}"> 
+			<f:selectItem itemLabel="#{msg.cadastro_selecione}" noSelectionOption="true"/>
+			<f:selectItems value="#{sessionBean.atividade.grupoAtividade.projeto.gruposAtividades}"
+				var="grupo" itemLabel="#{grupo.nome}" itemValue="#{grupo}"/>
+			<f:ajax render="selected_item" />
+		</h:selectOneMenu>
+		
+		<h:outputLabel value="#{msg.cadastrarAtividade_tipo}:" styleClass="textoNormal" />
+		<h:selectOneMenu id="tipoAtividade" required="true" converter="#{converterBean}"
+			value="#{sessionBean.atividade.tipoAtividade}"> 
+			<f:selectItem itemLabel="#{msg.cadastro_selecione}" noSelectionOption="true"/>
+			<f:selectItems value="#{gestorBean.gestorService.listaTiposAtividade}"
+				var="tipo" itemLabel="#{tipo.nome}" itemValue="#{tipo}"/>
+		</h:selectOneMenu>
+		
+		<h:outputLabel value="#{msg.cadastrarAtividade_atividade}:" styleClass="textoNormal" />
+		<h:inputTextarea id="nome" required="true" rows="2"
+			value="#{sessionBean.atividade.nome}" cols="64">
+		</h:inputTextarea>
+		
+		<h:outputLabel value="#{msg.cadastrarAtividade_horasPrevistas}:" styleClass="textoNormal"
+			rendered="#{!sessionBean.atividade.grupoAtividade.projeto.generico}"/>
+		<h:panelGroup rendered="#{!sessionBean.atividade.grupoAtividade.projeto.generico}">
+			<h:inputText id="horasPrevistas" 
+				size="3" maxlength="4" required="true"
+				value="#{sessionBean.atividade.qtdeHorasPrevistas}" >
+				<f:validateLongRange minimum="1" maximum="9999"/>
+			</h:inputText>
+			<p:spacer width="15"/>
+			<h:selectBooleanCheckbox id="envioEmail" styleClass="textoNormal"
+				value="#{sessionBean.atividade.flagContabilizarProgresso}">
+			</h:selectBooleanCheckbox>
+			<h:outputLabel value="#{msg.cadastrarAtividade_contabilizarProgresso}" styleClass="textoNormal" />
+		</h:panelGroup>
+		
+		<h:outputLabel value="#{msg.cadastrarAtividade_descricao}:" styleClass="textoNormal" />
+		<h:inputTextarea id="descricao" rows="8"
+			value="#{sessionBean.atividade.descricao}" cols="64">
+		</h:inputTextarea>
+	</h:panelGrid>
+	<br/>
+		
+	<h:outputLabel value="#{msg.cadastrarAtividade_assocOcorrencia}:" styleClass="textoNormal" />
+	<h:selectOneRadio id="tipoAssocOcorrencia" required="true" styleClass="textoNormal"
+		value="#{sessionBean.atividade.tipoAssocOcorrencia}">
+		<f:selectItems value="#{consultaBean.listaTiposAssociacoes}"/>
+	</h:selectOneRadio>
+		
+</ui:define>
+</ui:composition>

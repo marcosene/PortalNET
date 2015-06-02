@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<subDataset name="dataset1"/>
+	<subDataset name="dataset2"/>
+	<parameter name="dataInicio" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="dataFim" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="usuario" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT colaborador.nome AS nome,
+	colaborador.sobrenome AS sobrenome,
+	registro.dataTrabalho AS data,
+	registro.qtdeHorasTrabalho AS qtdeHoras,
+	registro.horaInicial AS horaInicial,
+	registro.horaFinal AS horaFinal,
+	registro.descricao AS descricao,
+	projeto.codigo AS codProjeto,
+	projeto.nome AS nomeProjeto,
+        projeto.codigoCliente AS codCliente,
+        projeto.codigoPacote AS codPacote,
+	ocorrencia.numBugCliente AS numBugCliente,
+	grupoAtividade.nome AS grupoAtividade,
+	atividade.nome AS nomeAtividade
+
+FROM RegistroAtividade registro
+
+INNER JOIN AlocacaoAtividade alocacao ON (alocacao.id = registro.AlocacaoAtividade_id)
+INNER JOIN Colaborador colaborador ON (colaborador.id = alocacao.Colaborador_id)
+INNER JOIN Atividade atividade ON (atividade.id = alocacao.Atividade_id)
+INNER JOIN GrupoAtividade grupoAtividade ON (grupoAtividade.id = atividade.GrupoAtividade_id)
+INNER JOIN Projeto projeto ON (projeto.id = grupoAtividade.Projeto_id)
+LEFT JOIN Ocorrencia ocorrencia ON ( ocorrencia.id = registro.Ocorrencia_id )
+
+
+WHERE colaborador.usuario = $P{usuario} AND
+	registro.dataTrabalho >= $P{dataInicio} AND
+	registro.dataTrabalho <= $P{dataFim}
+
+ORDER BY projeto.codigo, registro.dataTrabalho, registro.horaInicial, registro.horaFinal]]>
+	</queryString>
+	<field name="nome" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="sobrenome" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="data" class="java.sql.Timestamp">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="qtdeHoras" class="java.lang.Float">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="horaInicial" class="java.sql.Time">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="horaFinal" class="java.sql.Time">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="descricao" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="codProjeto" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="nomeProjeto" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="codCliente" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="codPacote" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="numBugCliente" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="grupoAtividade" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="nomeAtividade" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<variable name="totalHorasProjeto" class="java.lang.Float" resetType="Group" resetGroup="Projeto" calculation="Sum">
+		<variableExpression><![CDATA[$F{qtdeHoras}]]></variableExpression>
+	</variable>
+	<variable name="totalHorasMes" class="java.lang.Float" calculation="Sum">
+		<variableExpression><![CDATA[$F{qtdeHoras}]]></variableExpression>
+	</variable>
+	<group name="Projeto" isReprintHeaderOnEachPage="true">
+		<groupExpression><![CDATA[$F{codProjeto}]]></groupExpression>
+		<groupHeader>
+			<band height="31">
+				<textField pattern="">
+					<reportElement mode="Opaque" x="2" y="0" width="800" height="15" forecolor="#333333" backcolor="#FCF3EA"/>
+					<textElement>
+						<font isBold="true" isItalic="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{codCliente} + ": " + $F{nomeProjeto} + ($F{codPacote} == null ? "" : (", Pacote: "+$F{codPacote}))]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="60" y="15" width="35" height="16" forecolor="#666666" backcolor="#FFECEC"/>
+					<textElement textAlignment="Center">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Início]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="130" y="15" width="40" height="16" forecolor="#666666" backcolor="#FFECEC"/>
+					<textElement textAlignment="Center">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Horas]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="170" y="15" width="632" height="16" forecolor="#666666" backcolor="#FFECEC"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[[Grupo - Atividade]: Descrição]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="95" y="15" width="35" height="16" forecolor="#666666"/>
+					<textElement textAlignment="Center">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Fim]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="9" y="15" width="51" height="16" forecolor="#666666"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Data]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="33">
+				<line>
+					<reportElement x="9" y="7" width="792" height="1" forecolor="#CCCCCC"/>
+					<graphicElement>
+						<pen lineStyle="Dotted"/>
+					</graphicElement>
+				</line>
+				<textField pattern="">
+					<reportElement x="768" y="8" width="33" height="15" forecolor="#333333"/>
+					<textElement textAlignment="Right"/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$V{totalHorasProjeto} + "h"]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="667" y="8" width="101" height="15" forecolor="#333333"/>
+					<textElement textAlignment="Right"/>
+					<text><![CDATA[Total do Projeto: ]]></text>
+				</staticText>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band/>
+	</background>
+	<title>
+		<band height="88">
+			<textField>
+				<reportElement x="70" y="36" width="316" height="15" forecolor="#666666"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{nome} + " " + $F{sobrenome}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="2" y="36" width="68" height="15" forecolor="#666666"/>
+				<textElement>
+					<font size="10" isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[Colaborador:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="2" y="51" width="68" height="15" forecolor="#666666"/>
+				<textElement>
+					<font size="10" isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[Data Inicial:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="25" y="0" width="749" height="20" forecolor="#333333"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Relatório de Registro de Atividades / Projeto]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="2" y="66" width="68" height="15" forecolor="#666666"/>
+				<textElement>
+					<font size="10" isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[Data Final:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="70" y="51" width="111" height="15"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[new SimpleDateFormat("dd/MM/yyyy").format($P{dataInicio})]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="70" y="66" width="111" height="15"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[new SimpleDateFormat("dd/MM/yyyy").format($P{dataFim})]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<detail>
+		<band height="15">
+			<textField pattern="">
+				<reportElement mode="Transparent" x="130" y="0" width="40" height="15" forecolor="#333333" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Center">
+					<font isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{qtdeHoras} + "h"]]></textFieldExpression>
+			</textField>
+			<textField pattern="HH:mm">
+				<reportElement x="60" y="0" width="35" height="15" forecolor="#333333"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression class="java.sql.Time"><![CDATA[$F{horaInicial}]]></textFieldExpression>
+			</textField>
+			<textField pattern="HH:mm">
+				<reportElement mode="Transparent" x="95" y="0" width="35" height="15" forecolor="#333333"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression class="java.sql.Time"><![CDATA[$F{horaFinal}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="170" y="0" width="632" height="15" forecolor="#333333"/>
+				<textElement markup="html"/>
+				<textFieldExpression class="java.lang.String"><![CDATA["[" + $F{grupoAtividade} + " - " + $F{nomeAtividade} + "] " +
+(($F{numBugCliente} != null) ? $F{numBugCliente} + ": " : "") +
+$F{descricao}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yy">
+				<reportElement x="9" y="0" width="51" height="15" forecolor="#333333"/>
+				<textElement/>
+				<textFieldExpression class="java.util.Date"><![CDATA[$F{data}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="23">
+			<staticText>
+				<reportElement x="689" y="8" width="79" height="15" forecolor="#333333"/>
+				<textElement textAlignment="Right"/>
+				<text><![CDATA[Total Mensal: ]]></text>
+			</staticText>
+			<textField pattern="">
+				<reportElement x="768" y="8" width="33" height="15" forecolor="#333333"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$V{totalHorasMes} + "h"]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

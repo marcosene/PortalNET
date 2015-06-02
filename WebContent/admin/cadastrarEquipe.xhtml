@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition template="/templateCadastro.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+    xmlns:rich="http://richfaces.org/rich"	
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:define name="titulo">
+	<h:graphicImage value="/imagens/icon_equipe.png" width="32" height="32"/>
+	<p:spacer width="10"/>
+	<h:outputText value="#{msg.cadastrarEquipe_titulo}" styleClass="textoDestaque"/>
+</ui:define>
+
+<ui:define name="conteudo">
+	<h:panelGrid style="text-align: right; width: 100%">
+		<h:column>
+			<h:outputLink value="./visualizarEquipes.jsf">
+				<h:graphicImage value="/imagens/btn_voltar.png" width="32" height="32"/>
+			</h:outputLink>
+	
+			<p:spacer width="20"/>
+	
+			<h:commandLink action="#{gestorBean.cadastrarEquipeAction}">
+				<h:graphicImage value="/imagens/btn_atualizar.png" width="32" height="32"/>
+			</h:commandLink>
+			
+			<p:spacer width="10"/>
+		</h:column>
+	</h:panelGrid>
+		
+	<h:panelGrid columns="2">
+		<h:outputLabel value="#{msg.cadastrarEquipe_equipe}:" styleClass="textoNormal" />
+		<h:inputText id="nome" required="true"
+			value="#{sessionBean.equipe.nome}"
+			size="20" maxlength="25">
+		</h:inputText>
+		
+		<h:outputLabel value="#{msg.cadastrarEquipe_coordenador}:" styleClass="textoNormal" />
+		<h:selectOneMenu id="coordenador" required="true" converter="#{converterBean}"
+			value="#{sessionBean.equipe.coordenador}">
+			<f:selectItem itemLabel="#{msg.cadastro_selecione}" noSelectionOption="true"/>
+			<f:selectItems value="#{gestorBean.gestorService.listaColaboradoresCoordenadores}"
+				var="coordenador" itemLabel="#{coordenador.nomeCompleto}" itemValue="#{coordenador}"/>
+		</h:selectOneMenu>
+		
+		<h:outputLabel value="#{msg.cadastrarEquipe_descricao}:" styleClass="textoNormal" />
+		<h:inputTextarea id="descricao" cols="60" rows="2"
+			value="#{sessionBean.equipe.descricao}">
+		</h:inputTextarea>
+	</h:panelGrid>
+
+	<br/>
+	<rich:pickList value="#{sessionBean.equipe.colaboradores}" converter="#{converterBean}"
+		sourceCaption="#{msg.cadastrarEquipe_membrosDisponiveis}:"
+		targetCaption="#{msg.cadastrarEquipe_membrosSelecionados}:">
+		<f:selectItems value="#{gestorBean.gestorService.listaColaboradoresInternos}"
+			var="colaborador" itemLabel="#{colaborador.nomeCompleto}" itemValue="#{colaborador}"/>
+	</rich:pickList>
+
+</ui:define>
+</ui:composition>

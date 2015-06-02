@@ -1,0 +1,222 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition template="/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:define name="titulo">
+	<h:graphicImage value="/imagens/icon_ocorrencia.png" width="32" height="32"/>
+	<p:spacer width="10"/>
+	<h:outputText value="#{msg.cadastrarOcorrencia_titulo}" styleClass="textoDestaque"/>
+</ui:define>
+
+<ui:define name="conteudo">
+
+<table style="width: 98%; border-collapse: collapse; border-spacing: 4; margin-left:auto; margin-right:auto">
+	<tr>
+		<td>
+			<h:panelGroup rendered="#{sessionBean.colaboradorLogado.tipoUsuario != 2 and sessionBean.colaboradorLogado.tipoAcesso == 0 and sessionBean.chavePesquisaOcorrencia eq null}">
+				<h:outputLabel value="#{msg.cadastrarArea_cliente}:" styleClass="textoNormal"/>
+				<h:selectOneMenu id="cliente" immediate="true" converter="#{converterBean}" value="#{sessionBean.cliente}">
+					<f:selectItem itemLabel="#{msg.cadastro_selecione}" noSelectionOption="true"/>
+					<f:selectItems value="#{gestorBean.gestorService.listaClientes}"
+						var="cliente" itemLabel="#{cliente.nomeEmpresa}" itemValue="#{cliente}"/>
+					<p:ajax update=":formGeral:area" process="@this" />
+				</h:selectOneMenu>
+				
+				<p:spacer width="10" />
+				
+				<h:outputLabel value="#{msg.cadastrarArea_area}:" styleClass="textoNormal"/>
+				<h:selectOneMenu id="area" immediate="true" converter="#{converterBean}" value="#{sessionBean.area}">
+					<f:selectItem itemLabel="#{msg.cadastro_selecione}" noSelectionOption="true"/>
+					<f:selectItems value="#{consultaBean.listaAreas}"
+						var="area" itemLabel="#{area.nome}" itemValue="#{area}"/>
+					<p:ajax update=":formGeral:produto" process="@this" />
+				</h:selectOneMenu>
+		
+				<p:spacer width="10" />
+		
+				<h:outputLabel value="#{msg.cadastrarProduto_produto}:" styleClass="textoNormal"/>
+				<h:selectOneMenu id="produto" immediate="true" converter="#{converterBean}"
+					value="#{sessionBean.produto}">
+					<f:selectItem itemLabel="#{msg.cadastro_selecione}" noSelectionOption="true"/>
+					<f:selectItems value="#{consultaBean.listaProdutos}"
+						var="produto" itemLabel="#{produto.nome}" itemValue="#{produto}"/>
+					<p:ajax update=":formGeral:projeto" process="@this" />
+				</h:selectOneMenu>
+		
+				<p:spacer width="20"/>
+		
+				<h:outputLabel value="#{msg.cadastrarAlocacao_projeto}:" styleClass="textoNormal"/>
+				<h:selectOneMenu id="projeto" immediate="true" converter="#{converterBean}"
+					value="#{sessionBean.projeto}">
+					<f:selectItem itemLabel="#{msg.cadastro_selecione}" noSelectionOption="true"/>
+					<f:selectItems value="#{consultaBean.listaProjetos}"
+						var="projeto" itemLabel="#{projeto.nomeCompleto}" itemValue="#{projeto}"/>
+					<p:ajax update=":formGeral:tabelaListagem" process="@this" />
+				</h:selectOneMenu>
+			</h:panelGroup>
+		</td>
+		<td align="right">
+			<br/>
+			<h:commandLink action="#{colaboradorBean.cadastrarNovaOcorrenciaAction}" rendered="#{(sessionBean.colaboradorLogado.tipoUsuario le 1 or sessionBean.colaboradorLogado.id == sessionBean.projeto.responsavel.id) and sessionBean.chavePesquisaOcorrencia eq null }">
+				<h:graphicImage value="/imagens/btn_cadastrar.png" width="32" height="32"/>
+			</h:commandLink>
+		</td>
+	</tr>
+	<tr>
+
+		<td align="left">
+			<h:outputLabel value="Status" styleClass="textoNormal"/>
+			<h:selectOneMenu id="statusOcorrencia"  immediate="true"
+				value="#{consultaBean.statusSelecionado}" > 
+				<f:selectItem itemLabel="Todas" itemValue="-1"/>
+				<f:selectItems value="#{consultaBean.listaTiposStatusOcorrencia}"/>
+				<p:ajax update=":formGeral:tabelaListagem" process="@this" />
+			</h:selectOneMenu>
+		</td>
+	</tr>
+
+	<tr>
+		<td colspan="2">
+			<p:dataTable id="tabelaListagem" styleClass="textoNormal" style="width: 100%;" paginator="true" paginatorAlwaysVisible="false" rows="15"
+				emptyMessage="#{msg.cadastrarOcorrencia_nenhumaOcorrencia}"
+				value="#{consultaBean.listaOcorrencias}" var="ocorrencia">
+				
+				<p:column sortBy="projeto.codigo" rendered="#{empty sessionBean.projeto}" width="8%" style="text-align: center">
+					<f:facet name="header">
+						<h:outputText value="#{msg.cadastrarOcorrencia_projeto}"/>
+					</f:facet>
+					<h:outputText value="#{ocorrencia.projeto.codigo}" />
+				</p:column>
+
+				<p:column sortBy="numOcorrencia" width="10%">
+					<f:facet name="header">
+						<h:outputText value="#{msg.cadastrarOcorrencia_ocorrencia}"/>
+					</f:facet>
+					<h:panelGroup>
+						<rich:popupPanel text="+" width="700" height="100">
+							<h:outputText id="descricaoResumida" value="#{ocorrencia.descricaoResumida}" escape="false"/>
+						</rich:popupPanel>
+						<p:spacer width="10"/>
+						<h:outputText value="#{ocorrencia.numOcorrencia}"/>
+						<p:spacer width="10" rendered="#{ocorrencia.statusOcorrencia == 0 || ocorrencia.statusOcorrencia == 2 || ocorrencia.statusOcorrencia == 4}"/>
+						<h:graphicImage value="/imagens/icon_exclamation.png" width="16" height="16" title="#{msg.tipoStatusOcorrencia_aberta}" rendered="#{ocorrencia.statusOcorrencia == 0}"/>
+						<h:graphicImage value="/imagens/icon_em_processo.png" width="16" height="16" title="#{msg.tipoStatusOcorrencia_emAnalise}" rendered="#{ocorrencia.statusOcorrencia == 2}"/>
+						<h:graphicImage value="/imagens/icon_pendente.png" width="16" height="16" title="#{msg.tipoStatusOcorrencia_pendente}" rendered="#{ocorrencia.statusOcorrencia == 4}"/>
+					</h:panelGroup>
+				</p:column>
+
+				<p:column sortBy="numBugCliente" width="10%">
+					<f:facet name="header">
+						<h:outputText value="#{msg.cadastrarOcorrencia_bugCliente}"/>
+					</f:facet>
+					<h:outputText value="#{ocorrencia.numBugCliente}"/>
+				</p:column>
+				
+				<p:column sortBy="dataAbertura" width="8%" style="text-align: center">
+					<f:facet name="header">
+						<h:outputText value="#{msg.cadastrarOcorrencia_dataAbertura}"/>
+					</f:facet>
+					<h:outputText value="#{ocorrencia.dataAbertura.time}">
+						<f:convertDateTime type="date" dateStyle="medium" />
+					</h:outputText>
+				</p:column>
+				
+				<p:column sortBy="titulo">
+					<f:facet name="header">
+						<h:outputText value="#{msg.cadastrarOcorrencia_tituloOcorrencia}"/>
+					</f:facet>
+					<h:outputText value="#{ocorrencia.titulo}"/>
+				</p:column>
+				
+				<p:column sortBy="modulo.nome" width="8%" style="text-align: center">
+					<f:facet name="header">
+						<h:outputText value="#{msg.cadastrarOcorrencia_modulo}"/>
+					</f:facet>
+					<h:outputText value="#{ocorrencia.modulo.nome}"/>
+				</p:column>
+				
+				<p:column sortBy="tipoSeveridade" width="8%" style="text-align: center">
+					<f:facet name="header">
+						<h:outputText value="#{msg.cadastrarOcorrencia_severidade}"/>
+					</f:facet>
+					<h:outputText value="#{ocorrencia.descTipoSeveridade}"/>
+				</p:column>
+				
+				<p:column sortBy="responsavel.apelido" width="10%" style="text-align: center">
+					<f:facet name="header">
+						<h:outputText value="#{msg.cadastrarOcorrencia_responsavel}"/>
+					</f:facet>
+					<h:outputText value="#{ocorrencia.responsavel.apelido}"/>
+				</p:column>
+				
+				<p:column sortBy="statusOcorrencia" width="8%" style="text-align: center">
+					<f:facet name="header">
+						<h:outputText value="#{msg.cadastrarOcorrencia_status}"/>
+					</f:facet>
+					<h:outputText name="status" value="#{ocorrencia.descTipoStatus}"/>
+				</p:column>
+				
+				<p:column exportable="false" width="8%" style="text-align: center">
+					<f:facet name="header">
+						<h:outputText value="#{msg.cadastro_acoes}"/>
+					</f:facet>
+					<h:panelGroup>
+						<h:commandLink id="comandoGerarRelatorio" action="#{relatorioBean.relatorioAction}"  
+							rendered="#{sessionBean.colaboradorLogado.tipoAcesso == 0}">
+							<f:param name="relatorioSelecionado" value="6"/>
+							<f:param name="idOcorrencia" value="#{ocorrencia.id}"/>
+							<h:graphicImage value="/imagens/icon_relatorio_pdf.png" width="16" height="16" title="#{msg.cadastro_gerarRelatorio}"/>
+						</h:commandLink>
+						
+						<p:spacer width="10"/>
+						
+						<h:commandLink id="comandoAlterar" action="#{colaboradorBean.selecionarOcorrenciaAction}">
+							<f:param name="idOcorrencia" value="#{ocorrencia.id}"/>
+							<h:graphicImage value="/imagens/btn_edit.png" width="16" height="16" title="#{msg.cadastro_alterar}" rendered="#{(sessionBean.colaboradorLogado.tipoUsuario le 1) or (sessionBean.colaboradorLogado.id == ocorrencia.responsavel.id) or (sessionBean.colaboradorLogado.id == sessionBean.projeto.responsavel.id)}"/>
+							<h:graphicImage value="/imagens/icon_acompanhamento.png" width="16" height="16" title="#{msg.cadastro_selecione}" rendered="#{(sessionBean.colaboradorLogado.tipoUsuario gt 1) and (sessionBean.colaboradorLogado.id != ocorrencia.responsavel.id) and (sessionBean.colaboradorLogado.id != sessionBean.projeto.responsavel.id)}"/>
+						</h:commandLink>
+						
+						<p:spacer width="10"/>
+						
+						<h:commandLink id="comandoExcluir" actionListener="#{colaboradorBean.excluirOcorrenciaAction}" onclick="if (!confirm('#{msg.cadastro_confirmaExclusao}')) return false;"
+							rendered="#{sessionBean.colaboradorLogado.tipoUsuario != 2 and sessionBean.colaboradorLogado.tipoAcesso == 0}">
+							<f:param name="idOcorrencia" value="#{ocorrencia.id}"/>
+							<h:graphicImage value="/imagens/btn_excluir.png" width="16" height="16" title="#{msg.cadastro_excluir}"/>
+						</h:commandLink>
+					</h:panelGroup>
+				</p:column>
+			</p:dataTable>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2" align="right">
+			<h:outputText value="#{msg.header_exportarRelatorio}: " styleClass="textoLabelDestaque"/>
+			
+			<h:commandLink immediate="true">
+				<p:graphicImage value="/imagens/icon_relatorio_pdf.png" />
+				<p:dataExporter type="pdf" target="formGeral:tabelaListagem" fileName="ListaOcorrencias"/>
+			</h:commandLink>
+
+			<p:spacer width="10"/>
+
+			<h:commandLink immediate="true">
+				<p:graphicImage value="/imagens/icon_relatorio_excel.png" />
+				<p:dataExporter type="xls" target="formGeral:tabelaListagem" fileName="ListaOcorrencias" />
+			</h:commandLink>
+			
+			<p:spacer width="10"/>
+		</td>
+	</tr>
+</table>
+
+</ui:define>
+</ui:composition>

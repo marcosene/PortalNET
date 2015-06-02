@@ -1,0 +1,268 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition template="/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:define name="titulo">
+	<h:graphicImage value="/imagens/icon_registro.png" width="32" height="32"/>
+	<p:spacer width="10"/>
+	<h:outputText value="#{msg.registrarAtividade_titulo}" styleClass="textoDestaque"/>
+</ui:define>
+
+<ui:define name="conteudo">
+	
+	<br/>
+	<table style="width: 95%; border-collapse: collapse; border-spacing: 20; margin-left:auto; margin-right:auto">
+		<tr>
+			<td valign="top" width="20%">
+				<p:calendar id="dataTrabalho" mode="inline" styleClass="textoNormal" locale="pt_BR" converter="calendarConverter"
+					value="#{sessionBean.dataTrabalho}" required="true" immediate="true">
+					<p:ajax update=":formGeral:tabelaRegistros"
+						process="@this" />
+				</p:calendar>
+				
+				<br/>
+			</td>
+			<td align="left" valign="top" width="50%">
+				<p:fieldset styleClass="textoNormal"> 
+					<h:panelGrid columns="2">
+						<h:outputLabel value="#{msg.registrarAtividade_colaborador}:" styleClass="textoNormal"
+							rendered="#{sessionBean.colaboradorLogado.tipoUsuario eq 0}"/>
+						<h:selectOneMenu id="colaborador" required="true" immediate="true" rendered="#{sessionBean.colaboradorLogado.tipoUsuario eq 0}"
+							converter="#{converterBean}" value="#{sessionBean.colaborador}">
+							<f:selectItem itemLabel="#{msg.cadastro_selecione}" noSelectionOption="true"/>
+							<f:selectItems value="#{colaboradorBean.colaboradorService.listaColaboradoresParticipativos}"
+								var="colaborador" itemLabel="#{colaborador.nomeCompleto}" itemValue="#{colaborador}"/>
+							<p:ajax update=":formGeral:projeto :formGeral:alocacao :formGeral:ocorrencia :formGeral:tabelaRegistros :formGeral:panelHorasLancadas" process="@this" listener="#{sessionBean.valueChangeListener}" />
+						</h:selectOneMenu>
+									
+						<h:outputLabel value="#{msg.registrarAtividade_projeto}:" styleClass="textoNormal"/>
+						<h:selectOneMenu id="projeto" required="true" immediate="true" converter="#{converterBean}"
+							value="#{sessionBean.projeto}">
+							<f:selectItem itemLabel="#{msg.cadastro_selecione}" noSelectionOption="true"/>
+							<f:selectItems value="#{colaboradorBean.listaProjetosAlocados}"
+								var="projeto" itemLabel="#{projeto.nomeCompleto}" itemValue="#{projeto}"/>
+							<p:ajax update=":formGeral:alocacao :formGeral:ocorrencia" process="@this" listener="#{sessionBean.valueChangeListener}" />
+						</h:selectOneMenu>
+						
+						<h:outputLabel value="#{msg.registrarAtividade_atividade}:" styleClass="textoNormal"/>
+						<h:selectOneMenu id="alocacao" required="true" immediate="true" converter="#{converterBean}">
+							<f:selectItem itemLabel="#{msg.cadastro_selecione}" noSelectionOption="true"/>
+							<f:selectItems value="#{colaboradorBean.listaAlocacoes}"
+								var="alocacao" itemLabel="[#{alocacao.atividade.grupoAtividade.nome}] #{alocacao.atividade.nome}" itemValue="#{alocacao}"/>
+							<p:ajax update=":formGeral:ocorrencia :formGeral:concluido :formGeral:tabelaDescricao" process="@this" listener="#{sessionBean.valueChangeListener}" />
+						</h:selectOneMenu>
+						
+						<h:outputLabel value="#{msg.registrarAtividade_ocorrencia}:" styleClass="textoNormal" />
+						<h:panelGroup id="ocorrencia">
+							<h:selectOneMenu converter="#{converterBean}"
+							 	rendered="#{!empty sessionBean.alocacao and sessionBean.alocacao.atividade.tipoAssocOcorrencia != 0}"
+								immediate="true" value="#{sessionBean.ocorrencia}">
+								<f:selectItem itemLabel="#{msg.registrarAtividade_semOcorrenciaAssoc}" noSelectionOption="true"/>
+								<f:selectItems value="#{colaboradorBean.listaOcorrenciasDoProjeto}"
+									var="ocorrencia" itemLabel="#{ocorrencia.numBugCliente}: #{ocorrencia.titulo}" itemValue="#{ocorrencia}"/>
+							</h:selectOneMenu>
+						</h:panelGroup>
+						
+						<h:outputLabel value="#{msg.registrarAtividade_horario}:" styleClass="textoNormal"/>
+						<h:panelGroup id="horario">
+							<h:selectOneMenu id="horaInicial" required="true" immediate="true"
+								value="#{colaboradorBean.horaInicial}" simple="true" valuePassThru="true"
+								valueChangeListener="#{colaboradorBean.horaInicialChangeListener}">
+								<f:selectItems value="#{utilBean.listaHoras}"/>
+								<p:ajax update=":formGeral:horaFinal" process="@this" />
+							</h:selectOneMenu>
+							
+							<p:spacer width="10"/>
+		
+							<h:selectOneMenu id="horaFinal" required="true"
+								value="#{colaboradorBean.horaFinal}" simple="true" valuePassThru="true">
+								<f:selectItems value="#{utilBean.listaHorasFinais}"/>
+							</h:selectOneMenu>
+							
+							<p:spacer width="10" />
+							
+							<h:panelGroup id="concluido">
+								<h:selectBooleanCheckbox id="flagConcluido" rendered="#{!sessionBean.projeto.generico}" />
+								<h:outputLabel value="#{msg.registrarAtividade_concluido}" styleClass="textoNormal" rendered="#{!sessionBean.projeto.generico}"/>
+							</h:panelGroup>
+						</h:panelGroup>
+				
+						<h:outputLabel value="#{msg.registrarAtividade_descricao}:" styleClass="textoNormal"/>
+						<h:inputTextarea id="descricao" required="true" rows="3" cols="50" />
+						
+						<p:spacer width="1" />
+						<h:panelGroup id="botaoCadastro">
+							<h:commandLink action="#{colaboradorBean.cadastrarRegistroAtividadeAction}" rendered="#{sessionBean.preenchimentoPermitido}">
+								<h:graphicImage value="/imagens/btn_cadastrar.png" width="32" height="32"/>
+							</h:commandLink>
+						</h:panelGroup>
+					</h:panelGrid>
+				</p:fieldset>
+			</td>
+			<td valign="top">
+				<h:panelGroup>
+					<h:panelGroup id="tabelaDescricao" rendered="#{!empty sessionBean.alocacao and (!empty sessionBean.alocacao.atividade.descricao or sessionBean.alocacao.qtdeHorasAlocadas != 0)}">
+					<table style="border-collapse: collapse; border-spacing: 4;">
+						<tr>
+							<td colspan="2">
+								<h:outputLabel styleClass="textoDestaqueMenor" rendered="#{!empty sessionBean.alocacao.atividade.descricao}"
+									value="#{msg.registrarAtividade_descricao}: "/>
+								<h:outputText styleClass="textoLabelDestaque" rendered="#{!empty sessionBean.alocacao.atividade.descricao}"
+									value="#{sessionBean.alocacao.atividade.descricao}"/>
+							</td>
+						</tr>
+						<tr>
+							<td width="50%" valign="top">
+								<h:panelGroup rendered="#{!sessionBean.projeto.generico}">
+									<h:outputLabel styleClass="textoDestaqueMenor"
+										value="#{msg.registrarAtividade_horasAlocadas}: "/>
+									<h:outputText styleClass="textoLabelDestaque"
+										value="#{sessionBean.alocacao.qtdeHorasAlocadas}h"/>
+									<br/>
+							
+									<h:outputLabel styleClass="textoDestaqueMenor" 
+										value="#{msg.registrarAtividade_horasTrabalhadas}: "/>
+									<h:outputText styleClass="textoLabelDestaque"
+										value="#{sessionBean.alocacao.qtdeHorasTrabalho}h"/>
+								</h:panelGroup>
+							</td>
+							<td valign="top">
+								<h:panelGroup rendered="#{!sessionBean.projeto.generico}">
+									<h:outputLabel styleClass="textoDestaqueMenor" 
+										value="#{msg.registrarAtividade_conclusao}: "/>
+									<h:outputText styleClass="textoLabelDestaque"
+										value="#{sessionBean.alocacao.porcentagemConclusaoReal}%"/>
+	
+									<h:panelGroup>
+										<h:outputLabel styleClass="textoDestaqueMenor" 
+											value="#{msg.registrarAtividade_horasRestantes}: "/>
+										<h:outputText styleClass="textoLabelDestaque"
+											value="#{sessionBean.alocacao.qtdeHorasRestantes}h"/>
+									</h:panelGroup>
+								</h:panelGroup>
+							</td>
+						</tr>
+					</table>
+					</h:panelGroup>
+				</h:panelGroup>
+			</td>
+		</tr>
+		<tr>
+			<td valign="top" colspan="3">
+				<br/>
+				<h:panelGroup id="dataFormatada">
+					<h:outputFormat value="#{msg.registrarAtividade_apontamentoHoras}" styleClass="textoLabelDestaque">
+						<f:param value="#{sessionBean.dataTrabalhoFormatada}"/>
+					</h:outputFormat>
+				</h:panelGroup>
+				
+				<p:dataTable id="tabelaRegistros" styleClass="textoNormal" style="width: 100%;"
+					emptyMessage="#{msg.registrarAtividade_nenhumRegistro}"
+					value="#{colaboradorBean.listaRegistrosPorData}" var="registro">
+					<p:column width="5%">
+						<f:facet name="header">
+							<h:outputText value="#{msg.registrarAtividade_inicio}"/>
+						</f:facet>
+						<h:outputText value="#{registro.horaInicialFormatada}"/>
+					</p:column>
+					
+					<p:column width="5%">
+						<f:facet name="header">
+							<h:outputText value="#{msg.registrarAtividade_fim}"/>
+						</f:facet>
+						<h:outputText value="#{registro.horaFinalFormatada}"/>
+					</p:column>
+					
+					<p:column width="5%">
+						<f:facet name="header">
+							<h:outputText value="#{msg.registrarAtividade_horas}"/>
+						</f:facet>
+						<h:outputText value="#{registro.qtdeHorasTrabalho}h" styleClass="textoDestaqueMenor"/>
+					</p:column>
+					
+					<p:column width="32%">
+						<f:facet name="header">
+							<h:outputText value="#{msg.registrarAtividade_projeto}: #{msg.registrarAtividade_atividade}"/>
+						</f:facet>
+						<h:outputText value="[#{registro.alocacao.atividade.grupoAtividade.projeto.codigoClienteCompleto}] #{registro.alocacao.atividade.nome}"/>
+					</p:column>
+					
+					<p:column width="45%">
+						<f:facet name="header">
+							<h:outputText value="#{msg.registrarAtividade_descricao}"/>
+						</f:facet>
+						<h:outputText value="#{registro.descricaoCompleta}"/>
+					</p:column>
+					
+					<p:column exportable="false" width="8%">
+						<f:facet name="header">
+							<h:outputText value="#{msg.cadastro_acoes}"/>
+						</f:facet>
+						<h:panelGroup id="botoesComando" rendered="#{sessionBean.preenchimentoPermitido}">
+							<h:commandLink id="comandoAlterar" actionListener="#{colaboradorBean.selecionarRegistroAtividadeAction}" 
+								rendered="#{registro.alocacao.flagBloqueadoRegistro != 1}"
+								action="edit" immediate="true">
+								<h:graphicImage value="/imagens/btn_edit.png" width="16" height="16" title="#{msg.cadastro_alterar}"/>
+							</h:commandLink>
+							
+							<p:spacer rendered="#{registro.alocacao.flagBloqueadoRegistro != 1}" width="10"/>
+							
+							<h:commandLink id="comandoExcluir" immediate="true" 
+								rendered="#{registro.alocacao.flagBloqueadoRegistro != 1}"
+								actionListener="#{colaboradorBean.excluirRegistroAtividadeAction}" onclick="if (!confirm('#{msg.cadastro_confirmaExclusao}')) return false;">
+								<h:graphicImage value="/imagens/btn_excluir.png" width="16" height="16" title="#{msg.cadastro_excluir}"/>
+							</h:commandLink>
+							
+							<h:graphicImage value="/imagens/icon_naoPermitido.png" rendered="#{registro.alocacao.flagBloqueadoRegistro == 1}" width="16" height="16" title="#{msg.cadastro_bloqueado}"/>
+							<p:spacer rendered="#{registro.alocacao.flagBloqueadoRegistro == 1}" width="10"/>
+							<h:graphicImage value="/imagens/icon_naoPermitido.png" rendered="#{registro.alocacao.flagBloqueadoRegistro == 1}" width="16" height="16" title="#{msg.cadastro_bloqueado}"/>
+							
+						</h:panelGroup>
+					</p:column>
+				</p:dataTable>
+			</td>
+		</tr>
+		<tr>
+			<td align="left" colspan="2">
+				<br/>
+				<h:panelGroup id="panelHorasLancadas">
+					<h:outputLabel value="#{msg.registrarAtividade_totalHorasLancadasDia}: " styleClass="textoNormal"/>
+					<h:outputText value="#{sessionBean.qtdeHorasDia}h" styleClass="textoLabelDestaqueMenor"/>
+					<br/>
+
+					<h:outputLabel value="#{msg.registrarAtividade_totalHorasLancadasMes}: " styleClass="textoNormal"/>
+					<h:outputText value="#{sessionBean.qtdeHorasMes}h" styleClass="textoLabelDestaqueMenor"/>
+					<br/>
+				</h:panelGroup>
+				
+				<h:panelGroup id="panelHorasPrevistas">
+					<h:outputLabel value="#{msg.registrarAtividade_totalHorasPrevistasMes}: " styleClass="textoNormal"/>
+					<h:outputText value="#{sessionBean.qtdeHorasPrevistasMes}h" styleClass="textoLabelDestaqueMenor"/>
+					<br/>
+
+					<h:outputLabel value="#{msg.registrarAtividade_mediaDiariaPreenchimento}: " styleClass="textoNormal"/>
+					<h:outputText value="#{sessionBean.mediaDiariaPreenchimento}h" styleClass="textoLabelDestaqueMenor"/>
+				</h:panelGroup>
+			</td>
+			<td align="right" valign="top" width="40%">
+				<h:panelGroup id="periodo">
+					<h:outputFormat value="#{msg.registrarAtividade_periodo}" styleClass="textoLabelDestaqueMenor">
+						<f:param value="#{utilBean.dataInicioFormatada}"/>
+						<f:param value="#{utilBean.dataFimFormatada}"/>
+					</h:outputFormat>
+				</h:panelGroup>
+			</td>
+		</tr>
+	</table>
+				
+</ui:define>
+</ui:composition>

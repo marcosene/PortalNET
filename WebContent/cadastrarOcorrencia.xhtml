@@ -1,0 +1,236 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition template="/templateCadastro.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:define name="titulo">
+	<h:graphicImage value="/imagens/icon_ocorrencia.png" width="32" height="32"/>
+	<p:spacer width="10"/>
+	<h:outputText value="#{msg.cadastrarOcorrencia_titulo}" styleClass="textoDestaque"/>
+</ui:define>
+
+<ui:define name="conteudo">
+
+<script type="text/javascript">   
+function copiaCodigo(){
+    if (document.getElementById('formGeral:numBugCliente').value=="")
+    	document.getElementById('formGeral:numBugCliente').value=document.getElementById('formGeral:numOcorrencia').value;
+}   
+</script>
+
+	<h:panelGrid style="text-align: right; width: 100%">
+		<h:column>
+			<h:outputLink value="./visualizarOcorrencias.jsf">
+				<h:graphicImage value="/imagens/btn_voltar.png" width="32" height="32" title="#{msg.cadastrarOcorrencia_voltar}"/>
+			</h:outputLink>
+	
+			<p:spacer width="20"/>
+	
+			<h:commandLink actionListener="#{colaboradorBean.cadastrarOcorrenciaAction}" 
+				rendered="#{(sessionBean.colaboradorLogado.tipoUsuario le 1) or (sessionBean.colaboradorLogado.id == sessionBean.ocorrencia.responsavel.id) or sessionBean.colaboradorLogado.id == sessionBean.projeto.responsavel.id}">
+				<h:graphicImage value="/imagens/btn_atualizar.png" width="32" height="32" title="#{msg.cadastrarOcorrencia_salvar}"/>
+			</h:commandLink>
+			
+			<p:spacer width="20"/>
+			
+			<h:commandLink actionListener="#{colaboradorBean.cadastrarOcorrenciaAction}" action="salvar_voltar" 
+				rendered="#{(sessionBean.colaboradorLogado.tipoUsuario le 1) or (sessionBean.colaboradorLogado.id == sessionBean.ocorrencia.responsavel.id) or sessionBean.colaboradorLogado.id == sessionBean.projeto.responsavel.id}">
+				<h:graphicImage value="/imagens/btn_atualizar_voltar.png" width="32" height="32" title="#{msg.cadastrarOcorrencia_salvarVoltar}"/>
+			</h:commandLink>
+
+			<p:spacer width="10"/>
+		</h:column>
+	</h:panelGrid>
+	
+	<br/>
+	
+	<table style="width: 98%; margin-left:auto; margin-right:auto">
+		<tr>
+			<td valign="top">
+				<h:panelGrid columns="2">
+					<h:outputLabel value="#{msg.cadastrarOcorrencia_projeto}:" styleClass="textoNormal"/>
+					<h:selectOneMenu id="projeto" immediate="true" required="true" converter="#{converterBean}"
+						disabled="#{(sessionBean.colaboradorLogado.tipoUsuario gt 1 and sessionBean.colaboradorLogado.id != sessionBean.projeto.responsavel.id)}"
+						value="#{sessionBean.ocorrencia.projeto}">
+						<f:selectItem itemLabel="#{msg.cadastro_selecione}" noSelectionOption="true"/>
+						<f:selectItems value="#{consultaBean.listaProjetos}"
+							var="projeto" itemLabel="#{projeto.codigoClienteCompleto} - #{projeto.nome}" itemValue="#{projeto}"/>
+					</h:selectOneMenu>
+				
+					<h:outputLabel value="#{msg.cadastrarOcorrencia_tituloOcorrencia}:" styleClass="textoNormal"/>
+					<h:inputText id="titulo" required="true"
+						disabled="#{(sessionBean.colaboradorLogado.tipoUsuario gt 1 and sessionBean.colaboradorLogado.id != sessionBean.projeto.responsavel.id)}" 
+						value="#{sessionBean.ocorrencia.titulo}"
+						size="50" maxlength="128">
+					</h:inputText>
+
+					<h:outputLabel value="#{msg.cadastrarOcorrencia_numOcorrencia}:" styleClass="textoNormal"/>
+					<h:inputText id="numOcorrencia" required="true"
+						disabled="#{(sessionBean.colaboradorLogado.tipoUsuario gt 1 and sessionBean.colaboradorLogado.id != sessionBean.projeto.responsavel.id)}" 
+						value="#{sessionBean.ocorrencia.numOcorrencia}"
+						size="15" maxlength="15"
+						onchange="copiaCodigo()">
+					</h:inputText>
+					
+					<h:outputLabel value="#{msg.cadastrarOcorrencia_numBugCliente}:" styleClass="textoNormal"/>
+					<h:inputText id="numBugCliente" required="true"
+						disabled="#{(sessionBean.colaboradorLogado.tipoUsuario gt 1 and sessionBean.colaboradorLogado.id != sessionBean.projeto.responsavel.id)}"
+						value="#{sessionBean.ocorrencia.numBugCliente}"
+						size="15" maxlength="15">
+					</h:inputText>
+					
+					<h:outputLabel value="#{msg.cadastrarOcorrencia_dataAbertura}:" styleClass="textoNormal"/>
+					<p:calendar id="dataAbert" mode="inline" styleClass="textoNormal" locale="pt_BR" converter="calendarConverter"
+						disabled="#{(sessionBean.colaboradorLogado.tipoUsuario gt 1 and sessionBean.colaboradorLogado.id != sessionBean.projeto.responsavel.id)}"
+						value="#{sessionBean.ocorrencia.dataAbertura}" required="true">
+					</p:calendar>
+					
+					<h:outputLabel value="#{msg.cadastrarOcorrencia_severidade}:" styleClass="textoNormal"/>
+					<h:selectOneMenu id="tipoSeveridade" required="true"
+						disabled="#{(sessionBean.colaboradorLogado.tipoUsuario gt 1 and sessionBean.colaboradorLogado.id != sessionBean.projeto.responsavel.id)}"
+						value="#{sessionBean.ocorrencia.tipoSeveridade}"> 
+						<f:selectItems value="#{consultaBean.listaTiposSeveridade}"/>
+					</h:selectOneMenu>
+					
+					<h:outputLabel value="#{msg.cadastrarOcorrencia_status}:" styleClass="textoNormal"/>
+					<h:selectOneMenu id="status" required="true"
+						disabled="#{(sessionBean.colaboradorLogado.tipoUsuario gt 1 and (sessionBean.colaboradorLogado.id != sessionBean.projeto.responsavel.id and sessionBean.colaboradorLogado.id != sessionBean.ocorrencia.responsavel.id))}"
+						value="#{sessionBean.ocorrencia.statusOcorrencia}"> 
+						<f:selectItems value="#{consultaBean.listaTiposStatusOcorrencia}"/>
+					</h:selectOneMenu>
+				</h:panelGrid>
+			</td>
+			<td valign="top">
+				<h:panelGrid columns="2">
+					<h:outputLabel value="#{msg.cadastrarOcorrencia_baseline}:" styleClass="textoNormal"/>
+					<h:inputText id="baseline"
+						disabled="#{(sessionBean.colaboradorLogado.tipoUsuario gt 1 and sessionBean.colaboradorLogado.id != sessionBean.projeto.responsavel.id)}"
+						value="#{sessionBean.ocorrencia.baseline}"
+						size="50" maxlength="50">
+					</h:inputText>
+					
+					<h:outputLabel value="#{msg.cadastrarOcorrencia_modulo}:" styleClass="textoNormal"/>
+					<h:selectOneMenu id="modulo" required="true" converter="#{converterBean}"
+						disabled="#{(sessionBean.colaboradorLogado.tipoUsuario gt 1 and sessionBean.colaboradorLogado.id != sessionBean.projeto.responsavel.id)}"
+						value="#{sessionBean.ocorrencia.modulo}">
+						<f:selectItem itemLabel="#{msg.cadastro_selecione}" noSelectionOption="true"/>
+						<f:selectItems value="#{consultaBean.listaModulos}"
+							var="modulo" itemLabel="#{modulo.nome}" itemValue="#{modulo}"/>
+					</h:selectOneMenu>
+					
+					<h:outputLabel value="#{msg.cadastrarOcorrencia_versaoModulo}:" styleClass="textoNormal"/>
+					<h:inputText id="versaoModulo"
+						disabled="#{(sessionBean.colaboradorLogado.tipoUsuario gt 1 and sessionBean.colaboradorLogado.id != sessionBean.projeto.responsavel.id)}"
+						value="#{sessionBean.ocorrencia.versaoModulo}"
+						size="15" maxlength="15">
+					</h:inputText>
+					
+					<h:outputLabel value="#{msg.cadastrarOcorrencia_gpj}:" styleClass="textoNormal"/>
+					<h:selectOneMenu id="gpj" required="true" rendered="#{empty sessionBean.ocorrencia.id}" converter="#{converterBean}"
+						disabled="#{(sessionBean.colaboradorLogado.tipoUsuario gt 1 and sessionBean.colaboradorLogado.id != sessionBean.projeto.responsavel.id)}"
+						value="#{sessionBean.ocorrencia.gpj}">
+						<f:selectItem itemLabel="#{msg.cadastro_selecione}" noSelectionOption="true"/>
+						<f:selectItems value="#{gestorBean.gestorService.listaColaboradoresGPJs}"
+							var="colaborador" itemLabel="#{colaborador.nomeCompleto}" itemValue="#{colaborador}"/>
+					</h:selectOneMenu>
+					
+					<h:selectOneMenu id="gpj2" required="true" rendered="#{!empty sessionBean.ocorrencia.id}" converter="#{converterBean}"
+						disabled="#{(sessionBean.colaboradorLogado.tipoUsuario gt 1 and sessionBean.colaboradorLogado.id != sessionBean.projeto.responsavel.id)}"
+						value="#{sessionBean.ocorrencia.gpj}">
+						<f:selectItem itemLabel="#{msg.cadastro_selecione}" noSelectionOption="true"/>
+						<f:selectItems value="#{gestorBean.gestorService.listaTodosColaboradoresGPJs}"
+							var="colaborador" itemLabel="#{colaborador.nomeCompleto}" itemValue="#{colaborador}"/>
+					</h:selectOneMenu>
+					
+					<h:outputLabel value="#{msg.cadastrarOcorrencia_responsavel}:" styleClass="textoNormal"/>
+					<h:selectOneMenu id="responsavel" required="true" rendered="#{empty sessionBean.ocorrencia.id}" converter="#{converterBean}"
+						disabled="#{(sessionBean.colaboradorLogado.tipoUsuario gt 1 and sessionBean.colaboradorLogado.id != sessionBean.projeto.responsavel.id)}"
+						value="#{sessionBean.ocorrencia.responsavel}">
+						<f:selectItem itemLabel="#{msg.cadastro_selecione}" noSelectionOption="true"/>
+						<f:selectItems value="#{gestorBean.gestorService.listaColaboradoresParticipativos}"
+							var="colaborador" itemLabel="#{colaborador.nomeCompleto}" itemValue="#{colaborador}"/>
+					</h:selectOneMenu>
+					
+					<h:selectOneMenu id="responsavel2" required="true" rendered="#{!empty sessionBean.ocorrencia.id}" converter="#{converterBean}"
+						disabled="#{(sessionBean.colaboradorLogado.tipoUsuario gt 1 and sessionBean.colaboradorLogado.id != sessionBean.projeto.responsavel.id)}"
+						value="#{sessionBean.ocorrencia.responsavel}">
+						<f:selectItem itemLabel="#{msg.cadastro_selecione}" noSelectionOption="true"/>
+						<f:selectItems value="#{gestorBean.gestorService.listaTodosColaboradoresParticipativos}"
+							var="colaborador" itemLabel="#{colaborador.nomeCompleto}" itemValue="#{colaborador}"/>
+					</h:selectOneMenu>
+				</h:panelGrid>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<br/><br/>
+				
+				<rich:tabPanel switchType="client">
+        			<rich:tab header="#{msg.cadastrarOcorrencia_descricaoResumida}">
+						<rich:editor id="descricaoResumida" width="100%" height="80"
+							readonly="#{(sessionBean.colaboradorLogado.tipoUsuario gt 1 and sessionBean.colaboradorLogado.id != sessionBean.projeto.responsavel.id and sessionBean.colaboradorLogado.id != sessionBean.ocorrencia.responsavel.id)}"
+							value="#{sessionBean.ocorrencia.descricaoResumida}">
+						</rich:editor>
+					</rich:tab>
+
+					<rich:tab header="#{msg.cadastrarOcorrencia_comportamentoEsperado}">
+						<rich:editor toolbar="full" id="comportamentoEsperado" width="100%" height="80"
+							readonly="#{(sessionBean.colaboradorLogado.tipoUsuario gt 1 and sessionBean.colaboradorLogado.id != sessionBean.projeto.responsavel.id and sessionBean.colaboradorLogado.id != sessionBean.ocorrencia.responsavel.id)}"
+							plugins="style,table,save,advhr,advimage,advlink,preview,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras"
+							value="#{sessionBean.ocorrencia.comportamentoEsperado}">
+							<f:param name="theme_advanced_buttons1" value="bold,italic,underline,|,justifyleft,justifycenter,justifyright,justifyfull,|,formatselect,fontselect,fontsizeselect,|,tablecontrols,|,hr,removeformat,visualaid,|,sub,sup,|,charmap,|,print,fullscreen" />
+							<f:param name="theme_advanced_buttons2" value="cut,copy,paste,pastetext,pasteword,|,search,replace,|,bullist,numlist,|,outdent,indent,|,undo,redo,|,link,unlink,cleanup,code" />
+							<f:param name="theme_advanced_buttons3" value="" />
+							<f:param name="theme_advanced_toolbar_location" value="top"/>                               
+				        	<f:param name="theme_advanced_toolbar_align" value="left"/>
+						</rich:editor>
+					</rich:tab>
+	
+					<rich:tab header="#{msg.cadastrarOcorrencia_analise}">
+						<rich:editor toolbar="full" id="analise" width="100%" height="600"
+							readonly="#{(sessionBean.colaboradorLogado.tipoUsuario gt 1 and sessionBean.colaboradorLogado.id != sessionBean.projeto.responsavel.id and sessionBean.colaboradorLogado.id != sessionBean.ocorrencia.responsavel.id)}"
+							plugins="style,table,save,advhr,advimage,advlink,preview,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras"
+							value="#{sessionBean.ocorrencia.textoAnalise}">
+							<f:param name="theme_advanced_buttons1" value="bold,italic,underline,|,justifyleft,justifycenter,justifyright,justifyfull,|,formatselect,fontselect,fontsizeselect,|,tablecontrols,|,hr,removeformat,visualaid,|,sub,sup,|,charmap,|,print,fullscreen" />
+							<f:param name="theme_advanced_buttons2" value="cut,copy,paste,pastetext,pasteword,|,search,replace,|,bullist,numlist,|,outdent,indent,|,undo,redo,|,link,unlink,cleanup,code" />
+							<f:param name="theme_advanced_buttons3" value="" />
+							<f:param name="theme_advanced_toolbar_location" value="top"/>                               
+				        	<f:param name="theme_advanced_toolbar_align" value="left"/>
+						</rich:editor>
+					</rich:tab>
+	
+					<rich:tab header="#{msg.cadastrarOcorrencia_propostaSolucao}">
+						<rich:editor toolbar="full" id="propostaSolucao" width="100%" height="600"
+							readonly="#{(sessionBean.colaboradorLogado.tipoUsuario gt 1 and sessionBean.colaboradorLogado.id != sessionBean.projeto.responsavel.id and sessionBean.colaboradorLogado.id != sessionBean.ocorrencia.responsavel.id)}"
+							plugins="style,table,save,advhr,advimage,advlink,preview,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras"
+							value="#{sessionBean.ocorrencia.textoPropostaSolucao}">
+							<f:param name="theme_advanced_buttons1" value="bold,italic,underline,|,justifyleft,justifycenter,justifyright,justifyfull,|,formatselect,fontselect,fontsizeselect,|,tablecontrols,|,hr,removeformat,visualaid,|,sub,sup,|,charmap,|,print,fullscreen" />
+							<f:param name="theme_advanced_buttons2" value="cut,copy,paste,pastetext,pasteword,|,search,replace,|,bullist,numlist,|,outdent,indent,|,undo,redo,|,link,unlink,cleanup,code" />
+							<f:param name="theme_advanced_buttons3" value="" />
+							<f:param name="theme_advanced_toolbar_location" value="top"/>                               
+				        	<f:param name="theme_advanced_toolbar_align" value="left"/>
+						</rich:editor>
+					</rich:tab>
+					
+					<rich:tab header="#{msg.cadastrarOcorrencia_historico}">
+						<rich:editor toolbar="full" id="historicoOcorrencia" width="100%" height="600"
+							readonly="true" value="#{sessionBean.ocorrencia.historicoOcorrencia}">
+						</rich:editor>
+					</rich:tab>
+					
+				</rich:tabPanel>
+				
+				<br/>
+			</td>
+		</tr>
+	</table>
+	
+</ui:define>
+</ui:composition>

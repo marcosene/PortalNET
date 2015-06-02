@@ -1,0 +1,550 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition template="/templateCadastro.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:define name="titulo">
+	<h:graphicImage value="/imagens/icon_projeto.png" width="32" height="32"/>
+	<p:spacer width="10"/>
+	<h:outputText value="#{msg.cadastrarProjeto_titulo}" styleClass="textoDestaque"/>
+</ui:define>
+
+<ui:define name="conteudo">
+
+<script type="text/javascript">   
+function copiaCodigo(){
+    if (document.getElementById('formGeral:codigoCliente').value=="")
+    	document.getElementById('formGeral:codigoCliente').value=document.getElementById('formGeral:codigo').value;
+}   
+</script>
+
+	<h:panelGrid style="text-align: right; width: 100%">
+		<h:column>
+			<br/>
+	
+			<h:commandLink action="#{gestorBean.cancelAction}" immediate="true">
+				<h:graphicImage value="/imagens/btn_voltar.png" width="32" height="32"/>
+			</h:commandLink>
+		
+			<p:spacer width="20"/>
+		
+			<h:commandLink action="#{gestorBean.cadastrarProjetoAction}">
+				<h:graphicImage value="/imagens/btn_atualizar.png" width="32" height="32"/>
+			</h:commandLink>
+			
+			<p:spacer width="10"/>
+		</h:column>
+	</h:panelGrid>
+	
+	<h:panelGrid columns="2" width="100%">
+		<h:column>
+			<h:panelGrid columns="2">
+				<h:outputLabel value="#{msg.cadastrarArea_cliente}:" styleClass="textoNormal" />
+				<h:inputText id="cliente" disabled="true" size="32"
+					value="#{sessionBean.projeto.produto.area.cliente.nomeEmpresa}">
+				</h:inputText>
+				
+				<h:outputLabel value="#{msg.cadastrarArea_area}:" styleClass="textoNormal" />
+				<h:inputText id="area" disabled="true" size="32"
+					value="#{sessionBean.projeto.produto.area.nome}">
+				</h:inputText>
+				
+				<h:outputLabel value="#{msg.cadastrarProduto_produto}:" styleClass="textoNormal" />
+				<h:inputText id="produto" disabled="true" size="20"
+					value="#{sessionBean.projeto.produto.nome}">
+				</h:inputText>
+				
+				<h:outputLabel value="#{msg.cadastrarProjeto_codigo}:" styleClass="textoNormal"/>
+				<h:panelGroup>
+					<h:inputText id="codigo" required="true"  
+						value="#{sessionBean.projeto.codigo}" size="15" maxlength="15"
+						onchange="copiaCodigo()">
+					</h:inputText>
+					
+					<p:spacer width="15"/>
+		
+					<h:selectBooleanCheckbox id="generico" styleClass="textoNormal"
+						disabled="#{!empty sessionBean.projeto.id}" value="#{sessionBean.projeto.generico}">
+					</h:selectBooleanCheckbox>
+					<h:outputLabel value="#{msg.cadastrarProjeto_projetoGenerico}" styleClass="textoNormal"/>
+				</h:panelGroup>
+		
+				<h:outputLabel value="#{msg.cadastrarProjeto_codigoCliente}:" styleClass="textoNormal"/>
+				<h:panelGroup>
+					<h:inputText id="codigoCliente" required="true"  
+						value="#{sessionBean.projeto.codigoCliente}" size="15" maxlength="15">
+					</h:inputText>
+					
+					<p:spacer width="15"/>
+			
+					<h:outputLabel value="#{msg.cadastrarProjeto_codigoPacote}: " styleClass="textoNormal"/>
+					<h:inputText id="codigoPacote" 
+						value="#{sessionBean.projeto.codigoPacote}" size="10" maxlength="15">
+					</h:inputText>
+				</h:panelGroup>
+		
+				<h:outputLabel value="#{msg.cadastrarProjeto_nomeProjeto}: " styleClass="textoNormal" />
+				<h:inputText id="nome" required="true" size="64" maxlength="64"
+					value="#{sessionBean.projeto.nome}">
+				</h:inputText>
+		
+				<h:outputLabel value="#{msg.cadastrarProjeto_descricaoProjeto}:" styleClass="textoNormal" />
+				<h:inputTextarea id="descricao" cols="48" rows="2" value="#{sessionBean.projeto.descricao}">
+				</h:inputTextarea>
+			</h:panelGrid>
+		</h:column>
+		
+		<h:column>
+			<h:panelGrid columns="2">
+				<h:outputLabel value="#{msg.cadastrarProjeto_gerente}:" styleClass="textoNormal" />
+				<h:selectOneMenu id="gpj" value="#{sessionBean.projeto.gpj}" converter="#{converterBean}">
+					<f:selectItem itemLabel="#{msg.cadastro_selecione}" noSelectionOption="true"/>
+					<f:selectItems value="#{gestorBean.gestorService.listaColaboradoresGPJs}"
+						var="colaborador" itemLabel="#{colaborador.nomeCompleto}" itemValue="#{colaborador}"/>
+				</h:selectOneMenu>
+				
+				<h:outputLabel value="#{msg.cadastrarProjeto_responsavel}:" styleClass="textoNormal" />
+				<h:selectOneMenu id="responsavel" value="#{sessionBean.projeto.responsavel}" converter="#{converterBean}">
+					<f:selectItem itemLabel="Nenhum" noSelectionOption="true"/>
+					<f:selectItems value="#{colaboradorBean.colaboradorService.listaColaboradoresParticipativos}"
+						var="colaborador" itemLabel="#{colaborador.nomeCompleto}" itemValue="#{colaborador}"/>
+				</h:selectOneMenu>
+				
+				<h:outputLabel value="#{msg.cadastrarProjeto_faseProjeto}:" styleClass="textoNormal" />
+				<h:selectOneMenu id="fasesProjeto" value="#{sessionBean.projeto.tipoFaseProjeto}">
+					<f:selectItems value="#{gestorBean.listaTiposFasesProjeto}"
+						var="tipoFaseProjeto" itemLabel="#{tipoFaseProjeto.label}" itemValue="#{tipoFaseProjeto.value}"/>
+				</h:selectOneMenu>
+				
+				<h:outputLabel value="#{msg.cadastrarProjeto_dataInicio}:" styleClass="textoNormal"/>
+				<h:panelGroup>
+					<p:calendar styleClass="textoNormal" locale="pt_BR" converter="calendarConverter"
+						value="#{sessionBean.projeto.dataInicio}" required="true" immediate="true">
+					</p:calendar>
+						
+					<p:spacer width="15"/>
+					
+					<h:outputLabel value="#{msg.cadastrarProjeto_dataEncerramento}: " styleClass="textoNormal"/>
+					<p:calendar id="dtEncerramento" styleClass="textoNormal" locale="pt_BR" converter="calendarConverter"
+						value="#{sessionBean.projeto.dataEncerramento}" immediate="true">
+					</p:calendar>
+				</h:panelGroup>
+					
+				<h:outputLabel value="#{msg.cadastrarProjeto_custoAcordado}:" styleClass="textoNormal" />
+				<h:inputText id="custoAcordado" value="#{sessionBean.projeto.custoAcordado}"
+					size="15" maxlength="15">
+					<f:facet name="help">
+						<h:outputText value="ex: 1250.37"/>
+					</f:facet> 
+				</h:inputText>
+				
+				<h:outputLabel value="#{msg.cadastrarProjeto_custoReal}:" styleClass="textoNormal"/>
+				<h:panelGroup styleClass="textoNormalGrande" id="custoRealTotal" immediate="true" valign="top">
+					<h:outputLabel styleClass="textoNormal" value="#{sessionBean.projeto.totalCustoRealProjeto}">
+						<f:convertNumber type="currency" currencySymbol="R$"
+										maxFractionDigits="2" minFractionDigits="2" groupingUsed="true"/>
+					</h:outputLabel>
+				</h:panelGroup>
+			</h:panelGrid>
+		</h:column>
+	</h:panelGrid>
+		
+	<br/><br/>
+
+	<rich:tabPanel selectedTab="#{gestorBean.nomeTab}" switchType="client">
+        <rich:tab header="Lista de Atividades">
+			<p:commandLink action="#{gestorBean.cadastrarNovoGrupoAtividadeAction}" immediate="true" partialSubmit="true">
+				<h:graphicImage value="/imagens/btn_cadastrar.png" width="32" height="32"/>
+			</p:commandLink>
+			
+			<rich:dataTable width="100%" value="#{sessionBean.projeto.gruposAtividades}" var="grupoAtividade"
+				rowClasses="fundoClaro" style="width: 100%">
+				<f:facet name="header">
+					<rich:columnGroup>
+						<rich:column>
+							<h:outputText value="#{msg.cadastrarGrupoAtividade_grupoAtividade}" />
+						</rich:column>
+						<rich:column>
+							<h:outputText value="#{msg.cadastrarAtividade_tipo}" />
+						</rich:column>
+						<rich:column>
+							<h:outputText value="#{msg.cadastrarAtividade_atividade}" />
+						</rich:column>
+						<rich:column rendered="#{!sessionBean.projeto.generico}">
+							<h:outputText value="#{msg.cadastrarAtividade_horasPrevistas}" />
+						</rich:column>
+						<rich:column rendered="#{!sessionBean.projeto.generico}">
+							<h:outputText value="#{msg.cadastrarAtividade_contabilizar}" />	    
+						</rich:column>
+						<rich:column>
+							<h:outputText value="#{msg.cadastro_acoes}" />
+						</rich:column>
+					</rich:columnGroup>
+				</f:facet>
+				
+				<rich:column colspan="3">
+					<h:outputText value="#{grupoAtividade.nome}" styleClass="textoNegrito"/>
+				</rich:column>
+				
+				<rich:column width="8%" rendered="#{!sessionBean.projeto.generico}">
+					<h:outputText value="#{grupoAtividade.qtdeHorasPrevistas}h" styleClass="textoNegrito"/>
+				</rich:column>
+				
+				<rich:column rendered="#{!sessionBean.projeto.generico}"/>
+				
+				<rich:column align="right">
+					<h:panelGroup>
+						<h:commandLink actionListener="#{gestorBean.selecionarGrupoAtividadeAction}" action="#{gestorBean.cadastrarNovaAtividadeAction}">
+							<h:graphicImage value="/imagens/btn_cadastrar.png" width="16" height="16"/>
+						</h:commandLink>
+						
+						<p:spacer width="10"/>
+						
+						<h:commandLink id="comandoAlterar" actionListener="#{gestorBean.selecionarGrupoAtividadeAction}" action="edit3">
+							<h:graphicImage value="/imagens/btn_edit.png" width="16" height="16" alt="#{msg.cadastro_alterar}"/>
+						</h:commandLink>
+						
+						<p:spacer width="10"/>
+						
+						<h:commandLink id="comandoExcluir" actionListener="#{gestorBean.excluirGrupoAtividadeAction}" onclick="if (!confirm('#{msg.cadastro_confirmaExclusao}')) return false;">
+							<h:graphicImage value="/imagens/btn_excluir.png" width="16" height="16" alt="#{msg.cadastro_excluir}"/>
+						</h:commandLink>
+					</h:panelGroup>
+				</rich:column>
+				
+				<rich:collapsibleSubTable var="atividade" value="#{grupoAtividade.atividades}"
+					onRowMouseOver="this.style.backgroundColor='#E0E0E0'"
+	                onRowMouseOut="this.style.backgroundColor='#FFFFFF'">
+			
+					<rich:column/>
+					
+					<rich:column width="25%">
+						<h:outputText value="#{atividade.tipoAtividade.nome}"/>
+					</rich:column>
+					<rich:column width="54%">
+						<h:outputText value="#{atividade.nome}"/>
+					</rich:column>
+					<rich:column width="8%" rendered="#{!sessionBean.projeto.generico}">
+						<h:outputText value="#{atividade.qtdeHorasPrevistas}h"/>
+					</rich:column>
+					<rich:column width="8%" align="center" rendered="#{!sessionBean.projeto.generico}">
+						<h:graphicImage value="/imagens/icon_bandeira.png" rendered="#{atividade.flagContabilizarProgresso}" alt="#{msg.cadastrarAtividade_contabilizarProgresso}"/>
+					</rich:column>
+					
+					<rich:column width="5%">
+						<h:panelGroup style="text-align: right">
+							<h:commandLink id="comandoAlterar" actionListener="#{gestorBean.selecionarAtividadeAction}" action="edit">
+								<h:graphicImage value="/imagens/btn_edit.png" width="16" height="16" alt="#{msg.cadastro_alterar}"/>
+							</h:commandLink>
+							
+							<p:spacer width="10"/>
+							
+							<h:commandLink id="comandoExcluir" actionListener="#{gestorBean.excluirAtividadeAction}" onclick="if (!confirm('#{msg.cadastro_confirmaExclusao}')) return false;">
+								<h:graphicImage value="/imagens/btn_excluir.png" width="16" height="16" alt="#{msg.cadastro_excluir}"/>
+							</h:commandLink>
+						</h:panelGroup>
+					</rich:column>
+				</rich:collapsibleSubTable>
+				
+				<f:facet name="footer">
+					<rich:columnGroup rendered="#{!sessionBean.projeto.generico}">
+						<rich:column colspan="2"/>
+						<rich:column>
+							<h:outputText value="#{msg.cadastrarProjeto_totalHorasPrevistas}:"/>
+						</rich:column>
+						<rich:column>
+							<h:outputText value="#{sessionBean.projeto.qtdeHorasPrevistas}h"/>	    
+						</rich:column>
+						<rich:column colspan="2"/>
+					</rich:columnGroup>
+				</f:facet>
+			</rich:dataTable>
+        </rich:tab>
+        
+        <rich:tab header="Lista de Compromissos">
+			<p:commandLink action="#{gestorBean.cadastrarNovoCompromissoAction}" immediate="true">
+				<h:graphicImage value="/imagens/btn_cadastrar.png" width="32" height="32"/>
+			</p:commandLink>
+
+			<p:dataTable styleClass="textoNormal" style="width: 100%;" 
+				value="#{sessionBean.projeto.compromissos}" var="compromisso">
+				
+				<p:column width="10%">
+					<f:facet name="header">
+						<h:outputText value="#{msg.cadastrarCompromisso_data}"/>
+					</f:facet>
+					<h:outputText value="#{compromisso.dataEvento.time}">
+						<f:convertDateTime type="date" dateStyle="medium" />
+					</h:outputText>
+				</p:column>
+				
+				<p:column width="20%">
+					<f:facet name="header">
+						<h:outputText value="#{msg.cadastrarCompromisso_responsavel}"/>
+					</f:facet>
+					<h:outputText value="#{compromisso.nomeResponsaveis}"/>
+				</p:column>
+				
+				<p:column width="47%">
+					<f:facet name="header">
+						<h:outputText value="#{msg.cadastrarCompromisso_compromisso}"/>
+					</f:facet>
+					<h:outputText value="#{compromisso.nome}"/>
+				</p:column>
+				
+				<p:column align="center" width="5%">
+					<f:facet name="header">
+						<h:outputText value="#{msg.statusProjeto_concl}"/>
+					</f:facet>
+					<h:graphicImage url="/imagens/status_concluido.png" rendered="#{compromisso.flagConcluido}" width="24" height="24"/>
+					<h:graphicImage url="/imagens/status_naoConcluido.png" rendered="#{!compromisso.flagConcluido}" width="24" height="24"/>
+				</p:column>
+				
+				<p:column align="center" width="10%">	
+					<f:facet name="header">
+						<h:outputText value="#{msg.statusProjeto_compromissoFlagConcluido}"/>
+					</f:facet>
+					<p:commandLink id="comandoAlterarFlag" action="#{gestorBean.alterarFlagCompromisso}" rendered="#{!empty compromisso.id}" immediate="true">
+						<f:param name="idCompromisso" value="#{compromisso.id}"/>
+						<h:graphicImage value="/imagens/icon_alterarStatus.png" width="24" height="24" title="#{msg.statusProjeto_compromissoFlagConcluido}"/>
+					</p:commandLink>
+				</p:column>	
+				
+				<p:column width="8%">
+					<f:facet name="header">
+						<h:outputText value="#{msg.cadastro_acoes}"/>
+					</f:facet>
+					<h:panelGroup>
+						<p:commandLink id="comandoAlterarCompr" actionListener="#{gestorBean.selecionarCompromissoAction}" action="edit2" immediate="true">
+							<h:graphicImage value="/imagens/btn_edit.png" width="16" height="16" title="#{msg.cadastro_alterar}"/>
+						</p:commandLink>
+						
+						<p:spacer width="10"/>
+						
+						<p:commandLink id="comandoExcluirCompr" actionListener="#{gestorBean.excluirCompromissoAction}" onclick="if (!confirm('#{msg.cadastro_confirmaExclusao}')) return false;" immediate="true">
+							<h:graphicImage value="/imagens/btn_excluir.png" width="16" height="16" title="#{msg.cadastro_excluir}"/>
+						</p:commandLink>
+					</h:panelGroup>
+				</p:column>
+			</p:dataTable>
+        </rich:tab>
+        
+        <rich:tab header="#{msg.cadastrarObservacoes_listaObservacoes}">
+			<h:form id="cadastroObservacao"> 
+				<h:selectOneRadio id="flagTipoObs" styleClass="textoNormal" value="0" layout="lineDirection">
+					<f:selectItem itemLabel="#{msg.tipoObservacao_normal}" itemValue="0" />
+					<f:selectItem itemLabel="#{msg.tipoObservacao_importante}" itemValue="1" />
+					<f:selectItem itemLabel="#{msg.tipoObservacao_grave}" itemValue="2" />
+				</h:selectOneRadio>
+				<br/>
+
+				<h:outputLabel value="#{msg.cadastrarObservacoes_observacao}: " styleClass="textoNormal"/>
+				<br/>
+				<h:panelGroup>
+					<h:inputTextarea id="observacao" rows="2" cols="120" styleClass="textoNormal" />
+
+					<p:commandLink action="#{gestorBean.cadastrarObservacaoAction}">
+						<h:graphicImage url="/imagens/btn_cadastrar.png" width="24" height="24" title="#{msg.cadastro_cadastrar}"/>
+					</p:commandLink>
+				</h:panelGroup>
+				<br/>
+
+				<h:selectBooleanCheckbox id="flagVisibilidadeRestrita" text="#{msg.cadastrarObservacoes_visibilidadeRestrita}" />
+				<h:outputLabel value="#{msg.cadastrarObservacoes_visibilidadeRestrita}" styleClass="textoNormal"/>
+			</h:form>
+			<br/><br/>
+			
+			<p:dataTable styleClass="textoNormal" style="width: 100%;"
+				value="#{sessionBean.projeto.observacoes}" var="observacoes">
+					
+				<p:column width="10%">
+					<f:facet name="header">
+						<h:outputText value="#{msg.cadastrarObservacoes_data}"/>
+					</f:facet>
+					<h:outputText value="#{observacoes.dataInclusao}"/>
+				</p:column>
+				
+				<p:column width="80%">
+					<f:facet name="header">
+						<h:outputText value="#{msg.cadastrarObservacoes_observacao}"/>
+					</f:facet>
+					<h:graphicImage url="/imagens/user_bloq.png" width="16" height="16" 
+									title="#{msg.cadastrarObservacoes_visibilidadeRestrita}" rendered="#{observacoes.flagVisibilidadeRestrita}"/>
+					<h:graphicImage url="/imagens/user_desbloq.png" width="16" height="16" 
+									title="#{msg.cadastrarObservacoes_visibilidadeNaoRestrita}" rendered="#{!observacoes.flagVisibilidadeRestrita}"/>
+					<h:outputText value=" #{observacoes.observacoes}"/>
+				</p:column>
+				
+				<p:column width="10%">
+					<f:facet name="header">
+						<h:outputText value="#{msg.cadastro_acoes}"/>
+					</f:facet>
+					<p:commandLink id="comandoExcluirObs" actionListener="#{gestorBean.excluirObservacaoAction}" immediate="true"
+						onclick="if (!confirm('#{msg.cadastro_confirmaExclusao}')) return false;">
+						<h:graphicImage value="/imagens/btn_excluir.png" width="16" height="16" title="#{msg.cadastro_excluir}"/>
+					</p:commandLink>
+				</p:column>
+				
+			</p:dataTable>
+        </rich:tab>
+        
+        <rich:tab header="#{msg.cadastrarCustoReal_titulo}">
+																				
+			<h:outputLabel value="#{msg.cadastrarCustoReal_selecionarAno}" styleClass="textoNormal"/>
+			<h:selectOneMenu valueChangeListener="#{gestorBean.valueChangeListener}"
+				id="anoSelecionado" value="#{utilBean.anoSelecionado}" immediate="true">
+				<f:selectItems value="#{utilBean.listaAnosCombo}" id="anoSelecao"/>
+				<p:ajax update=":formGeral:tabelaCustosReais" process="@this"/>
+			</h:selectOneMenu>
+			
+			<p:spacer width="10"/>
+			
+			<p:dataTable styleClass="textoNormal" style="width: 100%;"
+				value="#{gestorBean.listaCustosReaisProjeto}" var="custoReal"
+				id="tabelaCustosReais" immediate="true">
+
+				<p:column width="45%">
+					<f:facet name="header">
+						<h:outputText value="#{msg.cadastrarCustoReal_mes}"/>
+					</f:facet>
+					<h:outputText value="#{custoReal.mesString}" />
+				</p:column>
+
+				<p:column width="45%">
+					<f:facet name="header">
+						<h:outputText value="#{msg.cadastrarCustoReal_custo}"/>
+					</f:facet>
+					<h:outputText value="R$ #{custoReal.valor}">
+						<f:convertNumber type="currency" currencySymbol="R$"
+							maxFractionDigits="2" minFractionDigits="2" groupingUsed="true"/>
+					</h:outputText>
+				</p:column>
+
+				<p:column width="10%" align="center">
+					<f:facet name="header">
+						<h:outputText value="#{msg.cadastro_acoes}"/>
+					</f:facet>
+					
+					<a4j:commandLink ajaxSingle="true" id="editlink"
+                        oncomplete="#{rich:component('editPanel')}.show()">
+                        <h:graphicImage value="/imagens/btn_edit.png" width="16"
+							height="16" title="#{msg.cadastro_alterar}" />
+							<f:setPropertyActionListener value="#{custoReal}" target="#{sessionBean.custoRealProjeto}" />
+						<f:param name="paramMes" value="#{custoReal.mesString}" />
+                    </a4j:commandLink>
+
+					<p:spacer width="10" />
+				</p:column>
+			</p:dataTable>
+		</rich:tab>
+        
+       	<rich:tab header="#{msg.cadastrarProjeto_listaBugs}">
+       		<p:dataTable styleClass="textoNormal" style="width: 100%;" rows="15"
+       		 	paginator="true" paginatorAlwaysVisible="false"
+       			value="#{gestorBean.listaOcorrenciasProjeto}" id="tabelaBugs" var="ocorrencia">
+
+				<p:column width="8%">
+					<f:facet name="header">
+						<h:outputText value="#{msg.cadastrarOcorrencia_ocorrencia}"/>
+					</f:facet>
+					<h:outputText value="#{ocorrencia.numOcorrencia}" />
+				</p:column>
+
+				<p:column width="8%">
+					<f:facet name="header">
+						<h:outputText value="#{msg.cadastrarOcorrencia_bugCliente}"/>
+					</f:facet>
+					<h:outputText value="#{ocorrencia.numBugCliente}" />
+				</p:column>
+
+				<p:column width="8%">
+					<f:facet name="header">
+						<h:outputText value="#{msg.cadastrarOcorrencia_dataAbertura}"/>
+					</f:facet>
+					<h:outputText value="#{ocorrencia.dataAbertura.time}">
+						<f:convertDateTime type="date" dateStyle="medium" />
+					</h:outputText>
+				</p:column>
+
+				<p:column width="35%">
+					<f:facet name="header">
+						<h:outputText value="#{msg.cadastrarOcorrencia_tituloOcorrencia}"/>
+					</f:facet>
+					<h:outputText value="#{ocorrencia.titulo}" />
+				</p:column>
+
+				<p:column width="8%">
+					<f:facet name="header">
+						<h:outputText value="#{msg.cadastrarOcorrencia_modulo}"/>
+					</f:facet>
+					<h:outputText value="#{ocorrencia.modulo.nome}" />
+				</p:column>
+
+				<p:column width="8%">
+					<f:facet name="header">
+						<h:outputText value="#{msg.cadastrarOcorrencia_severidade}"/>
+					</f:facet>
+					<h:outputText value="#{ocorrencia.descTipoSeveridade}" />
+				</p:column>
+
+				<p:column width="8%">
+					<f:facet name="header">
+						<h:outputText value="#{msg.cadastrarOcorrencia_responsavel}"/>
+					</f:facet>
+					<h:outputText value="#{ocorrencia.responsavel.apelido}" />
+				</p:column>
+
+				<p:column width="8%">
+					<f:facet name="header">
+						<h:outputText value="#{msg.cadastrarOcorrencia_status}"/>
+					</f:facet>
+					<h:outputText value="#{ocorrencia.descTipoStatus}" />
+				</p:column>
+			</p:dataTable>
+        </rich:tab>
+    </rich:tabPanel>
+
+	<a4j:region id="cadastrarCustoRealForm">
+		<rich:popupPanel id="editPanel" autosized="true" width="450" modal="true">
+			<f:facet name="header">
+				<h:outputText value="#{msg.cadastrarCustoReal_titulo}" />
+			</f:facet>
+	
+			<h:panelGrid columns="1">
+				<a4j:outputPanel ajaxRendered="true">
+					<h:panelGrid columns="2">
+						<h:outputText styleClass="textoNormalNegrito" value="#{msg.cadastrarCustoReal_nomeProjeto}:" />
+						<h:outputText value="#{sessionBean.projeto.nome}" />
+						<p:spacer width="05"/>
+						<p:spacer width="05"/>
+						<h:outputText styleClass="textoNormalNegrito" value="#{msg.cadastrarCustoReal_mes}:" />
+						<h:outputText value="#{sessionBean.custoRealProjeto.mesString}" />
+						<p:spacer width="05"/>
+						<p:spacer width="05"/>
+						<h:outputText styleClass="textoNormalNegrito" value="#{msg.cadastrarCustoReal_custo}:" />
+						<h:inputText value="#{sessionBean.custoRealProjeto.valor}" size="15" maxlength="15" >
+							<f:convertNumber type="currency" currencyCode="BRL" currencySymbol="R$"
+										maxFractionDigits="2" minFractionDigits="2" groupingUsed="true"/>
+						</h:inputText>
+					</h:panelGrid>
+				</a4j:outputPanel>
+				<a4j:commandLink
+					render="tabelaCustosReais, custoRealTotal" action="#{gestorBean.cadastrarCustoRealProjetoAction}"
+					oncomplete="if (#{facesContext.maximumSeverity==null}) #{rich:component('editPanel')}.hide();" >
+					<h:graphicImage value="/imagens/btn_atualizar.png" width="32" height="32"/>
+				</a4j:commandLink>
+			
+			</h:panelGrid>
+		</rich:popupPanel>
+	</a4j:region>
+
+</ui:define>
+</ui:composition>

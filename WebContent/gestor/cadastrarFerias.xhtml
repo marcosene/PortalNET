@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition template="/templateCadastro.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:define name="titulo">
+	<h:graphicImage value="/imagens/icon_ferias.png" width="32" height="32"/>
+	<p:spacer width="10"/>
+	<h:outputText value="#{msg.cadastrarFerias_titulo}" styleClass="textoDestaque"/>
+</ui:define>
+
+<ui:define name="conteudo">
+
+	<br/>
+	<h:panelGrid style="text-align: right; width: 100%">
+		<h:column>
+			<h:outputLink value="./visualizarFerias.jsf" >
+				<h:graphicImage value="/imagens/btn_voltar.png" width="32" height="32"/>
+			</h:outputLink>
+	
+			<p:spacer width="20"/>
+	
+			<h:commandLink action="#{gestorBean.cadastrarFeriasAction}">
+				<h:graphicImage value="/imagens/btn_atualizar.png" width="32" height="32"/>
+			</h:commandLink>
+		
+			<p:spacer width="10"/>
+		</h:column>
+	</h:panelGrid>
+	
+	<h:panelGrid columns="2" styleClass="textoNormal">
+		
+		<h:outputLabel value="#{msg.cadastrarFerias_colaborador}:" styleClass="textoNormal"/>
+		<h:selectOneMenu id="colaborador" required="true" immediate="true"
+			value="#{sessionBean.ferias.colaborador}" converter="#{converterBean}">
+			<f:selectItem itemLabel="#{msg.cadastro_selecione}" noSelectionOption="true"/>
+			<f:selectItems value="#{gestorBean.gestorService.listaColaboradoresInternos}"
+				var="colaborador" itemLabel="#{colaborador.nome} #{colaborador.sobrenome}" itemValue="#{colaborador}"/>
+			<p:ajax update=":formGeral:help :formGeral:dataInicioRef :formGeral:dataFimRef" process="@this" 
+				listener="#{sessionBean.colaboradorFeriasChangeListener}"/>
+		</h:selectOneMenu>
+
+		<p:spacer width="1"/>
+		<h:panelGroup id="help" styleClass="textoNormalMenor">
+			<h:outputText value="#{msg.cadastrarFerias_dataContratacao}: " />
+			<h:outputText value="#{sessionBean.ferias.colaborador.dataContratacao.time}">
+				<f:convertDateTime type="date" dateStyle="medium" />
+			</h:outputText>
+		</h:panelGroup>
+		
+		<h:outputLabel value="#{msg.cadastrarFerias_dataInicioRef}:" styleClass="textoNormal"/>
+		<p:calendar id="dataInicioRef" styleClass="textoNormal" locale="pt_BR" converter="calendarConverter"
+			value="#{sessionBean.ferias.dataInicioRef}" required="true" immediate="true"
+			valueChangeListener="#{sessionBean.dataInicioRefFeriasChangeListener}">
+			<p:ajax update=":formGeral:dataFimRef" process="@this" />
+		</p:calendar>
+		
+		<h:outputLabel value="#{msg.cadastrarFerias_dataFimRef}:" styleClass="textoNormal"/>
+		<p:calendar id="dataFimRef" styleClass="textoNormal" locale="pt_BR" converter="calendarConverter"
+			value="#{sessionBean.ferias.dataFimRef}" required="true" immediate="true">
+		</p:calendar>
+		
+		<h:outputLabel value="#{msg.cadastrarFerias_dataInicioFerias}:" styleClass="textoNormal"/>
+		<p:calendar id="dataInicioFerias" styleClass="textoNormal" locale="pt_BR" converter="calendarConverter"
+			value="#{sessionBean.ferias.dataInicioFerias}" required="true" immediate="true">
+		</p:calendar>
+		
+		<h:outputLabel value="#{msg.cadastrarFerias_qtdeDias}:" styleClass="textoNormal"/>
+		<rich:inputNumberSpinner id="qtdeDiasCorridos" value="#{sessionBean.ferias.qtdeDiasCorridos}" required="true" />
+		
+	</h:panelGrid>
+	 
+</ui:define>
+</ui:composition>

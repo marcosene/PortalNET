@@ -1,0 +1,101 @@
+<?xml version='1.0' encoding='ISO-8859-1' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:a4j="http://richfaces.org/a4j">
+	
+<f:view encoding="ISO-8859-1">
+
+<h:head>
+	<h:outputStylesheet library="css" name="style.css" />
+	<h:outputScript library="js" name="util.js" />
+	
+	<title>#{msg.login_centralColaborador}</title>
+</h:head>
+
+<h:body style="background-image: url('#{request.contextPath}/imagens/fundo_cadastro.jpg'); background-size: 100%; ">
+<h:form id="formGeral">
+
+<div id="geral">
+	<div id="header">
+		<rich:toolbar>
+			<rich:toolbarGroup location="right">
+				<h:panelGroup>
+					<h:outputFormat value="#{msg.header_msgBemVindo} " 
+						styleClass="textoDestaqueMenor" rendered="#{sessionBean.loggedIn}">
+						<f:param value="#{sessionBean.colaboradorLogado.nome}"/>
+					</h:outputFormat>
+
+					<h:graphicImage url="/imagens/user_admin.png" rendered="#{sessionBean.colaboradorLogado.tipoUsuario == 0}" height="20" width="20"/>
+					<h:graphicImage url="/imagens/user_gestor.png" rendered="#{sessionBean.colaboradorLogado.tipoUsuario == 1}" height="20" width="20"/>
+					<h:graphicImage url="/imagens/user_comum.png" rendered="#{sessionBean.colaboradorLogado.tipoUsuario == 2}" height="20" width="20"/>
+					<h:graphicImage url="/imagens/user_cliente.png" rendered="#{sessionBean.colaboradorLogado.tipoUsuario ge 3}" height="20" width="20"/>
+					<br/>
+					<h:outputText value="#{msg.header_dataUltLogin}: " styleClass="textoLabelDestaque" />
+					<h:outputText value="#{sessionBean.dataUltLogin.time}" styleClass="textoNormalNegrito">
+						<f:convertDateTime type="both" dateStyle="short" timeStyle="short" />
+					</h:outputText>
+				</h:panelGroup>
+			</rich:toolbarGroup>
+		</rich:toolbar>
+	</div>
+
+	<div id="conteudo" class="conteudo">
+		<table style="width: 98%; border-collapse: collapse; border-spacing: 2; margin-left: auto; margin-right: auto">
+			<tr>
+				<td style="border-bottom: 1px solid #DDDDDD">
+					<ui:insert name="titulo"/>
+					<rich:notifyMessages stayTime="5000" nonblocking="true" />
+				</td>
+			</tr>
+			<tr style="min-height:590px; height:590px;" valign="top">
+				<td style="border-bottom: 1px solid #aaaaaa" >
+					<ui:insert name="conteudo"/>
+					<br/>
+				</td>
+			</tr>
+		</table>
+		
+		<table style="width: 100%; background-color: white;">
+			<tr>
+				<td align="center">
+					<a4j:mediaOutput element="img" mimeType="image/jpeg" id="logotipo"
+						createContent="#{sessionBean.parametros.paintLogotipo}"
+						cacheable="true">
+					</a4j:mediaOutput>
+				</td>
+				<td width="95%">
+					<h:outputFormat styleClass="textoMenor" value="#{sessionBean.parametros.nomeEmpresa} - "/>
+					<h:outputFormat styleClass="textoMenor" value="#{msg.footer_cnpj}: "/>
+					<h:outputFormat styleClass="textoMenor" value="#{sessionBean.parametros.cnpj}"/><br/>
+					<h:outputFormat styleClass="textoMenor" value="#{sessionBean.parametros.endereco} - "/>
+					<h:outputFormat styleClass="textoMenor" value="#{sessionBean.parametros.cidade}"/><br/>
+					<h:outputFormat styleClass="textoMenor" value="#{msg.footer_telefone}: "/>
+					<h:outputFormat styleClass="textoMenor" value="#{sessionBean.parametros.telefone}"/>
+				</td>
+			</tr>
+		</table>
+	</div>
+</div>
+
+</h:form>
+
+<p:ajaxStatus style="position: absolute; top:50%; left:50%;">  
+    <f:facet name="start">  
+        <p:graphicImage value="/imagens/loading.gif" />  
+    </f:facet>  
+  
+    <f:facet name="complete">  
+        <h:outputText value="" />  
+    </f:facet>  
+</p:ajaxStatus>  
+
+</h:body>
+</f:view>
+</html>

@@ -1,0 +1,187 @@
+body {
+	margin: 0px;
+}
+
+.conteudo {
+	position: absolute;
+	width: 100%;
+}
+
+img {
+	border: 0px;
+}
+
+a {
+	text-decoration: none;
+	border: 0px;
+}
+
+fieldset {
+	border: 1px solid #ddddff;
+}
+
+legend {
+	color: #5D679E;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-weight: bold;
+	font-size: small;
+}
+
+ul {
+	color: #555555;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-weight: normal;
+	font-size: 11px;
+}
+
+.fundoClaro {
+	background-color: #ebfcf2;
+}
+
+.fundoEscuro {
+	background-color: #7098d5;
+}
+
+.fundoDestaque {
+	background-color: #dedeef;
+}
+
+.tableHeader {
+	background-color: #F5FFF5;
+	color: #5D9E73;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 13px;
+	font-weight: bold;
+}
+
+.textoSuperDestaque {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 20px;
+	color: #5D9E73;
+	font-weight: bolder;
+}
+
+.textoDestaque {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 16px;
+	color: #384DC4;
+	font-weight: bold;
+}
+
+.textoDestaqueMenor {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 13px;
+	color: #384DC4;
+	font-weight: bold;
+}
+
+.textoLabelDestaque {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	color: #21743D;
+	font-weight: bold;
+}
+
+.textoLabelDestaqueMenor {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	color: #384DC4;
+	font-weight: bold;
+}
+
+.textoClaro1 {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 16px;
+	color: #DDDDDD;
+	font-weight: bold;
+}
+
+.textoClaro2 {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 16px;
+	color: #FFFFFF;
+}
+
+.textoMenor {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	color: #5D679E;
+}
+
+.textoSubDestaque {
+	color: #375D44;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-weight: normal;
+	font-size: 13px;
+}
+
+.textoNormal {
+	color: #333333;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-weight: normal;
+	font-size: 11px;
+}
+
+.textoNormalMenor {
+	color: #333333;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-weight: normal;
+	font-size: 9px;
+}
+
+.textoNormalNegrito {
+	color: #333333;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-weight: bold;
+	font-size: 11px;
+}
+
+.textoNormalGrande {
+	color: #333333;
+	font-family: sans-serif;
+	font-weight: normal;
+	font-size: 15px;
+}
+
+.textoNormalNegritoMaior {
+	color: #333333;
+	font-family: sans-serif;
+	font-weight: bold;
+	font-size: 16px;
+}
+
+.textoNegrito {
+	color: #5D9E73;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-weight: bold;
+	font-size: 11px;
+}
+
+.textoEstilo {
+	color: #C4AE38;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-weight: bold;
+	font-size: 13px;
+}
+
+.cssColumn {
+	width: 400px;
+}
+
+.diaTrabalhado {
+	background-color: #80FE80;
+}
+
+.diaTrabalhadoParcial {
+	background-color: #FEFF80;
+}
+
+.ui-tabs .ui-tabs-panel {
+	padding: 1px 1px;
+	margin: 6px;
+}
+
+.ui-panel .ui-panel-content {
+	padding: 1px 1px;
+	margin: 1px;
+}

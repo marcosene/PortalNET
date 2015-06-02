@@ -1,0 +1,163 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition template="/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:define name="titulo">
+	<h:graphicImage value="/imagens/icon_colaborador.png" width="32" height="32"/>
+	<p:spacer width="10"/>
+	<h:outputText value="#{msg.cadastrarColaborador_titulo}" styleClass="textoDestaque"/>
+</ui:define>
+
+<ui:define name="conteudo">
+	<table style="width: 98%; border-collapse: collapse; border-spacing: 4; margin-left:auto; margin-right:auto">
+		<tr>
+			<td align="left">
+				<br/>
+				<h:selectOneMenu id="todos" immediate="true" value="0">
+					<f:selectItem itemValue="0" itemLabel="Ativos" selected="true"/>
+					<f:selectItem itemValue="1" itemLabel="Todos"/>
+					<p:ajax update=":formGeral:tabelaListagem" process="@this"/>
+				</h:selectOneMenu>
+			</td>
+			<td align="right">
+				<h:commandLink action="#{adminBean.cadastrarNovoColaboradorAction}">
+					<h:graphicImage value="/imagens/btn_cadastrar.png" width="32" height="32"/>
+				</h:commandLink>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2"> 
+				<p:dataTable id="tabelaListagem" styleClass="textoNormal" style="width: 100%;" paginator="true" paginatorAlwaysVisible="false" rows="20"
+					emptyMessage="#{msg.cadastrarColaborador_nenhumColaborador}"
+					value="#{adminBean.listaColaboradores}" var="colaborador">
+					<p:column width="10%" exportable="false">
+						<f:facet name="header">
+							<h:outputText value="#{msg.cadastrarColaborador_usuario}"/>
+						</f:facet>
+						<h:panelGroup rendered="#{colaborador.flagAtivo}">
+							<h:graphicImage url="/imagens/user_admin.png" title="#{colaborador.descTipoUsuario}" rendered="#{colaborador.tipoUsuario == 0}" height="24" width="24"/>
+							<h:graphicImage url="/imagens/user_gestor.png" title="#{colaborador.descTipoUsuario}" rendered="#{colaborador.tipoUsuario == 1}" height="24" width="24"/>
+							<h:graphicImage url="/imagens/user_comum.png" title="#{colaborador.descTipoUsuario}" rendered="#{colaborador.tipoUsuario == 2}" height="24" width="24"/>
+							<h:graphicImage url="/imagens/user_gpj.png" title="#{colaborador.descTipoUsuario}" rendered="#{colaborador.tipoUsuario ge 3}" height="24" width="24"/>
+							<h:outputText value="#{colaborador.usuario}"/>
+						</h:panelGroup>
+
+						<h:panelGroup rendered="#{!colaborador.flagAtivo}">
+							<h:graphicImage url="/imagens/user_inativo.png" title="Inativo" height="24" width="24"/>
+							<h:outputText value="#{colaborador.usuario}"/>
+						</h:panelGroup>
+					</p:column>
+					
+					<p:column sortBy="nome" width="25%">
+						<f:facet name="header">
+							<h:outputText value="#{msg.cadastrarColaborador_nome}"/>
+						</f:facet>
+						<h:outputText value="#{colaborador.nome} #{colaborador.sobrenome}"/>
+					</p:column>
+					
+					<p:column sortBy="email" width="15%">
+						<f:facet name="header">
+							<h:outputText value="#{msg.cadastrarColaborador_email}"/>
+						</f:facet>
+						<h:outputLink value="mailto:#{colaborador.email}">
+							<h:outputText value="#{colaborador.email}"/>
+						</h:outputLink>
+					</p:column>
+					
+					<p:column sortBy="ramal" style="text-align: center" width="10%">
+						<f:facet name="header">
+							<h:outputText value="#{msg.cadastrarColaborador_ramal}"/>
+						</f:facet>
+						<h:outputText value="#{colaborador.ramal}"/>
+					</p:column>
+					
+					<p:column sortBy="dataContratacao" style="text-align: center" width="8%">
+						<f:facet name="header">
+							<h:outputText value="#{msg.cadastrarColaborador_dataContratacao}"/>
+						</f:facet>
+						<h:outputText value="#{colaborador.dataContratacao.time}">
+							<f:convertDateTime type="date" dateStyle="short" />
+						</h:outputText>
+					</p:column>
+					
+					<p:column sortBy="dataUltLogin" exportable="false" style="text-align: center" width="8%">
+						<f:facet name="header">
+							<h:outputText value="#{msg.cadastrarColaborador_ultLogin}"/>
+						</f:facet>
+						<h:outputText value="#{colaborador.dataUltLogin.time}">
+							<f:convertDateTime type="both" dateStyle="short" />
+						</h:outputText>
+					</p:column>
+					
+					<p:column sortBy="descTipoUsuario" style="text-align: center" width="15%">
+						<f:facet name="header">
+							<h:outputText value="#{msg.cadastrarColaborador_tipo}"/>
+						</f:facet>
+						<h:outputText value="#{colaborador.descTipoUsuario}"/>
+					</p:column>
+					
+					<p:column exportable="false" style="text-align: center" width="9%">
+						<f:facet name="header">
+							<h:outputText value="#{msg.cadastro_acoes}"/>
+						</f:facet>
+						<h:panelGroup>
+							<h:commandLink id="comandoStatus" rendered="#{colaborador.usuario != 'admin'}" 
+									actionListener="#{adminBean.alterarEstadoColaboradorAction}">
+								<f:param name="idColaborador" value="#{colaborador.id}"/>
+								<h:graphicImage value="/imagens/user_bloq.png" width="16" height="16" 
+									title="#{msg.cadastrarColaborador_ativar}" rendered="#{!colaborador.flagAtivo}"/>
+								<h:graphicImage value="/imagens/user_desbloq.png" width="16" height="16" 
+									title="#{msg.cadastrarColaborador_desativar}" rendered="#{colaborador.flagAtivo}"/>
+							</h:commandLink>
+
+							<p:spacer width="10"/>
+							
+							<h:commandLink id="comandoAlterar" action="#{adminBean.selecionarColaboradorAction}">
+								<f:param name="idColaborador" value="#{colaborador.id}"/>
+								<h:graphicImage value="/imagens/btn_edit.png" width="16" height="16" title="#{msg.cadastro_alterar}"/>
+							</h:commandLink>
+							
+							<p:spacer width="10"/>
+							
+							<h:commandLink id="comandoExcluir" actionListener="#{adminBean.excluirColaboradorAction}" rendered="#{colaborador.usuario != 'admin'}"
+								onclick="if (!confirm('#{msg.cadastro_confirmaExclusao}')) return false;">
+								<f:param name="idColaborador" value="#{colaborador.id}"/>
+								<h:graphicImage value="/imagens/btn_excluir.png" width="16" height="16" title="#{msg.cadastro_excluir}"/>
+							</h:commandLink>
+						</h:panelGroup>
+					</p:column>
+				</p:dataTable>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" align="right">
+				<h:outputText value="#{msg.header_exportarRelatorio}: " styleClass="textoLabelDestaque"/>
+				
+				<h:commandLink immediate="true">
+					<p:graphicImage value="/imagens/icon_relatorio_pdf.png" />
+					<p:dataExporter type="pdf" target="tabelaListagem" fileName="ListaColaboradores"/>
+				</h:commandLink>
+
+				<p:spacer width="10"/>
+
+				<h:commandLink immediate="true">
+					<p:graphicImage value="/imagens/icon_relatorio_excel.png" />
+					<p:dataExporter type="xls" target="tabelaListagem" fileName="ListaColaboradores" />
+				</h:commandLink>
+				
+				<p:spacer width="10"/>
+			</td>
+		</tr>
+	</table>
+
+</ui:define>
+</ui:composition>

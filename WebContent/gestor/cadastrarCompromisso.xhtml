@@ -1,0 +1,91 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition template="/templateCadastro.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:define name="titulo">
+	<h:graphicImage value="/imagens/icon_projeto.png" width="32" height="32"/>
+	<p:spacer width="10"/>
+	<h:outputText value="#{msg.cadastrarProjeto_titulo}: #{msg.cadastrarCompromisso_titulo}" styleClass="textoDestaque"/>
+</ui:define>
+
+<ui:define name="conteudo">
+	<h:panelGrid style="text-align: right; width: 100%">
+		<h:column>
+			<h:outputLink value="./cadastrarProjeto.jsf">
+				<h:graphicImage value="/imagens/btn_voltar.png" width="32" height="32"/>
+			</h:outputLink>
+	
+			<p:spacer width="20"/>
+	
+			<h:commandLink action="#{gestorBean.cadastrarCompromissoAction}">
+				<h:graphicImage value="/imagens/btn_cadastrar.png" width="32" height="32"/>
+			</h:commandLink>
+	
+			<p:spacer width="10"/>
+		</h:column>
+	</h:panelGrid>
+			
+	<h:panelGroup>
+		<h:outputLabel value="#{msg.cadastrarProjeto_codigo}:" styleClass="textoNormal" />
+		<h:inputText id="codigoProjeto" disabled="true" size="15"
+			value="#{sessionBean.compromisso.projeto.codigo}">
+		</h:inputText>
+		
+		<h:outputLabel value="#{msg.cadastrarCompromisso_compromisso}:" styleClass="textoNormal" />
+		<h:inputTextarea id="nome" required="true" rows="2"
+			value="#{sessionBean.compromisso.nome}" cols="64">
+		</h:inputTextarea>
+		
+		<br/>
+		
+		<h:outputLabel value="#{msg.cadastrarCompromisso_repeticao}:"/>
+		<h:panelGroup valign="top">
+				<h:selectOneMenu id="repeticao" immediate="true" value="#{sessionBean.compromisso.tipoRepeticao}">
+					<f:selectItems value="#{consultaBean.listaTiposRepeticoes}" var="repeticao" />
+					<p:ajax update=":formGeral:grupo" process="@this"/>
+				</h:selectOneMenu>
+												
+				<h:panelGroup id="grupo">
+					<h:outputLabel styleClass="textoNormalGrande" value="#{msg.cadastrarCompromisso_data}:"
+						rendered="#{sessionBean.compromisso.tipoRepeticao != 1}"/>
+
+					<p:calendar id="dataEvento" mode="inline" styleClass="textoNormal" locale="pt_BR" converter="calendarConverter"
+						rendered="#{sessionBean.compromisso.tipoRepeticao != 1}"
+						value="#{sessionBean.compromisso.dataEvento}" required="true" immediate="true">
+					</p:calendar>
+					
+					<h:outputLabel styleClass="textoNormalGrande" value="#{msg.cadastrarCompromisso_diaSemana}:"
+						rendered="#{sessionBean.compromisso.tipoRepeticao == 1}"/>
+					<h:panelGroup rendered="#{sessionBean.compromisso.tipoRepeticao == 1}">
+						<h:selectBooleanCheckbox styleClass="textoNormalGrande" id="domingo" value="#{sessionBean.compromisso.flagRepeticaoDomingo}" text="D"/>
+						<h:selectBooleanCheckbox styleClass="textoNormalGrande" id="segunda" value="#{sessionBean.compromisso.flagRepeticaoSegunda}" text="S"/>
+						<h:selectBooleanCheckbox styleClass="textoNormalGrande" id="terca" value="#{sessionBean.compromisso.flagRepeticaoTerca}" text="T"/>
+						<h:selectBooleanCheckbox styleClass="textoNormalGrande" id="quarta" value="#{sessionBean.compromisso.flagRepeticaoQuarta}" text="Q"/>
+						<h:selectBooleanCheckbox styleClass="textoNormalGrande" id="quinta" value="#{sessionBean.compromisso.flagRepeticaoQuinta}" text="Q"/>
+						<h:selectBooleanCheckbox styleClass="textoNormalGrande" id="sexta" value="#{sessionBean.compromisso.flagRepeticaoSexta}" text="S"/>
+						<h:selectBooleanCheckbox styleClass="textoNormalGrande" id="sabado" value="#{sessionBean.compromisso.flagRepeticaoSabado}" text="S"/>
+					</h:panelGroup>
+				</h:panelGroup>				
+		</h:panelGroup>	
+		<br/>
+		
+		<h:outputLabel value="* #{msg.cadastrarCompromisso_responsavel}:"/>
+		<rich:pickList value="#{sessionBean.compromisso.colaboradores}" id="shuttle1"
+			sourceCaption="#{msg.cadastrarEquipe_membrosDisponiveis}:"
+			targetCaption="#{msg.cadastrarEquipe_membrosSelecionados}:">
+			<f:selectItems value="#{gestorBean.gestorService.listaColaboradoresComCompromissos}"
+				var="colaborador" itemLabel="#{colaborador.nomeCompleto}" itemValue="#{colaborador}"/>
+		</rich:pickList>
+	</h:panelGroup>
+
+</ui:define>
+</ui:composition>

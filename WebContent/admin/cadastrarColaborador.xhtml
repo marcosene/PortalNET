@@ -1,0 +1,240 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition template="/templateCadastro.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:rich="http://richfaces.org/rich">
+
+<ui:define name="titulo">
+	<h:graphicImage value="/imagens/icon_colaborador.png" width="32" height="32"/>
+	<p:spacer width="10"/>
+	<h:outputText value="#{msg.cadastrarColaborador_titulo}" styleClass="textoDestaque"/>
+</ui:define>
+
+<ui:define name="conteudo">
+
+<script type="text/javascript">  
+
+function limpaConfirmaSenha(){
+    document.getElementById("formGeral:senhaConfirmada").value = '';
+}   
+
+</script>
+
+	<h:panelGrid style="text-align: right; width: 100%">
+		<h:column>
+			<br/>
+			<h:outputLink value="./visualizarColaboradores.jsf">
+				<h:graphicImage value="/imagens/btn_voltar.png" width="32" height="32"/>
+			</h:outputLink>
+	
+			<p:spacer width="20"/>
+	
+			<h:commandLink action="#{adminBean.cadastrarColaboradorAction}">
+				<h:graphicImage value="/imagens/btn_atualizar.png" width="32" height="32"/>
+			</h:commandLink>
+			
+			<p:spacer width="10"/>
+		</h:column>
+	</h:panelGrid>
+
+	<h:panelGrid columns="2" style="width: 95%">	
+		<p:fieldset style="padding: 12px; width: 70%" legend="Dados Pessoais" styleClass="textoNormal">
+			<h:panelGrid columns="2" style="width: 100%">
+				<h:outputLabel value="#{msg.cadastrarColaborador_nome}:" styleClass="textoNormal" />
+				<h:inputText id="nome" required="true"
+					value="#{sessionBean.colaborador.nome}"
+					size="25" maxlength="25">
+				</h:inputText>
+				
+				<h:outputLabel value="#{msg.cadastrarColaborador_sobrenome}:" styleClass="textoNormal"
+					rendered="#{sessionBean.colaborador.usuario != 'admin'}"/>
+				<h:inputText id="sobrenome" required="true"
+					rendered="#{sessionBean.colaborador.usuario != 'admin'}"
+					value="#{sessionBean.colaborador.sobrenome}"
+					size="35" maxlength="35">
+				</h:inputText>
+				
+				<h:outputLabel value="#{msg.cadastrarColaborador_apelido}:" styleClass="textoNormal"
+					rendered="#{sessionBean.colaborador.usuario != 'admin'}"/>
+				<h:inputText id="apelido" required="true" rendered="#{sessionBean.colaborador.usuario != 'admin'}"
+					value="#{sessionBean.colaborador.apelido}"
+					size="15" maxlength="15">
+				</h:inputText>
+	
+				<h:outputLabel value="#{msg.cadastrarColaborador_emailAlternativo}:" styleClass="textoNormal" />
+				<h:inputText id="emailAlternativo" validatorMessage="#{msg.cadastrarColaborador_emailInvalido}"
+					value="#{sessionBean.colaborador.emailAlternativo}" size="50" maxlength="50">
+					<f:validateRegex pattern="(^[_A-Za-z0-9-]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})|^$)" />
+				</h:inputText>
+	
+				<h:outputLabel value="#{msg.cadastrarColaborador_diaAniversario}:"
+					rendered="#{sessionBean.colaborador.usuario != 'admin'}" styleClass="textoNormal"/>
+				<h:panelGroup id="niver" rendered="#{sessionBean.colaborador.usuario != 'admin'}">
+					<h:inputText id="diaAniversario"
+						size="2" maxlength="2" value="#{sessionBean.colaborador.diaAniversario}">
+						<f:validateLongRange minimum="1" maximum="31" />
+					</h:inputText>
+					
+					<h:outputLabel value="/" styleClass="textoNormal" />
+					<h:inputText id="mesAniversario"
+						size="2" maxlength="2" value="#{sessionBean.colaborador.mesAniversario}">
+						<f:validateLongRange minimum="1" maximum="12" />
+					</h:inputText>
+				</h:panelGroup>
+		
+				<h:outputLabel value="#{msg.cadastrarColaborador_telResid}:" styleClass="textoNormal"
+					rendered="#{sessionBean.colaborador.usuario != 'admin'}"/>
+				<h:inputText id="telResid" rendered="#{sessionBean.colaborador.usuario != 'admin'}"
+					value="#{sessionBean.colaborador.telResid}"
+					size="15" maxlength="15">
+				</h:inputText>
+				
+				<h:outputLabel value="#{msg.cadastrarColaborador_telCelular}:" styleClass="textoNormal"
+					 rendered="#{sessionBean.colaborador.usuario != 'admin'}"/>
+				<h:inputText id="telCelular" rendered="#{sessionBean.colaborador.usuario != 'admin'}"
+					value="#{sessionBean.colaborador.telCelular}"
+					size="15" maxlength="15">
+				</h:inputText>
+		
+			</h:panelGrid>
+		</p:fieldset>
+
+		<p:fieldset style="padding: 10px; width: 70%" legend="Dados de Acesso" styleClass="textoNormal">
+			<h:panelGrid columns="2" style="width: 100%">
+				<h:outputLabel value="#{msg.cadastrarColaborador_usuario}:" styleClass="textoNormal"
+					rendered="#{sessionBean.colaborador.usuario != 'admin'}"/>
+				<h:inputText id="usuario" required="true" rendered="#{sessionBean.colaborador.usuario != 'admin'}" 
+					value="#{sessionBean.colaborador.usuario}"
+					size="16" maxlength="16">
+				</h:inputText>
+				
+				<h:outputLabel value="#{msg.cadastrarColaborador_senha}:" styleClass="textoNormal" />
+				<h:inputSecret id="senha" required="true" redisplay="true"
+					value="#{sessionBean.colaborador.senha}"
+					validator="#{validatorBean.validateSenha}"
+					onchange="limpaConfirmaSenha()"
+					size="20" maxlength="20">
+					<f:validateLength minimum="6" maximum="20" />
+				</h:inputSecret>
+				
+				<h:outputLabel value="#{msg.cadastrarColaborador_confirmaSenha}:" styleClass="textoNormal" />
+				<h:inputSecret id="senhaConfirmada" required="true" redisplay="true" 
+					value="#{sessionBean.colaborador.senha}"
+					validator="#{validatorBean.validateSenhaConfirmada}"
+					size="20" maxlength="20">
+					<f:validateLength minimum="6" maximum="20" />
+				</h:inputSecret>
+	
+				<h:outputLabel value="#{msg.cadastrarColaborador_tipo}:" styleClass="textoNormal"
+					rendered="#{sessionBean.colaborador.usuario != 'admin'}"/>
+				<h:selectOneMenu id="tipoUsuario" required="true"
+					rendered="#{sessionBean.colaborador.usuario != 'admin'}"
+					value="#{sessionBean.colaborador.tipoUsuario}"> 
+					<f:selectItems value="#{adminBean.listaTiposUsuario}"/>
+				</h:selectOneMenu>
+	
+				<h:outputLabel value="#{msg.cadastrarColaborador_acesso}:" styleClass="textoNormal"
+					rendered="#{sessionBean.colaborador.usuario != 'admin'}"/>
+				<h:selectOneMenu id="tipoAcesso" required="true"
+					rendered="#{sessionBean.colaborador.usuario != 'admin'}"
+					value="#{sessionBean.colaborador.tipoAcesso}"> 
+					<f:selectItems value="#{adminBean.listaTiposAcesso}"/>
+				</h:selectOneMenu>
+			</h:panelGrid>
+		</p:fieldset>
+	</h:panelGrid>
+		
+	<br/>
+	<p:fieldset style="padding: 12px;" legend="Dados Profissionais" styleClass="textoNormal">
+		<h:panelGrid columns="2" style="width: 100%">
+			<h:panelGrid columns="2" style="width: 80%">
+				<h:outputLabel value="#{msg.cadastrarColaborador_email}:" styleClass="textoNormal" />
+				<h:inputText id="email" required="true" validatorMessage="#{msg.cadastrarColaborador_emailInvalido}"
+					value="#{sessionBean.colaborador.email}"
+					size="50" maxlength="50">
+					<f:validateRegex pattern="(^[_A-Za-z0-9-]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})|^$)" />
+				</h:inputText>
+	
+				<h:outputLabel value="#{msg.cadastrarColaborador_ramal}:" styleClass="textoNormal"
+					rendered="#{sessionBean.colaborador.usuario != 'admin'}"/>
+				<h:inputText id="ramal" rendered="#{sessionBean.colaborador.usuario != 'admin'}"
+					value="#{sessionBean.colaborador.ramal}"
+					size="15" maxlength="15">
+				</h:inputText>
+				
+				<h:outputLabel value="#{msg.cadastrarColaborador_diasTrabalho}:"
+					rendered="#{sessionBean.colaborador.usuario != 'admin'}" styleClass="textoNormal"/>
+				<h:panelGroup id="diasTrabalho" rendered="#{sessionBean.colaborador.usuario != 'admin'}">
+					<h:selectBooleanCheckbox id="trabSegunda" styleClass="textoNormal"
+						value="#{sessionBean.colaborador.flagTrabSegunda}">
+					</h:selectBooleanCheckbox>
+					<h:outputLabel value="#{msg.cadastrarColaborador_segunda}" styleClass="textoNormal" />
+	
+					<h:selectBooleanCheckbox id="trabTerca" styleClass="textoNormal"
+						value="#{sessionBean.colaborador.flagTrabTerca}">
+					</h:selectBooleanCheckbox>
+					<h:outputLabel value="#{msg.cadastrarColaborador_terca}" styleClass="textoNormal" />
+	
+					<h:selectBooleanCheckbox id="trabQuarta" styleClass="textoNormal"
+						value="#{sessionBean.colaborador.flagTrabQuarta}">
+					</h:selectBooleanCheckbox>
+					<h:outputLabel value="#{msg.cadastrarColaborador_quarta}" styleClass="textoNormal" />
+	
+					<h:selectBooleanCheckbox id="trabQuinta" styleClass="textoNormal"
+						value="#{sessionBean.colaborador.flagTrabQuinta}">
+					</h:selectBooleanCheckbox>
+					<h:outputLabel value="#{msg.cadastrarColaborador_quinta}" styleClass="textoNormal" />
+	
+					<h:selectBooleanCheckbox id="trabSexta" styleClass="textoNormal"
+						value="#{sessionBean.colaborador.flagTrabSexta}">
+					</h:selectBooleanCheckbox>
+					<h:outputLabel value="#{msg.cadastrarColaborador_sexta}" styleClass="textoNormal" />
+	
+					<h:selectBooleanCheckbox id="trabSabado" styleClass="textoNormal"
+						value="#{sessionBean.colaborador.flagTrabSabado}">
+					</h:selectBooleanCheckbox>
+					<h:outputLabel value="#{msg.cadastrarColaborador_sabado}" styleClass="textoNormal" />
+	
+					<h:selectBooleanCheckbox id="trabDomingo" styleClass="textoNormal"
+						value="#{sessionBean.colaborador.flagTrabDomingo}">
+					</h:selectBooleanCheckbox>
+					<h:outputLabel value="#{msg.cadastrarColaborador_domingo}" styleClass="textoNormal" />
+				</h:panelGroup>
+				
+				<h:outputLabel value="#{msg.cadastrarColaborador_custoHora}:" styleClass="textoNormal"
+					rendered="#{sessionBean.colaborador.usuario != 'admin'}"/>
+				<h:inputText id="valorCustoHora" rendered="#{sessionBean.colaborador.usuario != 'admin'}"
+					value="#{sessionBean.colaborador.valorCustoHora}"
+					size="15" maxlength="15">
+					<f:facet name="help">
+						<h:outputText value="ex: 10.50"/>
+					</f:facet> 
+				</h:inputText>
+				
+				<h:outputLabel value="#{msg.cadastrarColaborador_dataContratacao}:" styleClass="textoNormal"
+					rendered="#{sessionBean.colaborador.usuario != 'admin'}"/>
+				<p:calendar id="dataContratacao" styleClass="textoNormal" locale="pt_BR" converter="calendarConverter"
+					value="#{sessionBean.colaborador.dataContratacao}" required="true" immediate="true"
+					rendered="#{sessionBean.colaborador.usuario != 'admin'}">
+				</p:calendar>
+				
+			</h:panelGrid>
+
+			<rich:pickList value="#{adminBean.listaProjetosGenericosSelecionados}" id="projetosGenericos"
+				sourceCaption="#{msg.cadastrarColaborador_projetosGenericos}:" converter="#{converterBean}"
+				targetCaption="#{msg.cadastrarColaborador_projetosAlocados}:"
+				disabled="#{!empty sessionBean.colaborador.id}">
+	  			<f:selectItems value="#{adminBean.adminService.listaProjetosGenericos}" 
+	  				var="projeto" itemLabel="#{projeto.nomeCompleto}" itemValue="#{projeto}"/>
+			</rich:pickList>
+		</h:panelGrid>
+	</p:fieldset>
+	
+</ui:define>
+</ui:composition>

@@ -1,0 +1,164 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition template="/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:define name="titulo">
+	<h:graphicImage value="/imagens/icon_ferias.png" width="32" height="32"/>
+	<p:spacer width="10"/>
+	<h:outputText value="#{msg.cadastrarFerias_titulo}" styleClass="textoDestaque"/>
+</ui:define>
+
+<ui:define name="conteudo">
+	<table style="width: 98%; border-collapse: collapse; border-spacing: 4; margin-left:auto; margin-right:auto">
+		<tr>
+			<td align="left" colspan="2">
+				<br/>
+				<h:outputLabel value="#{msg.cadastrarFerias_selecionarAno}:&nbsp;&nbsp;" styleClass="textoNormal"/>
+				<h:selectOneMenu id="anoSelecionado" value="#{utilBean.anoSelecionado}" required="true">
+					<f:selectItems value="#{utilBean.listaAnosCombo}"/>
+					<p:ajax update=":formGeral:tabelaListagem" process="@this"/>
+				</h:selectOneMenu>
+				<br/><br/>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<h:graphicImage url="/imagens/status_azul.png" />
+				<h:outputText value="#{msg.cadastrarFerias_agendadas}" styleClass="textoSubDestaque"/>
+				<h:graphicImage url="/imagens/status_amarelo.png" />
+				<h:outputText value="#{msg.cadastrarFerias_emFerias}" styleClass="textoSubDestaque"/>
+				<h:graphicImage url="/imagens/status_vermelho.png" />
+				<h:outputText value="#{msg.cadastrarFerias_concluidas}" styleClass="textoSubDestaque"/>
+			</td>
+			<td align="right">
+				<h:commandLink action="#{gestorBean.cadastrarNovaFeriasAction}">
+					<h:graphicImage value="/imagens/btn_cadastrar.png" width="32" height="32"/>
+				</h:commandLink>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<p:dataTable id="tabelaListagem" emptyMessage="#{msg.cadastrarFerias_nenhumaFerias}" paginator="true" paginatorAlwaysVisible="false" rows="20"
+					styleClass="textoNormal" style="width: 100%" value="#{gestorBean.listaFerias}" var="ferias">
+					<p:column sortBy="colaborador" width="22%">
+						<f:facet name="header">
+							<h:outputText value="#{msg.cadastrarFerias_colaborador}"/>
+						</f:facet>
+						<h:outputText value="#{ferias.colaborador.nomeCompleto}"/>
+					</p:column>
+					
+					<p:column sortBy="colaborador.dataContratacao" width="12%" style="text-align: center">
+						<f:facet name="header">
+							<h:outputText value="#{msg.cadastrarFerias_dataContratacao}"/>
+						</f:facet>
+						<h:outputText value="#{ferias.colaborador.dataContratacao.time}">
+							<f:convertDateTime type="date" dateStyle="medium" />
+						</h:outputText>
+					</p:column>
+					
+					<p:column sortBy="dataInicioRef" width="12%" style="text-align: center">
+						<f:facet name="header">
+							<h:outputText value="#{msg.cadastrarFerias_dataInicioRef}"/>
+						</f:facet>
+						<h:outputText value="#{ferias.dataInicioRef.time}">
+							<f:convertDateTime type="date" dateStyle="medium" />
+						</h:outputText>
+					</p:column>
+					
+					<p:column sortBy="dataFimRef" width="12%" style="text-align: center">
+						<f:facet name="header">
+							<h:outputText value="#{msg.cadastrarFerias_dataFimRef}"/>
+						</f:facet>
+						<h:outputText value="#{ferias.dataFimRef.time}">
+							<f:convertDateTime type="date" dateStyle="medium" />
+						</h:outputText>
+					</p:column>
+					
+					<p:column sortBy="dataInicioFerias" width="12%" style="text-align: center">
+						<f:facet name="header">
+							<h:outputText value="#{msg.cadastrarFerias_dataInicioFerias}"/>
+						</f:facet>
+						<h:outputText value="#{ferias.dataInicioFerias.time}">
+							<f:convertDateTime type="date" dateStyle="medium" />
+						</h:outputText>
+					</p:column>
+					
+					<p:column sortBy="dataFimFerias" width="12%" style="text-align: center">
+						<f:facet name="header">
+							<h:outputText value="#{msg.cadastrarFerias_dataFimFerias}"/>
+						</f:facet>
+						<h:outputText value="#{ferias.dataFimFerias.time}">
+							<f:convertDateTime type="date" dateStyle="medium" />
+						</h:outputText>
+					</p:column>
+					
+					<p:column width="5%" style="text-align: center">
+						<f:facet name="header">
+							<h:outputText value="#{msg.cadastrarFerias_qtdeDias}"/>
+						</f:facet>
+						<h:outputText value="#{ferias.qtdeDiasCorridos}"/>
+					</p:column>
+					
+					<p:column exportable="false" width="5%" style="text-align: center">
+						<f:facet name="header">
+							<h:outputText value="#{msg.cadastrarFerias_status}"/>
+						</f:facet>
+						<h:graphicImage url="/imagens/status_azul.png" rendered="#{ferias.status eq 1}" title="#{msg.cadastrarFerias_agendadas}"/>
+						<h:graphicImage url="/imagens/status_amarelo.png" rendered="#{ferias.status eq 0}" title="#{msg.cadastrarFerias_emFerias}"/>
+						<h:graphicImage url="/imagens/status_vermelho.png" rendered="#{ferias.status eq 2}" title="#{msg.cadastrarFerias_concluidas}"/>
+					</p:column>
+					
+					<p:column exportable="false" width="8%" style="text-align: center">
+						<f:facet name="header">
+							<h:outputText value="#{msg.cadastro_acoes}"/>
+						</f:facet>
+						<h:panelGroup>
+							<h:commandLink id="comandoAlterar" action="#{gestorBean.selecionarFeriasAction}">
+								<f:param name="idFerias" value="#{ferias.id}"/>
+								<h:graphicImage url="/imagens/btn_edit.png" width="16" height="16" title="#{msg.cadastro_alterar}"  rendered="#{ferias.status ne 2}"/>
+							</h:commandLink>
+							
+							<p:spacer width="10"/>
+							
+							<h:commandLink id="comandoExcluir" actionListener="#{gestorBean.excluirFeriasAction}"
+								onclick="if (!confirm('#{msg.cadastro_confirmaExclusao}')) return false;">
+								<f:param name="idFerias" value="#{ferias.id}"/>
+								<h:graphicImage url="/imagens/btn_excluir.png" width="16" height="16" title="#{msg.cadastro_excluir}" rendered="#{ferias.status eq 1}"/>
+							</h:commandLink>
+						</h:panelGroup>
+					</p:column>
+				</p:dataTable>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" align="right">
+				<h:outputText value="#{msg.header_exportarRelatorio}: " styleClass="textoLabelDestaque"/>
+				
+				<h:commandLink immediate="true">
+					<p:graphicImage value="/imagens/icon_relatorio_pdf.png" />
+					<p:dataExporter type="pdf" target="tabelaListagem" fileName="ListaFerias"/>
+				</h:commandLink>
+
+				<p:spacer width="10"/>
+
+				<h:commandLink immediate="true">
+					<p:graphicImage value="/imagens/icon_relatorio_excel.png" />
+					<p:dataExporter type="xls" target="tabelaListagem" fileName="ListaFerias" />
+				</h:commandLink>
+				
+				<p:spacer width="10"/>
+			</td>
+		</tr>
+	</table>
+
+</ui:define>
+</ui:composition>

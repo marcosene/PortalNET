@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition template="/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"	
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+	
+<ui:define name="titulo">
+	<h:outputText value="#{msg.consultaColaboradores_titulo}" styleClass="textoDestaque"/>
+</ui:define>
+
+<ui:define name="conteudo">
+	
+	<br/>
+	<h:panelGrid columns="3" cellpadding="6">
+		<a4j:repeat value="#{colaboradorBean.colaboradorService.listaColaboradoresParticipativos}" var="colaborador">
+			<h:column>
+			<rich:tabPanel switchType="client" width="90%" headerAlignment="left">
+        		<rich:tab header="#{colaborador.nome}" style="text-align:left" styleClass="textoDestaqueMenor">
+					<h:panelGrid columns="2" cellpadding="2">
+						<p:graphicImage value="#{colaborador.graphicFoto}" />
+						
+						<h:panelGroup>
+							<h:outputText value="#{msg.cadastrarColaborador_nome}: " styleClass="textoLabelDestaqueMenor"/>
+							<h:outputText value="#{colaborador.nomeCompleto}" styleClass="textoNormal"/>
+							<br/>
+							<h:outputText value="#{msg.cadastrarColaborador_email}: " styleClass="textoLabelDestaqueMenor"/>
+							<h:outputLink value="mailto:#{colaborador.email}">
+								<h:outputText value="#{colaborador.email}"/>
+							</h:outputLink>
+							<br/>
+							<h:outputText value="#{msg.cadastrarColaborador_diaAniversario}: " styleClass="textoLabelDestaqueMenor"/>
+							<h:outputText value="#{colaborador.diaAniversario}/#{colaborador.mesAniversario}" styleClass="textoNormal"/>
+							<br/>
+							<h:outputText value="#{msg.cadastrarColaborador_dataContratacao}: " styleClass="textoLabelDestaqueMenor"/>
+							<h:outputText value="#{colaborador.dataContratacao.time}" styleClass="textoNormal">
+								<f:convertDateTime type="date" dateStyle="medium" />
+							</h:outputText>
+							<br/>
+							<h:outputText value="#{msg.cadastrarColaborador_telResid}: " styleClass="textoLabelDestaqueMenor"/>
+							<h:outputText value="#{colaborador.telResid}" styleClass="textoNormal"/>
+							<br/>
+							<h:outputText value="#{msg.cadastrarColaborador_telCelular}: " styleClass="textoLabelDestaqueMenor"/>
+							<h:outputText value="#{colaborador.telCelular}" styleClass="textoNormal"/>
+							<br/>
+						</h:panelGroup>
+					</h:panelGrid>
+				</rich:tab>
+			</rich:tabPanel>
+			</h:column>
+		</a4j:repeat>
+	</h:panelGrid>
+				
+</ui:define>
+</ui:composition>

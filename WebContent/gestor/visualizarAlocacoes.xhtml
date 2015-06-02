@@ -1,0 +1,208 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition template="/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:define name="titulo">
+	<h:graphicImage value="/imagens/icon_alocacao.png" width="32" height="32"/>
+	<p:spacer width="10"/>
+	<h:outputText value="#{msg.cadastrarAlocacao_titulo}" styleClass="textoDestaque"/>
+</ui:define>
+
+<ui:define name="conteudo">
+	<br/>
+	<h:panelGroup rendered="#{sessionBean.colaboradorLogado.tipoAcesso == 0 and sessionBean.colaboradorLogado.tipoUsuario != 2}">
+		<h:outputLabel value="#{msg.cadastrarArea_cliente}:" styleClass="textoNormal"/>
+		<h:selectOneMenu id="cliente" immediate="true" converter="#{converterBean}" value="#{sessionBean.cliente}">
+			<f:selectItem itemLabel="#{msg.cadastro_selecione}" noSelectionOption="true"/>
+			<f:selectItems value="#{gestorBean.gestorService.listaClientes}"
+				var="cliente" itemLabel="#{cliente.nomeEmpresa}" itemValue="#{cliente}"/>
+			<p:ajax update=":formGeral:area" process="@this" />
+		</h:selectOneMenu>
+		
+		<p:spacer width="10" />
+		
+		<h:outputLabel value="#{msg.cadastrarArea_area}:" styleClass="textoNormal"/>
+		<h:selectOneMenu id="area" immediate="true" converter="#{converterBean}" value="#{sessionBean.area}">
+			<f:selectItem itemLabel="#{msg.cadastro_selecione}" noSelectionOption="true"/>
+			<f:selectItems value="#{consultaBean.listaAreas}"
+				var="area" itemLabel="#{area.nome}" itemValue="#{area}"/>
+			<p:ajax update=":formGeral:produto" process="@this" />
+		</h:selectOneMenu>
+
+		<p:spacer width="10" />
+
+		<h:outputLabel value="#{msg.cadastrarProduto_produto}:" styleClass="textoNormal"/>
+		<h:selectOneMenu id="produto" immediate="true" converter="#{converterBean}"
+			value="#{sessionBean.produto}">
+			<f:selectItem itemLabel="#{msg.cadastro_selecione}" noSelectionOption="true"/>
+			<f:selectItems value="#{consultaBean.listaProdutos}"
+				var="produto" itemLabel="#{produto.nome}" itemValue="#{produto}"/>
+			<p:ajax update=":formGeral:projeto" process="@this" />
+		</h:selectOneMenu>
+
+		<p:spacer width="20"/>
+
+		<h:outputLabel value="#{msg.cadastrarAlocacao_projeto}:" styleClass="textoNormal"/>
+		<h:selectOneMenu id="projeto" immediate="true" converter="#{converterBean}"
+			value="#{sessionBean.projeto}">
+			<f:selectItem itemLabel="#{msg.cadastro_selecione}" noSelectionOption="true"/>
+			<f:selectItems value="#{consultaBean.listaProjetosAtivos}"
+				var="projeto" itemLabel="#{projeto.codigoClienteCompleto} - #{projeto.nome}" itemValue="#{projeto}"/>
+			<p:ajax update=":formGeral:grupo" process="@this" />
+		</h:selectOneMenu>
+	</h:panelGroup>
+	<br/><br/>
+
+	<h:panelGroup id="grupo">
+		<p:tabView value="#{sessionBean.projeto.gruposAtividades}" var="grupoAtividade" styleClass="textoNormal">
+		
+	        <p:tab title="#{grupoAtividade.nome}" titleStyleClass="textoDestaqueMenor">
+			
+				<p:dataTable id="tabela_atividades" styleClass="textoNormal" style="width: 100%;" 
+					emptyMessage="#{msg.cadastrarAtividade_nenhumaAtividade}"
+					value="#{grupoAtividade.atividades}" var="atividade">
+					<p:column width="10%">
+						<f:facet name="header">
+							<h:outputText value="#{msg.cadastrarAlocacao_alocar}"/>
+						</f:facet>
+						<h:panelGroup>
+							<h:commandLink id="comandoAlocar" actionListener="#{gestorBean.cadastrarNovaAlocacaoAction}" action="new"
+								title="#{msg.cadastrarAlocacao_novaAlocacao}">
+								<h:graphicImage url="/imagens/btn_alocacao.png" height="32" width="32"/>
+							</h:commandLink>
+				
+							<p:spacer width="10"/>
+							<h:commandLink id="comandoDesalocarTodos" actionListener="#{gestorBean.excluirTodasAlocacoesAction}"
+								onclick="if (!confirm('#{msg.cadastrarAlocacao_confirmaExclusaoTodasAlocacoes}')) return false;" rendered="#{!empty atividade.alocacoes}"
+								title="#{msg.cadastrarAlocacao_excluirTodasAlocacoes}">
+								<h:graphicImage url="/imagens/btn_desalocarTodos.png" height="38" width="38"/>
+							</h:commandLink>
+						</h:panelGroup>
+					</p:column>
+			
+					<p:column width="30%">
+						<f:facet name="header">
+							<h:outputText value="#{msg.cadastrarAlocacao_atividade}"/>
+						</f:facet>
+						<f:facet name="footer">TOTAL</f:facet>
+						<h:panelGroup>
+							<h:graphicImage url="/imagens/icon_bandeira.png" rendered="#{atividade.flagContabilizarProgresso}" title="#{msg.cadastrarAtividade_contabilizarProgresso}"/>
+							<p:spacer width="6" />
+							<h:outputText value="#{atividade.nome}"/>
+						</h:panelGroup>
+					</p:column>
+					
+					<p:column width="10%" align="right"
+					 	rendered="#{!sessionBean.projeto.generico and sessionBean.colaboradorLogado.tipoAcesso == 0 and sessionBean.colaboradorLogado.tipoUsuario != 2}">
+						<f:facet name="header">
+							<h:outputText value="#{msg.cadastrarAlocacao_custoAlocado}"/>
+						</f:facet>
+					 	<f:facet name="footer">
+							<h:outputText value="#{grupoAtividade.custoTotalAlocado}">
+								<f:convertNumber type="currency" currencySymbol="R$"
+									maxFractionDigits="2" minFractionDigits="2" groupingUsed="true"/>
+							</h:outputText>
+						</f:facet>
+						
+						<h:outputText value="#{atividade.custoAlocacoes}">
+							<f:convertNumber type="currency" currencySymbol="R$"
+								maxFractionDigits="2" minFractionDigits="2" groupingUsed="true"/>
+						</h:outputText>
+					</p:column>
+					
+					<p:column align="right" 
+						width="5%" rendered="#{!sessionBean.projeto.generico}">
+						<f:facet name="header">
+							<h:outputText value="#{msg.statusProjeto_horasPrev}"/>
+						</f:facet>
+					 	<f:facet name="footer">
+							<h:outputText  value="#{grupoAtividade.qtdeHorasPrevistas}"/>
+						</f:facet>
+						
+						<h:outputText value="#{atividade.qtdeHorasPrevistas}"/>
+					</p:column>
+					
+					<p:column align="right" 
+						width="5%" rendered="#{!sessionBean.projeto.generico}">
+						<f:facet name="header">
+							<h:outputText value="#{msg.statusProjeto_horasTrab}"/>
+						</f:facet>
+					 	<f:facet name="footer">
+							<h:outputText value="#{grupoAtividade.qtdeHorasTrabalho}"/>
+						</f:facet>
+						
+						<h:outputText value="#{atividade.qtdeHorasTrabalho}"/>
+					</p:column>
+					
+					<p:column align="right"
+						width="5%" rendered="#{!sessionBean.projeto.generico}">
+						<f:facet name="header">
+							<h:outputText value="#{msg.statusProjeto_horasRest}"/>
+						</f:facet>
+					 	<f:facet name="footer">
+							<h:outputText value="#{grupoAtividade.qtdeHorasRestantes}"/>
+						</f:facet>
+						
+						<h:outputText value="#{atividade.qtdeHorasRestantes}"/>
+					</p:column>
+					
+					<p:column width="35%">
+						<f:facet name="header">
+							<h:outputText value="#{msg.cadastrarAlocacao_colaboradoresAlocados}"/>
+						</f:facet>
+						<p:dataTable emptyMessage="#{msg.cadastrarAlocacao_nenhumaAlocacao}"
+							value="#{atividade.alocacoesColaboradoresAtivos}" var="alocacao" 
+							style="width: 100%; border: 0px; background-color: white">
+							<p:column width="15%">
+								<h:panelGroup>
+									<h:commandLink id="comandoEditarFlagRegistro" actionListener="#{gestorBean.alterarFlagRegistroAtividadeAction}">
+										<h:graphicImage url="/imagens/icon_registro_liberado.png" title="#{msg.statusProjeto_horasRest}: #{alocacao.qtdeHorasRestantes}h | #{msg.cadastrarAlocacao_registro_liberado}" rendered="#{alocacao.flagBloqueadoRegistro == 0}"/>
+										<h:graphicImage url="/imagens/icon_registro_bloqueado.png" title="#{msg.statusProjeto_horasRest}: #{alocacao.qtdeHorasRestantes}h | #{msg.cadastrarAlocacao_registro_bloqueado}" rendered="#{alocacao.flagBloqueadoRegistro == 1}"/>
+										<h:graphicImage url="/imagens/icon_registro_finalizado.png" title="#{msg.statusProjeto_horasRest}: #{alocacao.qtdeHorasRestantes}h | #{msg.cadastrarAlocacao_registro_finalizado}" rendered="#{alocacao.flagBloqueadoRegistro == 2}"/>
+									</h:commandLink>
+									<h:outputText value="#{alocacao.qtdeHorasAlocadas}h" rendered="#{!sessionBean.projeto.generico}"/>
+								</h:panelGroup>
+							</p:column>
+					
+							<p:column width="45%">
+									<h:outputText value="#{alocacao.colaborador.nomeCompleto}" />
+							</p:column>
+			
+							<p:column align="end">
+								<h:panelGroup>
+									<h:outputText value="#{alocacao.dataInicioPrevista.time}" rendered="#{!sessionBean.projeto.generico}">
+										<f:convertDateTime type="date" dateStyle="medium" />
+									</h:outputText>
+									
+									<p:spacer width="15"/>
+									
+									<h:commandLink id="comandoEditar" actionListener="#{gestorBean.selecionarAlocacaoAction}" action="edit"
+										rendered="#{!alocacao.atividade.grupoAtividade.projeto.generico}">
+										<h:graphicImage value="/imagens/btn_edit.png" width="16" height="16" title="#{msg.cadastro_alterar}" />
+									</h:commandLink>
+									
+									<p:spacer width="10"/>
+								
+									<h:commandLink id="comandoExcluir" actionListener="#{gestorBean.excluirAlocacaoAction}" onclick="if (!confirm('#{msg.cadastro_confirmaExclusao}')) return false;">
+										<h:graphicImage value="/imagens/btn_excluir.png" width="16" height="16" title="#{msg.cadastro_excluir}" />
+									</h:commandLink>
+								</h:panelGroup>
+							</p:column>
+						</p:dataTable>
+					</p:column>
+				</p:dataTable>
+			</p:tab>
+		</p:tabView>
+	</h:panelGroup>
+	
+</ui:define>
+</ui:composition>

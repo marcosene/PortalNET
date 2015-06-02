@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition template="/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:define name="titulo">
+	<h:graphicImage value="/imagens/icon_agenda.png" width="32" height="32"/>
+	<p:spacer width="10"/>
+	<h:outputText value="#{msg.visualizarAgenda_titulo}" styleClass="textoDestaque"/>
+</ui:define>
+
+<ui:define name="conteudo">
+	<table style="width: 98%; border-collapse: collapse; border-spacing: 4; margin-left:auto; margin-right:auto">
+		<tr>	
+			<td align="left">
+				<br/>
+				<h:panelGroup>
+					<h:outputLabel value="#{msg.cadastrarAlocacao_colaborador}:" styleClass="textoNormal"/>
+					<h:selectOneMenu id="colaborador" required="true" rendered="#{sessionBean.colaboradorLogado.tipoUsuario ne 2}"
+						converter="#{converterBean}" value="#{sessionBean.colaborador}">
+						<f:selectItem itemLabel="#{msg.cadastro_selecione}" noSelectionOption="true"/>
+						<f:selectItems value="#{colaboradorBean.colaboradorService.listaColaboradoresParticipativos}"
+							var="colaborador" itemLabel="#{colaborador.nomeCompleto}" itemValue="#{colaborador}"/>
+					</h:selectOneMenu>
+					
+					<h:outputLabel value="#{msg.visualizarRelatorio_mes}:" styleClass="textoNormal"/>
+					<h:selectOneMenu id="AgendaMes" required="true" value="#{utilBean.mesSelecionado}">
+						<f:selectItems value="#{utilBean.listaMes}"/>
+					</h:selectOneMenu>
+					
+					<h:outputLabel value="#{msg.visualizarRelatorio_ano}:" styleClass="textoNormal"/>
+					<h:selectOneMenu id="AgendaAno" required="true" value="#{utilBean.anoSelecionado}">
+						<f:selectItems value="#{utilBean.listaAno}"/>
+					</h:selectOneMenu>
+					
+					<p:spacer width="10"/>
+					<h:commandLink action="#{colaboradorBean.agendaColaboradorAction}">
+						<h:graphicImage url="/imagens/btn_desabilitado.png" />
+					</h:commandLink>
+				</h:panelGroup>
+			</td>
+		</tr>	
+		<tr>
+			<td>
+				<rich:calendar currentDate="#{colaboradorBean.agenda.currentDate}"
+		            popup="false" showApplyButton="false"
+		            datePattern="dd/MMM/yyyy" firstWeekDay="0"
+		            showWeeksBar="false" showFooter="false"
+		            dataModel="#{colaboradorBean.agenda}"
+		            oncurrentdateselect="return false" id="organizer">
+		            <f:facet name="header">
+		            	<h:panelGroup>
+		                    <h:outputText value="#{colaboradorBean.agenda.titulo}" styleClass="textoDestaqueMenor"/>
+		                </h:panelGroup>
+		            </f:facet>
+		            <a4j:outputPanel layout="block" id="cell" onclick="#{rich:component('organizer')}.resetSelectedDate()" style="height: 100%;">
+		                <h:panelGrid columns="1">
+		                    <h:outputText value="{day}" style="align:center; width: 50%"/>
+		                    <h:outputText value="{data.titulo}"/>
+		                    <h:outputText value="{data.descricao}"/>
+		                </h:panelGrid>
+		            </a4j:outputPanel>
+		        </rich:calendar>
+			</td>
+		</tr>
+	</table>
+
+</ui:define>
+</ui:composition>

@@ -1,0 +1,139 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition template="/templateCadastro.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:define name="titulo">
+	<h:graphicImage value="/imagens/icon_colaborador.png" width="32" height="32"/>
+	<p:spacer width="10"/>
+	<h:outputText value="#{msg.cadastrarColaborador_atualizar}" styleClass="textoDestaque"/>
+</ui:define>
+
+<ui:define name="conteudo">
+
+<script type="text/javascript">   
+	function limpaConfirmaSenha(){
+	    document.getElementById("formGeral:senhaConfirmada").value = '';
+	}   
+</script>
+
+	<br/>
+	<h:panelGrid style="text-align: right; width: 100%">
+		<h:column>
+			<h:outputLink value="#{request.contextPath}/principal.jsf">
+				<h:graphicImage value="/imagens/icon_home.png" width="32" height="32"/>
+			</h:outputLink>
+	
+			<p:spacer width="20"/>
+	
+			<h:commandLink action="#{colaboradorBean.atualizarRegistroColaborador}">
+				<h:graphicImage value="/imagens/btn_atualizar.png" width="32" height="32"/>
+			</h:commandLink>
+			
+			<p:spacer width="10"/>
+		</h:column>
+	</h:panelGrid>
+		
+	<fieldset style="padding: 10px;">
+		<legend><h:outputText value="Dados de Acesso"/></legend>
+		<h:panelGrid columns="2">
+			<h:outputLabel value="#{msg.cadastrarColaborador_senha}:" styleClass="textoNormal"/>
+			<h:inputSecret id="senha" required="true" value="#{sessionBean.colaboradorLogado.senha}"
+				validator="#{validatorBean.validateSenha}" onchange="limpaConfirmaSenha()"
+				size="20" maxlength="20" redisplay="true">
+				<f:validateLength minimum="6" maximum="20" />
+			</h:inputSecret>
+			
+			<h:outputLabel value="#{msg.cadastrarColaborador_confirmaSenha}:" styleClass="textoNormal"/>
+			<h:inputSecret id="senhaConfirmada" required="true" value="#{sessionBean.colaboradorLogado.senha}"
+				validator="#{validatorBean.validateSenhaConfirmada}"
+				size="20" maxlength="20" redisplay="true">
+				<f:validateLength minimum="6" maximum="20" />
+			</h:inputSecret>
+		</h:panelGrid>
+	</fieldset>
+
+	<br/>
+	<fieldset style="padding: 10px;">
+		<legend><h:outputText value="Dados Pessoais"/></legend>
+		<h:panelGrid columns="2">
+			<h:outputLabel value="#{msg.cadastrarColaborador_nome}:" styleClass="textoNormal"/>
+			<h:inputText id="nome" required="true"
+				value="#{sessionBean.colaboradorLogado.nome}"
+				size="25" maxlength="25">
+			</h:inputText>
+			
+			<h:outputLabel value="#{msg.cadastrarColaborador_sobrenome}:" styleClass="textoNormal"/>
+			<h:inputText id="sobrenome" required="true"
+				value="#{sessionBean.colaboradorLogado.sobrenome}"
+				size="35" maxlength="35">
+			</h:inputText>
+			
+			<h:outputLabel value="#{msg.cadastrarColaborador_apelido}:" styleClass="textoNormal"/>
+			<h:inputText id="apelido" required="true" rendered="#{sessionBean.colaborador.usuario != 'admin'}"
+				value="#{sessionBean.colaboradorLogado.apelido}"
+				size="15" maxlength="15">
+			</h:inputText>
+			
+			<h:outputLabel value="#{msg.cadastrarColaborador_emailAlternativo}:" styleClass="textoNormal"/>
+			<h:inputText id="emailAlternativo" validatorMessage="#{msg.cadastrarColaborador_emailInvalido}"
+				value="#{sessionBean.colaboradorLogado.emailAlternativo}"
+				size="50" maxlength="50">
+				<f:validateRegex pattern="(^[_A-Za-z0-9-]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})|^$)" />
+			</h:inputText>
+
+			<h:outputLabel value="#{msg.cadastrarColaborador_diaAniversario}:" styleClass="textoNormal"/>
+			<h:panelGroup>
+				<h:inputText id="diaAniversario"
+					size="2" maxlength="2" value="#{sessionBean.colaboradorLogado.diaAniversario}">
+					<f:validateLongRange minimum="1" maximum="31" />
+				</h:inputText>
+				
+				<h:outputLabel value="/" styleClass="textoNormal"/>
+				<h:inputText id="mesAniversario"
+					size="2" maxlength="2" value="#{sessionBean.colaboradorLogado.mesAniversario}">
+					<f:validateLongRange minimum="1" maximum="12" />
+				</h:inputText>
+			</h:panelGroup>
+	
+			<h:outputLabel value="#{msg.cadastrarColaborador_ramal}:" styleClass="textoNormal"/>
+			<h:inputText id="ramal" 
+				value="#{sessionBean.colaboradorLogado.ramal}"
+				size="15" maxlength="15">
+			</h:inputText>
+			
+			<h:outputLabel value="#{msg.cadastrarColaborador_telResid}:" styleClass="textoNormal"/>
+			<h:inputText id="telResid" 
+				value="#{sessionBean.colaboradorLogado.telResid}"
+				size="15" maxlength="15">
+			</h:inputText>
+			
+			<h:outputLabel value="#{msg.cadastrarColaborador_telCelular}:" styleClass="textoNormal"/>
+			<h:inputText id="telCelular" 
+				value="#{sessionBean.colaboradorLogado.telCelular}"
+				size="15" maxlength="15">
+			</h:inputText>
+		</h:panelGrid>
+		
+		<h:panelGrid columns="1">
+			<p:graphicImage id="foto" value="#{sessionBean.colaboradorLogado.graphicFotoTemp}" />
+			<h:outputText value="Formato: JPG 100x100" styleClass="textoNormalMenor"/>
+	           
+			<p:fileUpload id="fotoUpload" auto="true" mode="simple"
+				fileUploadListener="#{colaboradorBean.listenerFotoTemp}" update="foto"
+				allowTypes="/(\.|\/)(gif|jpe?g|png)$/" description="Alterar foto...">
+			</p:fileUpload>
+		</h:panelGrid>
+		
+	</fieldset>
+	
+</ui:define>
+</ui:composition>
